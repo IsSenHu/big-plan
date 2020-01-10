@@ -57,7 +57,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
     protected int seqBits = 13;
 
     /** Customer epoch, unit as second. For example 2016-05-20 (ms: 1463673600000)*/
-    protected String epochStr = "2016-05-20";
+    protected String epochStr = "2016-05-20 00:00:00";
     protected long epochSeconds = TimeUnit.MILLISECONDS.toSeconds(1463673600000L);
 
     /** Stable fields after spring bean initializing */
@@ -200,7 +200,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
     public void setEpochStr(String epochStr) {
         if (StringUtils.isNotBlank(epochStr)) {
             this.epochStr = epochStr;
-            this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDayPattern(epochStr).getTime());
+            this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDateTimePattern(epochStr).getTime());
         }
     }
 }
