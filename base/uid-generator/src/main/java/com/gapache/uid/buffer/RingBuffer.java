@@ -161,6 +161,7 @@ public class RingBuffer {
     public long take() {
         // spin get next available cursor
         long currentCursor = cursor.get();
+        // 多线程环境下安全更新
         long nextCursor = cursor.updateAndGet(old -> old == tail.get() ? old : old + 1);
 
         // check for safety consideration, it never occurs

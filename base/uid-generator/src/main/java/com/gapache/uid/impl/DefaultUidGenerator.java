@@ -38,6 +38,12 @@ import java.util.concurrent.TimeUnit;
  * <li>epochStr: Epoch date string format 'yyyy-MM-dd'. Default as '2016-05-20'<p>
  *
  * <b>Note that:</b> The total bits must be 64 -1
+ * 时间产生的影响
+ * 1.未重机器调慢时间，抛出异常，拒绝产生ID。重启机器调快时间，调整后正常产生ID，在调整时间内没有ID产生
+ * 2.重启机器调慢时间，将可能产生重复的ID，系统管理员需要保证不会发生这种情况。重启机器并调快时间，调整后正常产生ID，在调整时间内没有ID产生
+ * 3.每四年一次同步闰秒会不会影响ID的产生？
+ * 原子时钟和电子时钟每4年的误差为1秒，也就是说电子时钟每4年会比原子时钟慢1秒，所以每隔4年，网络时钟都会同步一次时间，但是本地机器Window、Linux等
+ * 不会自动同步时间，需要手工同步，或者使用ntpdate向网络时钟同步。由于时钟是调快一秒，调整后不影响ID的产生，所以在调整的1秒内没有ID产生。
  *
  * @author HuSen
  * create on 2020/1/9 17:00

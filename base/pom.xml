@@ -48,6 +48,8 @@
         <okHttp3.version>4.3.0</okHttp3.version>
         <!-- protobuf-maven-plugin 版本 -->
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+        <!-- nacos 版本 -->
+        <nacos.version>0.2.4</nacos.version>
     </properties>
 
     <dependencies>
@@ -135,6 +137,17 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okHttp3.version}</version>
+            </dependency>
+            <!-- 指定 nacos config -->
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-starter</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-actuator</artifactId>
+                <version>${nacos.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
