@@ -30,7 +30,6 @@ public class SMSAlice {
         this.sysVersion = sysVersion;
         DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, secret);
         this.iAcsClient = new DefaultAcsClient(profile);
-
     }
 
     private CommonRequest getCommonRequest(MethodType method, SysAction sysAction, Map<String, String> queryParameters) {
