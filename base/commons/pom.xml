@@ -15,6 +15,14 @@
         基础和通用的工具等
     </description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>commons</finalName>
     </build>

@@ -4,6 +4,9 @@ import com.gapache.uid.UidGenerator;
 import com.gapache.uid.annotation.EnableUidGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +32,12 @@ public class ServiceApplication {
     @GetMapping
     public long test() {
         return uidGenerator.getUID();
+    }
+
+    @Bean
+    public StringRedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate(redisConnectionFactory);
+        redisTemplate.setEnableTransactionSupport(true);
+        return redisTemplate;
     }
 }

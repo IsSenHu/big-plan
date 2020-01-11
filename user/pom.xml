@@ -19,6 +19,14 @@
     <name>user</name>
     <packaging>pom</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>commons</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>user</finalName>
     </build>

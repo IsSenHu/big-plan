@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -15,16 +17,15 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
+@Entity
+@Table(name = "tb_account")
 public class AccountPO {
 
     @Id
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nickName;
-
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(unique = true, nullable = false)
     private String phone;

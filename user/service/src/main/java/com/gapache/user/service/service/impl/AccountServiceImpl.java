@@ -1,5 +1,8 @@
 package com.gapache.user.service.service.impl;
 
+import com.gapache.commons.model.JsonResult;
+import com.gapache.user.service.dao.repository.AccountRepository;
+import com.gapache.user.service.model.AccountRegisterRequest;
 import com.gapache.user.service.service.AccountService;
 import org.springframework.stereotype.Service;
 
@@ -10,4 +13,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+    private final AccountRepository accountRepository;
+
+    public AccountServiceImpl(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public JsonResult<Object> register(AccountRegisterRequest request) {
+        return null;
+    }
 }
