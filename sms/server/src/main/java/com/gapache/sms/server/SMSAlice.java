@@ -8,7 +8,6 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class SMSAlice {
         request.setSysVersion(sysVersion);
         request.setSysAction(sysAction.getValue());
         request.putQueryParameter("RegionId", regionId);
-        if (!CollectionUtils.isEmpty(queryParameters)) {
+        if (queryParameters != null) {
             queryParameters.forEach(request::putQueryParameter);
         }
         return request;

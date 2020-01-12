@@ -48,6 +48,11 @@
             <groupId>com.alibaba.boot</groupId>
             <artifactId>nacos-config-spring-boot-actuator</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
