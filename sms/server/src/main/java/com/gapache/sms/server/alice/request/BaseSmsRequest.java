@@ -38,7 +38,7 @@ public abstract class BaseSmsRequest<T extends BaseSmsResponse> implements Seria
 
     public abstract boolean checkQueryParameters();
 
-    private T getResponse() {
+    public T getResponse() {
         SysAction sysAction = getSysAction();
         Map<String, String> queryParameters = buildQueryParameters();
         if (!checkQueryParameters()) {
