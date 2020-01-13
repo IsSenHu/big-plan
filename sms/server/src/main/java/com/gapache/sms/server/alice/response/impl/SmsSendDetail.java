@@ -17,12 +17,24 @@ public class SmsSendDetail implements Serializable {
     @JSONField(name = "SendDate", format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime sendDate;
 
+    /**
+     * 短信发送状态，包括：
+     * 1：等待回执。
+     * 2：发送失败。
+     * 3：发送成功。
+     */
     @JSONField(name = "SendStatus")
     private Integer sendStatus;
 
     @JSONField(name = "ReceiveDate", format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime receiveDate;
 
+    /**
+     * 运营商短信状态码。
+     * 短信发送成功：DELIVERED。
+     * 短信发送失败：失败错误码请参考错误码文档。
+     * <a href="https://help.aliyun.com/document_detail/101347.html?spm=a2c4g.11186623.2.14.1722bc45yhvrM5"></a>
+     */
     @JSONField(name = "ErrCode")
     private String errCode;
 

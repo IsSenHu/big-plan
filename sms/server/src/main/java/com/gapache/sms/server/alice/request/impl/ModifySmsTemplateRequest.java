@@ -3,6 +3,7 @@ package com.gapache.sms.server.alice.request.impl;
 import com.aliyuncs.http.MethodType;
 import com.gapache.sms.server.alice.SMSAlice;
 import com.gapache.sms.server.alice.SysAction;
+import com.gapache.sms.server.alice.TemplateType;
 import com.gapache.sms.server.alice.request.BaseSmsRequest;
 import com.gapache.sms.server.alice.response.impl.ModifySmsTemplateResponse;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class ModifySmsTemplateRequest extends BaseSmsRequest<ModifySmsTemplateRe
      * 2：推广短信。
      * 3：国际/港澳台消息。
      */
-    private Integer templateType;
+    private TemplateType templateType;
 
     /**
      * 必须
@@ -63,7 +64,7 @@ public class ModifySmsTemplateRequest extends BaseSmsRequest<ModifySmsTemplateRe
      */
     private String templateCode;
 
-    public ModifySmsTemplateRequest(SMSAlice smsAlice, Integer templateType, String templateName, String templateContent, String remark, String templateCode) {
+    public ModifySmsTemplateRequest(SMSAlice smsAlice, TemplateType templateType, String templateName, String templateContent, String remark, String templateCode) {
         super(smsAlice);
         this.templateType = templateType;
         this.templateName = templateName;
@@ -75,7 +76,7 @@ public class ModifySmsTemplateRequest extends BaseSmsRequest<ModifySmsTemplateRe
     @Override
     public Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = buildAddOrModifyTemplateQueryParameters(
-                this.templateType.toString(),
+                this.templateType.getValue().toString(),
                 this.templateName,
                 this.templateContent,
                 this.remark

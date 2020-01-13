@@ -21,6 +21,12 @@ public class QuerySmsSignResponse extends BaseSmsResponse {
     @JSONField(name = "SignName")
     private String signName;
 
+    /**
+     * 签名审核状态。其中：
+     * 0：审核中。
+     * 1：审核通过。
+     * 2：审核失败，请在返回参数Reason中查看审核失败原因。
+     */
     @JSONField(name = "SignStatus")
     private Integer signStatus;
 }

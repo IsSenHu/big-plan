@@ -2,6 +2,7 @@ package com.gapache.sms.server.alice.request.impl;
 
 import com.aliyuncs.http.MethodType;
 import com.gapache.sms.server.alice.SMSAlice;
+import com.gapache.sms.server.alice.SignSource;
 import com.gapache.sms.server.alice.SysAction;
 import com.gapache.sms.server.alice.request.BaseSmsRequest;
 import com.gapache.sms.server.alice.response.impl.AddSmsSignResponse;
@@ -43,7 +44,7 @@ public class AddSmsSignRequest extends BaseSmsRequest<AddSmsSignResponse> {
      * 5：商标名的全称或简称
      * 说明 签名来源为1时，请在申请说明中添加网站域名，加快审核速度。
      */
-    private Integer signSource;
+    private SignSource signSource;
 
     /**
      * 必须
@@ -64,7 +65,7 @@ public class AddSmsSignRequest extends BaseSmsRequest<AddSmsSignResponse> {
      */
     private String fileContents;
 
-    public AddSmsSignRequest(SMSAlice smsAlice, String signName, Integer signSource, String remark) {
+    public AddSmsSignRequest(SMSAlice smsAlice, String signName, SignSource signSource, String remark) {
         super(smsAlice);
         this.signName = signName;
         this.signSource = signSource;
@@ -75,7 +76,7 @@ public class AddSmsSignRequest extends BaseSmsRequest<AddSmsSignResponse> {
     public Map<String, String> buildQueryParameters() {
         return buildAddOrModifySignQueryParameters(
                 this.signName,
-                this.signSource.toString(),
+                this.signSource.getValue().toString(),
                 this.remark,
                 this.fileSuffix,
                 this.fileContents
