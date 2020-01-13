@@ -59,7 +59,7 @@ public abstract class BaseSmsRequest<T extends BaseSmsResponse> implements Seria
 
     protected Map<String, String> buildAddOrModifyTemplateQueryParameters(String templateType, String templateName, String templateContent, String remark) {
         Map<String, String> queryParameters = new HashMap<>(4);
-        queryParameters.put("TemplateType", templateContent);
+        queryParameters.put("TemplateType", templateType);
         queryParameters.put("TemplateName", templateName);
         queryParameters.put("TemplateContent", templateContent);
         queryParameters.put("Remark", remark);

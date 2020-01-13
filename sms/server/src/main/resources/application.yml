@@ -5,7 +5,7 @@ nacos:
       # 主配置服务器地址
     server-addr: 118.24.38.46:8848
     # 主配置 data-id
-    data-ids: user
+    data-ids: sms
     # 主配置 group-id
     group: DEVELOP
     # 主配置 配置文件类型
