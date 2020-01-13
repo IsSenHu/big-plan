@@ -1,6 +1,7 @@
-package com.gapache.sms.server;
+package com.gapache.sms.server.alice;
 
 import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.gapache.sms.server.alice.SMSAlice;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;

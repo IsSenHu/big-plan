@@ -1,10 +1,9 @@
-package com.gapache.sms.server;
+package com.gapache.sms.server.alice.response.impl;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.gapache.sms.server.alice.response.BaseSmsResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * @author HuSen
@@ -12,9 +11,9 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SendSmsResponse extends BaseSmsResponse implements Serializable {
+public class SendSmsResponse extends BaseSmsResponse {
     private static final long serialVersionUID = 186475350419659374L;
 
-    @JSONField(name = "bizId")
-    private String BizId;
+    @JSONField(name = "BizId")
+    private String bizId;
 }

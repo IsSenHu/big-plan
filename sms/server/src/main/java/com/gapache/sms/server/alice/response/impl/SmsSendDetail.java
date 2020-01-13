@@ -1,4 +1,4 @@
-package com.gapache.sms.server;
+package com.gapache.sms.server.alice.response.impl;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;

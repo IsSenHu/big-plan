@@ -1,4 +1,4 @@
-package com.gapache.sms.server;
+package com.gapache.sms.server.alice;
 
 import com.aliyuncs.CommonRequest;
 import com.aliyuncs.CommonResponse;
@@ -44,7 +44,7 @@ public class SMSAlice {
         return request;
     }
 
-    private CommonResponse call(MethodType method, SysAction sysAction, Map<String, String> queryParameters) {
+    public CommonResponse call(MethodType method, SysAction sysAction, Map<String, String> queryParameters) {
         CommonRequest request = getCommonRequest(method, sysAction, queryParameters);
         try {
             CommonResponse response = iAcsClient.getCommonResponse(request);
