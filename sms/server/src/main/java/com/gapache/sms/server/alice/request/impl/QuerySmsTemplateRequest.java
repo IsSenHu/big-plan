@@ -34,29 +34,29 @@ public class QuerySmsTemplateRequest extends BaseSmsRequest<QuerySmsTemplateResp
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = new HashMap<>(1);
         queryParameters.put("TemplateCode", this.templateCode);
         return queryParameters;
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.QUERY_SMS_TEMPLATE;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<QuerySmsTemplateResponse> responseClazz() {
+    protected Class<QuerySmsTemplateResponse> responseClazz() {
         return QuerySmsTemplateResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return StringUtils.isNotBlank(this.templateCode);
     }
 }

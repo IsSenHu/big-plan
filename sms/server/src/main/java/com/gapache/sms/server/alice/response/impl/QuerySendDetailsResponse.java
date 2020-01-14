@@ -5,8 +5,6 @@ import com.gapache.sms.server.alice.response.BaseSmsResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 /**
  * @author HuSen
  * create on 2020/1/12
@@ -20,5 +18,5 @@ public class QuerySendDetailsResponse extends BaseSmsResponse {
     private Long totalCount;
 
     @JSONField(name = "SmsSendDetailDTOs")
-    private List<SmsSendDetail> smsSendDetails;
+    private SmsSendDetails smsSendDetails;
 }

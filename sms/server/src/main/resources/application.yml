@@ -20,3 +20,9 @@ nacos:
     config-long-poll-timeout: 46000
     # 主配置 开启注册监听器预加载配置服务（除非特殊业务需求，否则不推荐打开该参数）
     enable-remote-sync-config: true
+logging:
+  level:
+    com:
+      gapache:
+        sms:
+          server: debug

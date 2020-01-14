@@ -66,7 +66,7 @@ public class AddSmsTemplateRequest extends BaseSmsRequest<AddSmsTemplateResponse
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         return buildAddOrModifyTemplateQueryParameters(
                 this.templateType.getValue().toString(),
                 this.templateName,
@@ -76,22 +76,22 @@ public class AddSmsTemplateRequest extends BaseSmsRequest<AddSmsTemplateResponse
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.ADD_SMS_TEMPLATE;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<AddSmsTemplateResponse> responseClazz() {
+    protected Class<AddSmsTemplateResponse> responseClazz() {
         return AddSmsTemplateResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return Objects.nonNull(this.templateType) && StringUtils.isNotBlank(this.templateName) && StringUtils.isNotBlank(this.templateContent) && StringUtils.isNotBlank(this.remark);
     }
 }

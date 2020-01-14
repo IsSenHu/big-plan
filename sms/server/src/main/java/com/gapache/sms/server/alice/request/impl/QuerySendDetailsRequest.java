@@ -62,16 +62,17 @@ public class QuerySendDetailsRequest extends BaseSmsRequest<QuerySendDetailsResp
      */
     private String bizId;
 
-    public QuerySendDetailsRequest(SMSAlice smsAlice, Long currentPage, Long pageSize, String phoneNumber, String sendDate) {
+    public QuerySendDetailsRequest(SMSAlice smsAlice, Long currentPage, Long pageSize, String phoneNumber, String sendDate, String bizId) {
         super(smsAlice);
         this.currentPage = currentPage;
         this.pageSize = pageSize;
         this.phoneNumber = phoneNumber;
         this.sendDate = sendDate;
+        this.bizId = bizId;
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = new HashMap<>(5);
         queryParameters.put("CurrentPage", this.currentPage.toString());
         queryParameters.put("PageSize", this.pageSize.toString());
@@ -84,22 +85,22 @@ public class QuerySendDetailsRequest extends BaseSmsRequest<QuerySendDetailsResp
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.QUERY_SEND_DETAILS;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<QuerySendDetailsResponse> responseClazz() {
+    protected Class<QuerySendDetailsResponse> responseClazz() {
         return QuerySendDetailsResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return Objects.nonNull(this.currentPage) && Objects.nonNull(this.pageSize) && this.pageSize <= 50 && this.pageSize >= 1
                 && StringUtils.isNotBlank(this.phoneNumber) && StringUtils.isNotBlank(this.sendDate);
     }

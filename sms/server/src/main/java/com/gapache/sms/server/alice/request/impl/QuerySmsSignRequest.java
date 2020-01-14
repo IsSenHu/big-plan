@@ -34,29 +34,29 @@ public class QuerySmsSignRequest extends BaseSmsRequest<QuerySmsSignResponse> {
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = new HashMap<>(1);
         queryParameters.put("SignName", this.signName);
         return queryParameters;
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.QUERY_SMS_SIGN;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<QuerySmsSignResponse> responseClazz() {
+    protected Class<QuerySmsSignResponse> responseClazz() {
         return QuerySmsSignResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return StringUtils.isNotBlank(this.signName);
     }
 }

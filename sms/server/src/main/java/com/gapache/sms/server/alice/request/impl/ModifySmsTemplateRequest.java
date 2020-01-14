@@ -74,7 +74,7 @@ public class ModifySmsTemplateRequest extends BaseSmsRequest<ModifySmsTemplateRe
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = buildAddOrModifyTemplateQueryParameters(
                 this.templateType.getValue().toString(),
                 this.templateName,
@@ -86,22 +86,22 @@ public class ModifySmsTemplateRequest extends BaseSmsRequest<ModifySmsTemplateRe
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.MODIFY_SMS_TEMPLATE;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<ModifySmsTemplateResponse> responseClazz() {
+    protected Class<ModifySmsTemplateResponse> responseClazz() {
         return ModifySmsTemplateResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return Objects.nonNull(this.templateType) && StringUtils.isNotBlank(this.templateName)
                 && StringUtils.isNotBlank(this.templateContent) && StringUtils.isNotBlank(this.remark)
                 && StringUtils.isNotBlank(this.templateCode);

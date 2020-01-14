@@ -67,15 +67,17 @@ public class SendBatchSmsRequest extends BaseSmsRequest<SendBatchSmsResponse> {
      */
     private String templateParamJson;
 
-    public SendBatchSmsRequest(SMSAlice smsAlice, String phoneNumberJson, String signNameJson, String templateCode) {
+    public SendBatchSmsRequest(SMSAlice smsAlice, String phoneNumberJson, String signNameJson, String templateCode, String smsUpExtendCodeJson, String templateParamJson) {
         super(smsAlice);
         this.phoneNumberJson = phoneNumberJson;
         this.signNameJson = signNameJson;
         this.templateCode = templateCode;
+        this.smsUpExtendCodeJson = smsUpExtendCodeJson;
+        this.templateParamJson = templateParamJson;
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = new HashMap<>(5);
         queryParameters.put("PhoneNumberJson", this.phoneNumberJson);
         queryParameters.put("SignNameJson", this.signNameJson);
@@ -90,22 +92,22 @@ public class SendBatchSmsRequest extends BaseSmsRequest<SendBatchSmsResponse> {
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.SEND_BATCH_SMS;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<SendBatchSmsResponse> responseClazz() {
+    protected Class<SendBatchSmsResponse> responseClazz() {
         return SendBatchSmsResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return StringUtils.isNotBlank(this.phoneNumberJson) && StringUtils.isNotBlank(this.signNameJson) && StringUtils.isNotBlank(this.templateCode);
     }
 }

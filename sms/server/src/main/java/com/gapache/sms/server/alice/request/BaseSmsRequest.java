@@ -28,15 +28,15 @@ public abstract class BaseSmsRequest<T extends BaseSmsResponse> implements Seria
         this.smsAlice = smsAlice;
     }
 
-    public abstract Map<String, String> buildQueryParameters();
+    protected abstract Map<String, String> buildQueryParameters();
 
-    public abstract SysAction getSysAction();
+    protected abstract SysAction getSysAction();
 
-    public abstract MethodType getMethodType();
+    protected abstract MethodType getMethodType();
 
-    public abstract Class<T> responseClazz();
+    protected abstract Class<T> responseClazz();
 
-    public abstract boolean checkQueryParameters();
+    protected abstract boolean checkQueryParameters();
 
     public T getResponse() {
         SysAction sysAction = getSysAction();

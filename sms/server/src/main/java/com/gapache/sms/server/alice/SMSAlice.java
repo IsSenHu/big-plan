@@ -8,6 +8,8 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import java.util.Map;
  */
 @Slf4j
 public class SMSAlice {
+    private final static String SUCCESS_CODE = "OK";
 
     private final String regionId;
     private final String sysDomain;
@@ -56,5 +59,9 @@ public class SMSAlice {
             log.error("Call [{}] queryParameters [{}] fail.", sysAction.getValue(), queryParameters, e);
             return null;
         }
+    }
+
+    public boolean fail(@NonNull String code) {
+        return !StringUtils.equals(code, SUCCESS_CODE);
     }
 }

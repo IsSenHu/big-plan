@@ -65,15 +65,17 @@ public class ModifySmsSignRequest extends BaseSmsRequest<ModifySmsSignResponse> 
      */
     private String fileContents;
 
-    public ModifySmsSignRequest(SMSAlice smsAlice, String signName, SignSource signSource, String remark) {
+    public ModifySmsSignRequest(SMSAlice smsAlice, String signName, SignSource signSource, String remark, String fileSuffix, String fileContents) {
         super(smsAlice);
         this.signName = signName;
         this.signSource = signSource;
         this.remark = remark;
+        this.fileSuffix = fileSuffix;
+        this.fileContents = fileContents;
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         return buildAddOrModifySignQueryParameters(
                 this.signName,
                 this.signSource.getValue().toString(),
@@ -84,22 +86,22 @@ public class ModifySmsSignRequest extends BaseSmsRequest<ModifySmsSignResponse> 
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.MODIFY_SMS_SIGN;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<ModifySmsSignResponse> responseClazz() {
+    protected Class<ModifySmsSignResponse> responseClazz() {
         return ModifySmsSignResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return StringUtils.isNotBlank(this.signName) && Objects.nonNull(this.signSource) && StringUtils.isNotBlank(this.remark);
     }
 }

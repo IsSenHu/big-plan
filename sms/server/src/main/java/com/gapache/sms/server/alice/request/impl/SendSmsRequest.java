@@ -66,15 +66,18 @@ public class SendSmsRequest extends BaseSmsRequest<SendSmsResponse> {
      */
     private String outId;
 
-    public SendSmsRequest(SMSAlice smsAlice, String phoneNumbers, String signName, String templateCode) {
+    public SendSmsRequest(SMSAlice smsAlice, String phoneNumbers, String signName, String templateCode, String smsUpExtendCode, String templateParam, String outId) {
         super(smsAlice);
         this.phoneNumbers = phoneNumbers;
         this.signName = signName;
         this.templateCode = templateCode;
+        this.smsUpExtendCode = smsUpExtendCode;
+        this.templateParam = templateParam;
+        this.outId = outId;
     }
 
     @Override
-    public Map<String, String> buildQueryParameters() {
+    protected Map<String, String> buildQueryParameters() {
         Map<String, String> queryParameters = new HashMap<>(6);
         queryParameters.put("PhoneNumbers", this.phoneNumbers);
         queryParameters.put("SignName", this.signName);
@@ -86,28 +89,28 @@ public class SendSmsRequest extends BaseSmsRequest<SendSmsResponse> {
             queryParameters.put("SmsUpExtendCode", this.smsUpExtendCode);
         }
         if (StringUtils.isNotBlank(this.templateParam)) {
-            queryParameters.put("TemplateParam", this.templateCode);
+            queryParameters.put("TemplateParam", this.templateParam);
         }
         return queryParameters;
     }
 
     @Override
-    public SysAction getSysAction() {
+    protected SysAction getSysAction() {
         return SysAction.SEND_SMS;
     }
 
     @Override
-    public MethodType getMethodType() {
+    protected MethodType getMethodType() {
         return MethodType.POST;
     }
 
     @Override
-    public Class<SendSmsResponse> responseClazz() {
+    protected Class<SendSmsResponse> responseClazz() {
         return SendSmsResponse.class;
     }
 
     @Override
-    public boolean checkQueryParameters() {
+    protected boolean checkQueryParameters() {
         return StringUtils.isNotBlank(this.phoneNumbers) && StringUtils.isNotBlank(this.signName) && StringUtils.isNotBlank(this.templateCode);
     }
 }
