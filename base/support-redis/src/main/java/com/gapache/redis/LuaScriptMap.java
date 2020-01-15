@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class LuaScriptMap {
 
-    private static final Map<String, RedisScript<Long>> REDIS_SCRIPT_MAP = new HashMap<>(12);
+    private static final Map<String, RedisScript<String>> REDIS_SCRIPT_MAP = new HashMap<>(12);
 
     protected void addLuaScript(String prefixPath, String luaScriptName) {
         if (StringUtils.isBlank(luaScriptName)) {
@@ -35,7 +35,7 @@ public class LuaScriptMap {
         ClassPathResource resource = new ClassPathResource(fullPath);
         try {
             byte[] bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
-            RedisScript<Long> redisScript = new DefaultRedisScript<>(new String(bytes, StandardCharsets.UTF_8), Long.TYPE);
+            RedisScript<String> redisScript = new DefaultRedisScript<>(new String(bytes, StandardCharsets.UTF_8), String.class);
             REDIS_SCRIPT_MAP.putIfAbsent(fullPath, redisScript);
         } catch (Exception e) {
             log.error("[{}] luaScript is load fail:", luaScriptName, e);
@@ -43,7 +43,7 @@ public class LuaScriptMap {
     }
 
     @NonNull
-    public RedisScript<Long> getLuaScript(String prefixPath, String luaScriptName) {
+    public RedisScript<String> getLuaScript(String prefixPath, String luaScriptName) {
         String fullPath = toFullPath(prefixPath, luaScriptName);
         return REDIS_SCRIPT_MAP.get(fullPath);
     }

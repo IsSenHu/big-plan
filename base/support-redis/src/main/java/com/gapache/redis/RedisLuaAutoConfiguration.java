@@ -32,13 +32,12 @@ public class RedisLuaAutoConfiguration {
             EnableRedisLua enableRedisLua = AnnotationUtils.findAnnotation(enableRedisLuaOnClass.values().iterator().next().getClass(), EnableRedisLua.class);
             if (null != enableRedisLua) {
                 for (Class<? extends LuaScript> aClass : enableRedisLua.value()) {
-                    try {
-                        LuaScript luaScript = aClass.newInstance();
-                        for (LuaScript script : luaScript.all()) {
+                    boolean anEnum = aClass.isEnum();
+                    if (anEnum) {
+                        LuaScript[] scripts = aClass.getEnumConstants();
+                        for (LuaScript script : scripts) {
                             luaScriptMap.addLuaScript(script.prefixPath(), script.luaScriptName());
                         }
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        log.error("Load luaScript error.", e);
                     }
                 }
             }

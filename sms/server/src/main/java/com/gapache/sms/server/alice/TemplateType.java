@@ -19,4 +19,8 @@ public enum TemplateType {
         this.value = value;
         this.description = description;
     }
+
+    public static TemplateType fromValue(Integer value) {
+        return TemplateType.valueOf("_" + value);
+    }
 }

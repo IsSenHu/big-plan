@@ -21,7 +21,7 @@ public class RedisLuaExecutor {
         this.luaScriptMap = luaScriptMap;
     }
 
-    public Long execute(LuaScript script, List<String> keys, Object... args) {
+    public String execute(LuaScript script, List<String> keys, Object... args) {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("redis 执行 lua 脚本:{}, keys:{}, args:{}", script.luaScriptName(), keys, Arrays.toString(args));
@@ -29,7 +29,7 @@ public class RedisLuaExecutor {
             return template.execute(luaScriptMap.getLuaScript(script.prefixPath(), script.luaScriptName()), keys, args);
         } catch (Exception e) {
             log.error("Execute Lua Script error.", e);
-            return -9999L;
+            return "9999";
         }
     }
 }

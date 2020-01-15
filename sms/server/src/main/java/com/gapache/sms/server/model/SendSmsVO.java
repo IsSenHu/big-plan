@@ -3,7 +3,6 @@ package com.gapache.sms.server.model;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,7 +49,7 @@ public class SendSmsVO implements Serializable {
      * 短信模板变量对应的实际值，JSON格式。
      * 说明 如果JSON中需要带换行符，请参照标准的JSON协议处理。
      */
-    private Map<String, String> templateParam;
+    private String templateParam;
 
     /**
      * 外部流水扩展字段。

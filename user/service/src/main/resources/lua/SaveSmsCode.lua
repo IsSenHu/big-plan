@@ -22,7 +22,7 @@ if newPhone then
         redis.call("DEL", keyPrefixForTempPhone .. lastPhone)
         redis.call("DEL", keyPrefixForSmsCode .. lastPhone)
     end
-    -- 设置临时手机号 过期时间61秒 意思就是重新获取短信验证码的间隔为60秒
+    -- 设置临时手机号 过期时间60秒 意思就是重新获取短信验证码的间隔为60秒
     redis.call("SETEX", keyPrefixForTempPhone .. newPhone, 60, newPhone)
     -- 保存短信验证码 验证码有效时间5分钟
     redis.call("SETEX", keyPrefixForSmsCode .. newPhone, 300, smsCode)
