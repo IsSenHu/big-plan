@@ -1,5 +1,6 @@
 package com.gapache.sms.server.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.ThrowUtils;
 import com.gapache.sms.server.alice.SMSAlice;
@@ -40,7 +41,7 @@ public class AliceServiceImpl implements AliceService {
                 vo.getSignName(),
                 vo.getTemplateCode(),
                 vo.getSmsUpExtendCode(),
-                vo.getTemplateParam(),
+                JSON.toJSONString(vo.getTemplateParam()),
                 vo.getOutId());
         LocalDateTime now = LocalDateTime.now();
         SendSmsResponse response = request.getResponse();
@@ -239,7 +240,10 @@ public class AliceServiceImpl implements AliceService {
         record.setSignName(vo.getSignName());
         record.setSmsUpExtendCode(vo.getSmsUpExtendCode());
         record.setTemplateCode(vo.getTemplateCode());
-        record.setTemplateParam(vo.getTemplateParam());
+        record.setTemplateParam(JSON.toJSONString(vo.getTemplateParam()));
+        record.setEffectiveTime(vo.getEffectiveTime());
+        record.setTimeUnit(vo.getTimeUnit());
+        record.setIntervals(vo.getIntervals());
         sendSmsRecordRepository.save(record);
     }
 
@@ -260,6 +264,9 @@ public class AliceServiceImpl implements AliceService {
         record.setSmsUpExtendCodeJson(vo.getSmsUpExtendCodeJson());
         record.setTemplateCode(vo.getTemplateCode());
         record.setTemplateParamJson(vo.getTemplateParamJson());
+        record.setEffectiveTime(vo.getEffectiveTime());
+        record.setTimeUnit(vo.getTimeUnit());
+        record.setIntervals(vo.getIntervals());
         sendBatchSmsRecordRepository.save(record);
     }
 }

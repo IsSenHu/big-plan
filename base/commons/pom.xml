@@ -11,6 +11,7 @@
     <artifactId>commons</artifactId>
     <name>commons</name>
     <packaging>jar</packaging>
+    <version>0.0.1</version>
     <description>
         基础和通用的工具等
     </description>
@@ -20,6 +21,16 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
         </dependency>
 
         <dependency>

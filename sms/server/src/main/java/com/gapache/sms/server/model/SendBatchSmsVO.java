@@ -3,6 +3,7 @@ package com.gapache.sms.server.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author HuSen
@@ -55,4 +56,19 @@ public class SendBatchSmsVO implements Serializable {
      * 且模板变量值的个数必须与手机号码、签名的个数相同、内容一一对应，表示向指定手机号码中发对应签名的短信，且短信模板中的变量参数替换为对应的值。
      */
     private String templateParamJson;
+
+    /**
+     * 验证码的时候使用 有效时间
+     */
+    private Long effectiveTime;
+
+    /**
+     * 给每个用户发送短信的间隔时间
+     */
+    private Long intervals;
+
+    /**
+     * 有效时间 时间单位
+     */
+    private TimeUnit timeUnit;
 }

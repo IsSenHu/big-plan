@@ -3,6 +3,8 @@ package com.gapache.sms.server.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author HuSen
@@ -48,10 +50,25 @@ public class SendSmsVO implements Serializable {
      * 短信模板变量对应的实际值，JSON格式。
      * 说明 如果JSON中需要带换行符，请参照标准的JSON协议处理。
      */
-    private String templateParam;
+    private Map<String, String> templateParam;
 
     /**
      * 外部流水扩展字段。
      */
     private String outId;
+
+    /**
+     * 验证码的时候使用 有效时间
+     */
+    private Long effectiveTime;
+
+    /**
+     * 给每个用户发送短信的间隔时间
+     */
+    private Long intervals;
+
+    /**
+     * 有效时间 时间单位
+     */
+    private TimeUnit timeUnit;
 }

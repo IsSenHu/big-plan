@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author HuSen
@@ -100,4 +101,23 @@ public class SendBatchSmsRecordPO {
      */
     @Column(nullable = false)
     private LocalDateTime sendTime;
+
+    /**
+     * 验证码的时候使用 有效时间
+     */
+    @Column
+    private Long effectiveTime;
+
+    /**
+     * 给每个用户发送短信的间隔时间
+     */
+    @Column(nullable = false)
+    private Long intervals;
+
+    /**
+     * 有效时间 时间单位
+     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TimeUnit timeUnit;
 }
