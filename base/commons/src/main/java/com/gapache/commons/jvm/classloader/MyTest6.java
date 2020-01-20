@@ -8,7 +8,6 @@ public class MyTest6 {
     public static void main(String[] args) {
         // 使用类的静态方法 表示对类的主动使用 会进行初始化
         Singleton instance = Singleton.getInstance();
-
         // 从上往下进行初始化
         System.out.println("counter1: " + Singleton.counter1);
         System.out.println("counter2: " + Singleton.counter2);
