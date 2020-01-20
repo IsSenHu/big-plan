@@ -14,7 +14,7 @@ public enum AliceError implements Error {
     TEMPLATE_NOT_EXISTED(20004, "模版不存在"),
     NOT_HAVE_CODE(20005, "验证码类型短信没有验证码参数"),
     CODE_ALWAYS_SINGLE(20006, "验证码总是单独发送"),
-    SEND_FREQUENTLE(20007, "短信发送频繁");
+    SEND_FREQUENTLY(20007, "短信发送频繁");
 
     private Integer code;
     private String error;

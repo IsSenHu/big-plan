@@ -97,7 +97,7 @@ public class AliceServiceImpl implements AliceService {
                     code
             );
 
-            ThrowUtils.throwIfTrue(isCode && result.equals("1"), AliceError.SEND_FREQUENTLE);
+            ThrowUtils.throwIfTrue(isCode && result.equals("1"), AliceError.SEND_FREQUENTLY);
 
             if (result.equals("0")) {
                 willSend.add(phoneNumber);
