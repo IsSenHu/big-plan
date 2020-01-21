@@ -16,7 +16,7 @@ public class MyTest5 {
 interface MyParent5 {
     int a = new Random().nextInt();
     Thread thread = new Thread() {
-        // 每个实例创建时都会执行一次
+        // 构造代码块 每个实例创建时都会执行一次
         {
             System.out.println("MyParent5 invoked");
         }
