@@ -12,5 +12,8 @@ public class MyTest11 {
             classLoader = classLoader.getParent();
             System.out.println(classLoader);
         }
+        // sun.misc.Launcher$AppClassLoader@18b4aac2
+        // sun.misc.Launcher$ExtClassLoader@135fbaa4
+        // null
     }
 }
