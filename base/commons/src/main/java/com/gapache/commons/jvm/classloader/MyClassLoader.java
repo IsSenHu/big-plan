@@ -12,6 +12,10 @@ public class MyClassLoader extends ClassLoader {
     private String classLoaderName;
     private static final String fileExtension = ".class";
 
+    public MyClassLoader(ClassLoader parent) {
+        super(parent);
+    }
+
     public MyClassLoader(ClassLoader parent, String classDir, String classLoaderName) {
         super(parent);
         this.classDir = classDir;
