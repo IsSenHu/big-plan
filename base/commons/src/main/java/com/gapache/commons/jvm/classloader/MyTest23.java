@@ -16,7 +16,7 @@ import java.util.ServiceLoader;
  *     Thread.currentThread().setContextClassLoader(classLoader);
  * }
  *
- * myMethod()里面则调用类Thread.currentThread().getContextClassLoader()，获取当前线程的上下文类加载器做某些事情。
+ * myMethod()里面则调用了Thread.currentThread().getContextClassLoader()，获取当前线程的上下文类加载器做某些事情。
  * 如果一个类由类加载器A加载，那么这个类的依赖类也是由相同的类加载器加载的（如果该依赖类之前没有加载过的话）
  * ContextClassLoader的作用就是为了破坏Java的类加载委托机制。
  *
@@ -36,7 +36,6 @@ public class MyTest23 {
         while (iterator.hasNext()) {
             Driver driver = iterator.next();
             System.out.println("driver: " + driver.getClass() + ", loader: " + driver.getClass().getClassLoader());
-            iterator.remove();
         }
         System.out.println("当前线程上下文类加载器: " + Thread.currentThread().getContextClassLoader());
         System.out.println("ServiceLoader的类加载器: " + ServiceLoader.class.getClassLoader());
