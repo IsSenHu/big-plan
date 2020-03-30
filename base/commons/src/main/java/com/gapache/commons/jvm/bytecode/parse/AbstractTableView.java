@@ -1,13 +1,14 @@
 package com.gapache.commons.jvm.bytecode.parse;
 
-import java.nio.charset.StandardCharsets;
+import com.gapache.commons.jvm.bytecode.parse.attribute.AbstractAttributeInfo;
+
 import java.util.*;
 
 /**
  * @author HuSen
  * create on 2020/3/30 4:50 下午
  */
-public abstract class AbstractTableView {
+public abstract class AbstractTableView extends AbstractAttributeInfo {
 
     private static final String SPACING = "  ";
 
@@ -15,7 +16,7 @@ public abstract class AbstractTableView {
 
     public abstract List<String> th();
 
-    public abstract Map<Integer, List<String>> trs();
+    public abstract List<List<String>> trs();
 
     public int rows(String attributeInfo) {
         return Utils.hexToInt(attributeInfo.substring(0, rowsHexLength() * 2));
@@ -27,8 +28,8 @@ public abstract class AbstractTableView {
         for (int i = 0; i < th().size(); i++) {
             String head = th().get(i);
             int max = head.length();
-            for (Map.Entry<Integer, List<String>> entry : trs().entrySet()) {
-                int length = entry.getValue().get(i).length();
+            for (List<String> tr : trs()) {
+                int length = tr.get(i).length();
                 if (length > max) {
                     max = length;
                 }
@@ -51,9 +52,8 @@ public abstract class AbstractTableView {
         drawRow(maxTdWidthColumn, rowLine, th());
 
         // 绘制表格数据
-        for (Map.Entry<Integer, List<String>> entry : trs().entrySet()) {
-            List<String> tds = entry.getValue();
-            drawRow(maxTdWidthColumn, rowLine, tds);
+        for (List<String> tr : trs()) {
+            drawRow(maxTdWidthColumn, rowLine, tr);
         }
     }
 
@@ -81,6 +81,16 @@ public abstract class AbstractTableView {
     public static void main(String[] args) {
         new AbstractTableView() {
             @Override
+            public void parsing(ByteCode byteCode) {
+
+            }
+
+            @Override
+            public void printing(ByteCode byteCode) {
+
+            }
+
+            @Override
             public int rowsHexLength() {
                 return 0;
             }
@@ -95,19 +105,19 @@ public abstract class AbstractTableView {
             }
 
             @Override
-            public Map<Integer, List<String>> trs() {
-                Map<Integer, List<String>> trs = new HashMap<>();
+            public List<List<String>> trs() {
+                List<List<String>> trs = new ArrayList<>();
                 List<String> tr1 = new ArrayList<>();
                 tr1.add("0");
                 tr1.add("HuSen");
                 tr1.add("1995-05-28");
-                trs.put(0, tr1);
+                trs.add(0, tr1);
 
                 List<String> tr2 = new ArrayList<>();
                 tr2.add("1");
                 tr2.add("SamSinge");
                 tr2.add("1976-05-28");
-                trs.put(1, tr2);
+                trs.add(1, tr2);
                 return trs;
             }
         }.draw();
