@@ -37,12 +37,16 @@ public class MyByteCodeParser {
             for (ByteCodeComposition composition : ByteCodeComposition.values()) {
                 point = composition.parsing(content, this.point, this.byteCode);
             }
+
+            for (ByteCodeComposition composition : ByteCodeComposition.values()) {
+                composition.getPrinter().printing(this.byteCode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        new MyByteCodeParser("/Users/sensen/Documents/codes/mine/big-plan/base/commons/target/classes/com/gapache/commons/jvm/bytecode/parse/MyByteCodeParser.class").parse();
+        new MyByteCodeParser("/Users/macos/Documents/codes/mine/big-plan/base/commons/target/classes/com/gapache/commons/jvm/bytecode/parse/func/impl/ByteCodeCompositionParserImpls.class").parse();
     }
 }

@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public class Utils {
 
     public static String formatIndex(int index) {
-        return (index >= 10 ? "  #" : "   #") + index;
+        return "        ".substring(String.valueOf(index).length()) + "#" + index;
     }
 
     public static String formatValueOrIndex(String type, String value) {

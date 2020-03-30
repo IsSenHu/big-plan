@@ -27,7 +27,7 @@ public class ByteCodeCompositionParserImpls {
 
     public static final ByteCodeCompositionParser MAJOR_VERSION_PARSER =
             (composition, content, point, byteCode) ->
-                    Utils.readData(content, composition.getLength() * 2, point, majorVersionHex -> byteCode.setMinorVersion(Utils.hexToInt(majorVersionHex)));
+                    Utils.readData(content, composition.getLength() * 2, point, majorVersionHex -> byteCode.setMajorVersion(Utils.hexToInt(majorVersionHex)));
 
     public static final ByteCodeCompositionParser CONSTANT_POOL_COUNT_PARSER =
             (composition, content, point, byteCode) ->
@@ -60,7 +60,7 @@ public class ByteCodeCompositionParserImpls {
 
     public static final ByteCodeCompositionParser SUPER_CLASS_PARSER =
             (composition, content, point, byteCode) ->
-                    Utils.readData(content, composition.getLength() * 2, point, superClassHex -> byteCode.setThisClass(Utils.hexToInt(superClassHex)));
+                    Utils.readData(content, composition.getLength() * 2, point, superClassHex -> byteCode.setSuperClass(Utils.hexToInt(superClassHex)));
 
     public static final ByteCodeCompositionParser INTERFACES_COUNT_PARSER =
             (composition, content, point, byteCode) ->

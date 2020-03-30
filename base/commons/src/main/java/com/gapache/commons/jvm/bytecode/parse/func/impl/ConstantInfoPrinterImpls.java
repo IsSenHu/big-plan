@@ -14,6 +14,25 @@ import com.gapache.commons.jvm.bytecode.parse.func.ConstantInfoPrinter;
  */
 public final class ConstantInfoPrinterImpls {
 
+    public static final ConstantInfoPrinter INVOKE_DYNAMIC_CONSTANT_INFO_PRINTER =
+            (pool, index, item) ->
+            {
+                IndexConstantItem indexConstantItem = (IndexConstantItem) item;
+                int bootstrapMethodIndex = indexConstantItem.getIndexes()[0];
+                int nameAndTypeIndex = indexConstantItem.getIndexes()[1];
+
+                IndexConstantItem nameAndType = (IndexConstantItem) pool.get(nameAndTypeIndex);
+                int nameIndex = nameAndType.getIndexes()[0];
+                int descriptorIndex = nameAndType.getIndexes()[1];
+                ValueConstantItem name = (ValueConstantItem) pool.get(nameIndex);
+                ValueConstantItem descriptor = (ValueConstantItem) pool.get(descriptorIndex);
+
+                indexConstantItem.setDescription("// " + "#" + bootstrapMethodIndex + ":" + name.getValue() + ":" + descriptor.getValue());
+                System.out.println(Utils.formatIndex(index) + " = " + indexConstantItem.getTag().getShowValue() +
+                        Utils.formatValueOrIndex(indexConstantItem.getTag().getShowValue(), "#" + bootstrapMethodIndex + ":#" + nameAndTypeIndex) +
+                        Utils.formatDescription("#" + bootstrapMethodIndex + ":#" + nameAndTypeIndex, indexConstantItem.getDescription()));
+            };
+
     public static final ConstantInfoPrinter METHOD_HANDLE_CONSTANT_INFO_PRINTER =
             (pool, index, item) ->
             {
@@ -21,7 +40,20 @@ public final class ConstantInfoPrinterImpls {
                 int referenceKind = constantItem.getReferenceKind();
                 int referenceIndex = constantItem.getReferenceIndex();
                 ReferenceKind kind = ReferenceKind.valueOf(referenceKind);
-                
+
+                IndexConstantItem reference = (IndexConstantItem) pool.get(referenceIndex);
+                int classIndex = reference.getIndexes()[0];
+                int nameAndTypeIndex = reference.getIndexes()[1];
+                IndexConstantItem classInfo = (IndexConstantItem) pool.get(classIndex);
+                ValueConstantItem className = (ValueConstantItem) pool.get(classInfo.getIndexes()[0]);
+
+                IndexConstantItem nameAndType = (IndexConstantItem) pool.get(nameAndTypeIndex);
+                int nameIndex = nameAndType.getIndexes()[0];
+                int descriptorIndex = nameAndType.getIndexes()[1];
+                ValueConstantItem name = (ValueConstantItem) pool.get(nameIndex);
+                ValueConstantItem descriptor = (ValueConstantItem) pool.get(descriptorIndex);
+
+                constantItem.setDescription("// " + kind.getValue() + " " + className.getValue() + "." + name.getValue() + ":" + descriptor.getValue());
                 System.out.println(Utils.formatIndex(index) + " = " + constantItem.getTag().getShowValue() +
                         Utils.formatValueOrIndex(constantItem.getTag().getShowValue(), "#" + referenceKind + ":#" + referenceIndex) +
                         Utils.formatDescription("#" + referenceKind + ":#" + referenceIndex, constantItem.getDescription()));
@@ -60,13 +92,13 @@ public final class ConstantInfoPrinterImpls {
                 IndexConstantItem nameAndType = (IndexConstantItem) pool.get(nameAndTypeIndex);
                 int nameIndex = nameAndType.getIndexes()[0];
                 int descriptorIndex = nameAndType.getIndexes()[1];
-                ValueConstantItem fieldName = (ValueConstantItem) pool.get(nameIndex);
+                ValueConstantItem name = (ValueConstantItem) pool.get(nameIndex);
                 ValueConstantItem descriptor = (ValueConstantItem) pool.get(descriptorIndex);
 
-                indexItem.setDescription("// " + className.getValue() + "." + fieldName.getValue() + ":" + descriptor.getValue());
+                indexItem.setDescription("// " + className.getValue() + "." + name.getValue() + ":" + descriptor.getValue());
                 System.out.println(Utils.formatIndex(index) + " = " + indexItem.getTag().getShowValue() +
-                        Utils.formatValueOrIndex(indexItem.getTag().getShowValue(), "#" + classIndex + "." + "#" + nameAndTypeIndex) +
-                        Utils.formatDescription("#" + classIndex + "." + "#" + nameAndTypeIndex, indexItem.getDescription()));
+                        Utils.formatValueOrIndex(indexItem.getTag().getShowValue(), "#" + classIndex + ".#" + nameAndTypeIndex) +
+                        Utils.formatDescription("#" + classIndex + ".#" + nameAndTypeIndex, indexItem.getDescription()));
             };
 
     public static final ConstantInfoPrinter NAME_AND_TYPE_CONSTANT_INFO_PRINTER =
@@ -79,7 +111,7 @@ public final class ConstantInfoPrinterImpls {
                 ValueConstantItem type = (ValueConstantItem) pool.get(descriptorIndex);
                 indexItem.setDescription("// " + name.getValue() + ":" + type.getValue());
                 System.out.println(Utils.formatIndex(index) + " = " + indexItem.getTag().getShowValue() +
-                        Utils.formatValueOrIndex(indexItem.getTag().getShowValue(), "#" + nameIndex + ":" + "#" + descriptorIndex) +
-                        Utils.formatDescription("#" + nameIndex + ":" + "#" + descriptorIndex, indexItem.getDescription()));
+                        Utils.formatValueOrIndex(indexItem.getTag().getShowValue(), "#" + nameIndex + ":#" + descriptorIndex) +
+                        Utils.formatDescription("#" + nameIndex + ":#" + descriptorIndex, indexItem.getDescription()));
             };
 }

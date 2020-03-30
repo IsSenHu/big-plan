@@ -74,6 +74,7 @@ public final class ConstantInfoParserImpls {
         String referenceIndexHex = valueHex.substring(2);
 
         MethodHandleConstantItem item = new MethodHandleConstantItem();
+        item.setTag(cpTag);
         item.setReferenceKind(Utils.hexToInt(referenceKindHex));
         item.setReferenceIndex(Utils.hexToInt(referenceIndexHex));
         byteCode.getConstantPool().put(byteCode.getConstantPool().size() + 1, item);
