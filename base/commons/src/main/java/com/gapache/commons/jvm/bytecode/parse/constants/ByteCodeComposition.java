@@ -2,6 +2,7 @@ package com.gapache.commons.jvm.bytecode.parse.constants;
 
 import com.gapache.commons.jvm.bytecode.parse.ByteCode;
 import com.gapache.commons.jvm.bytecode.parse.func.ByteCodeCompositionParser;
+import com.gapache.commons.jvm.bytecode.parse.func.ByteCodeCompositionPrinter;
 import lombok.Getter;
 
 import static com.gapache.commons.jvm.bytecode.parse.func.impl.ByteCodeCompositionParserImpls.*;
@@ -49,6 +50,7 @@ public enum ByteCodeComposition {
 
     private int length;
     private ByteCodeCompositionParser parser;
+    private ByteCodeCompositionPrinter printer;
 
     ByteCodeComposition(int length, ByteCodeCompositionParser parser) {
         this.length = length;
