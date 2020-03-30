@@ -1,9 +1,10 @@
 package com.gapache.commons.jvm.bytecode.parse.func.impl;
 
-import com.gapache.commons.jvm.bytecode.parse.AttributeInfo;
+import com.gapache.commons.jvm.bytecode.parse.attribute.AbstractAttributeInfo;
 import com.gapache.commons.jvm.bytecode.parse.FieldInfo;
 import com.gapache.commons.jvm.bytecode.parse.MethodInfo;
 import com.gapache.commons.jvm.bytecode.parse.Utils;
+import com.gapache.commons.jvm.bytecode.parse.attribute.LineNumberTableAttributeInfo;
 import com.gapache.commons.jvm.bytecode.parse.constants.AccessFlag;
 import com.gapache.commons.jvm.bytecode.parse.constants.CpTag;
 import com.gapache.commons.jvm.bytecode.parse.func.ByteCodeCompositionParser;
@@ -100,9 +101,9 @@ public class ByteCodeCompositionParserImpls {
                     String attributesCountHex = content.substring(point, (point = point + 4));
                     fieldInfo.setAttributesCount(Utils.hexToInt(attributesCountHex));
 
-                    List<AttributeInfo> attributes = new ArrayList<>(fieldInfo.getAttributesCount());
+                    List<AbstractAttributeInfo> attributes = new ArrayList<>(fieldInfo.getAttributesCount());
                     for (int j = 0; j < fieldInfo.getAttributesCount(); j++) {
-                        AttributeInfo attributeInfo = new AttributeInfo();
+                        AbstractAttributeInfo attributeInfo = new LineNumberTableAttributeInfo();
                         String attributeNameIndexHex = content.substring(point, (point = point + 4));
                         attributeInfo.setAttributeNameIndex(Utils.hexToInt(attributeNameIndexHex));
 
@@ -144,9 +145,9 @@ public class ByteCodeCompositionParserImpls {
                     String attributesCountHex = content.substring(point, (point = point + 4));
                     methodInfo.setAttributesCount(Utils.hexToInt(attributesCountHex));
 
-                    List<AttributeInfo> attributes = new ArrayList<>(methodInfo.getAttributesCount());
+                    List<AbstractAttributeInfo> attributes = new ArrayList<>(methodInfo.getAttributesCount());
                     for (int j = 0; j < methodInfo.getAttributesCount(); j++) {
-                        AttributeInfo attributeInfo = new AttributeInfo();
+                        AbstractAttributeInfo attributeInfo = new LineNumberTableAttributeInfo();
                         String attributeNameIndexHex = content.substring(point, (point = point + 4));
                         attributeInfo.setAttributeNameIndex(Utils.hexToInt(attributeNameIndexHex));
 
@@ -173,9 +174,9 @@ public class ByteCodeCompositionParserImpls {
     public static final ByteCodeCompositionParser ATTRIBUTES_PARSER =
             (composition, content, point, byteCode) ->
             {
-                List<AttributeInfo> attributes = new ArrayList<>(byteCode.getAttributesCount());
+                List<AbstractAttributeInfo> attributes = new ArrayList<>(byteCode.getAttributesCount());
                 for (int i = 0; i < byteCode.getAttributesCount(); i++) {
-                    AttributeInfo attributeInfo = new AttributeInfo();
+                    AbstractAttributeInfo attributeInfo = new LineNumberTableAttributeInfo();
                     String attributeNameIndexHex = content.substring(point, (point = point + 4));
                     attributeInfo.setAttributeNameIndex(Utils.hexToInt(attributeNameIndexHex));
 

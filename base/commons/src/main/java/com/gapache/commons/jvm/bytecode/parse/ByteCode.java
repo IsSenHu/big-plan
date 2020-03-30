@@ -1,5 +1,6 @@
 package com.gapache.commons.jvm.bytecode.parse;
 
+import com.gapache.commons.jvm.bytecode.parse.attribute.AbstractAttributeInfo;
 import com.gapache.commons.jvm.bytecode.parse.constants.AccessFlag;
 import com.gapache.commons.jvm.bytecode.parse.cp.ConstantItem;
 import lombok.Data;
@@ -30,5 +31,5 @@ public class ByteCode {
     private Integer methodsCount;
     private List<MethodInfo> methods;
     private Integer attributesCount;
-    private List<AttributeInfo> attributes;
+    private List<AbstractAttributeInfo> attributes;
 }

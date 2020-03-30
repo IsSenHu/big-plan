@@ -1,7 +1,7 @@
 package com.gapache.commons.jvm.bytecode.parse.func.impl;
 
-import com.gapache.commons.jvm.bytecode.parse.AttributeInfo;
-import com.gapache.commons.jvm.bytecode.parse.CodeAttribute;
+import com.gapache.commons.jvm.bytecode.parse.attribute.AbstractAttributeInfo;
+import com.gapache.commons.jvm.bytecode.parse.attribute.CodeAttributeInfo;
 import com.gapache.commons.jvm.bytecode.parse.Utils;
 import com.gapache.commons.jvm.bytecode.parse.constants.AccessFlag;
 import com.gapache.commons.jvm.bytecode.parse.constants.Attribute;
@@ -70,7 +70,7 @@ public class AttributePrinterImpls {
     public static final AttributePrinter CODE_PRINTER =
             (byteCode, attributeName, info) ->
             {
-                CodeAttribute codeAttribute = new CodeAttribute();
+                CodeAttributeInfo codeAttribute = new CodeAttributeInfo();
                 codeAttribute.setAttributeNameIndex(info.getAttributeNameIndex());
                 codeAttribute.setAttributeLength(info.getAttributeLength());
                 String hexString = info.getInfo().toString();
@@ -98,11 +98,11 @@ public class AttributePrinterImpls {
                 System.out.println(attributesCount);
 
                 String attributesHex = hexString.substring(point);
-                List<AttributeInfo> attributeInfos = new ArrayList<>(attributesCount);
+                List<AbstractAttributeInfo> attributeInfos = new ArrayList<>(attributesCount);
 
                 int attrPoint = 0;
                 for (int i = 0; i < attributesCount; i++) {
-                    AttributeInfo attributeInfo = new AttributeInfo();
+                    AbstractAttributeInfo attributeInfo = new CodeAttributeInfo();
                     String attributeNameIndexHex = attributesHex.substring(attrPoint, (attrPoint = attrPoint + 4));
                     attributeInfo.setAttributeNameIndex(Utils.hexToInt(attributeNameIndexHex));
 

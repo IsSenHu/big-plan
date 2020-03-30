@@ -1,6 +1,6 @@
 package com.gapache.commons.jvm.bytecode.parse.func.impl;
 
-import com.gapache.commons.jvm.bytecode.parse.AttributeInfo;
+import com.gapache.commons.jvm.bytecode.parse.attribute.AbstractAttributeInfo;
 import com.gapache.commons.jvm.bytecode.parse.constants.Attribute;
 import com.gapache.commons.jvm.bytecode.parse.cp.ConstantItem;
 import com.gapache.commons.jvm.bytecode.parse.cp.IndexConstantItem;
@@ -110,7 +110,7 @@ public class ByteCodeCompositionPrinterImpls {
                             System.out.println("描述符: " + checkValueFromConstantItem(byteCode.getConstantPool().get(methodInfo.getDescriptorIndex())));
                             System.out.println("名称: " + checkValueFromConstantItem(byteCode.getConstantPool().get(methodInfo.getNameIndex())));
                             System.out.println("属性数量: " + methodInfo.getAttributesCount());
-                            for (AttributeInfo info : methodInfo.getAttributes()) {
+                            for (AbstractAttributeInfo info : methodInfo.getAttributes()) {
                                 String attributeName = checkValueFromConstantItem(byteCode.getConstantPool().get(info.getAttributeNameIndex())).toString();
                                 Attribute attribute = Attribute.check(attributeName);
                                 if (attribute != Attribute.UNKNOWN) {

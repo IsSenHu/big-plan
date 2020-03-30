@@ -1,4 +1,4 @@
-package com.gapache.commons.jvm.bytecode.parse;
+package com.gapache.commons.jvm.bytecode.parse.attribute;
 
 import lombok.Data;
 
