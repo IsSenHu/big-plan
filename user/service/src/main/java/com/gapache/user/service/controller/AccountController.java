@@ -9,7 +9,9 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.user.service.model.AccountRegisterRequest;
+import com.gapache.user.service.model.CheckAccountRequest;
 import com.gapache.user.service.model.GenerateSmsCodeRequest;
+import com.gapache.user.service.model.vo.AccountVO;
 import com.gapache.user.service.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -59,5 +61,10 @@ public class AccountController {
     @PutMapping
     public JsonResult<Object> register(@RequestBody AccountRegisterRequest request) {
         return accountService.register(request);
+    }
+
+    @PostMapping("/check")
+    public JsonResult<AccountVO> check(@RequestBody CheckAccountRequest request) {
+        return accountService.check(request);
     }
 }

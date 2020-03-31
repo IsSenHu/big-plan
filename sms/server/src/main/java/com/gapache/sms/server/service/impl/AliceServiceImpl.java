@@ -97,9 +97,9 @@ public class AliceServiceImpl implements AliceService {
                     code
             );
 
-            ThrowUtils.throwIfTrue(isCode && result.equals("1"), AliceError.SEND_FREQUENTLY);
+            ThrowUtils.throwIfTrue(isCode && "1".equals(result), AliceError.SEND_FREQUENTLY);
 
-            if (result.equals("0")) {
+            if ("0".equals(result)) {
                 willSend.add(phoneNumber);
             }
         }
@@ -313,8 +313,8 @@ public class AliceServiceImpl implements AliceService {
     private void saveSendSmsRecord(SendSmsVO vo, SendSmsResponse response, LocalDateTime sendTime) {
         SendSmsRecordPO record = new SendSmsRecordPO();
         if (response != null) {
-            record.setBizId(response.getBizId());
             record.setCode(response.getCode());
+            record.setBizId(response.getBizId());
             record.setMessage(response.getMessage());
             record.setRequestId(response.getRequestId());
         } else {

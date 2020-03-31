@@ -2,6 +2,8 @@ package com.gapache.user.service.service;
 
 import com.gapache.commons.model.JsonResult;
 import com.gapache.user.service.model.AccountRegisterRequest;
+import com.gapache.user.service.model.CheckAccountRequest;
+import com.gapache.user.service.model.vo.AccountVO;
 
 /**
  * @author HuSen
@@ -10,4 +12,6 @@ import com.gapache.user.service.model.AccountRegisterRequest;
 public interface AccountService {
 
     JsonResult<Object> register(AccountRegisterRequest request);
+
+    JsonResult<AccountVO> check(CheckAccountRequest request);
 }

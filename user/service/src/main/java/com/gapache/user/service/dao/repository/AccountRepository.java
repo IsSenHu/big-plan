@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * create on 2020/1/10 17:30
  */
 public interface AccountRepository extends JpaRepository<AccountPO, Long> {
+
+    AccountPO findByPhone(String phone);
 }
