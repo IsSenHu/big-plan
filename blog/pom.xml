@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>sms-service</module>
+        <module>blog-service</module>
     </modules>
     <parent>
         <groupId>com.gapache</groupId>
@@ -12,10 +12,9 @@
         <version>0.0.1</version>
         <relativePath/>
     </parent>
-    <artifactId>sms</artifactId>
-    <version>0.0.1</version>
-    <name>sms</name>
+    <artifactId>blog</artifactId>
     <packaging>pom</packaging>
+    <version>0.0.1</version>
 
     <dependencies>
         <dependency>
@@ -26,6 +25,6 @@
     </dependencies>
 
     <build>
-        <finalName>sms</finalName>
+        <finalName>blog</finalName>
     </build>
 </project>
