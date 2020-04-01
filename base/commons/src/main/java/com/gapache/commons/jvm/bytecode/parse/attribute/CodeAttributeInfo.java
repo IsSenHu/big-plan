@@ -1,7 +1,7 @@
 package com.gapache.commons.jvm.bytecode.parse.attribute;
 
+import com.gapache.commons.jvm.bytecode.parse.AbstractTableView;
 import com.gapache.commons.jvm.bytecode.parse.ByteCode;
-import com.gapache.commons.jvm.bytecode.parse.ExceptionTable;
 
 import java.util.List;
 
@@ -9,17 +9,7 @@ import java.util.List;
  * @author HuSen
  * create on 2020/3/28 00:04
  */
-public class CodeAttributeInfo extends AbstractAttributeInfo {
-    private Integer attributeNameIndex;
-    private Integer attributeLength;
-    private Integer maxStacks;
-    private Integer maxLocals;
-    private Integer codeLength;
-    private Object code;
-    private Integer exceptionTableLength;
-    private List<ExceptionTable> exceptionTables;
-    private Integer attributesCount;
-    private List<AbstractAttributeInfo> attributes;
+public class CodeAttributeInfo extends AbstractTableView {
 
     @Override
     public void parsing(ByteCode byteCode) {
@@ -29,5 +19,20 @@ public class CodeAttributeInfo extends AbstractAttributeInfo {
     @Override
     public void printing(ByteCode byteCode) {
 
+    }
+
+    @Override
+    public int rowsHexLength() {
+        return 0;
+    }
+
+    @Override
+    public List<String> th() {
+        return null;
+    }
+
+    @Override
+    public List<List<String>> trs() {
+        return null;
     }
 }
