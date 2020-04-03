@@ -52,6 +52,8 @@
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <!-- nacos 版本 -->
         <nacos.version>0.2.4</nacos.version>
+        <!-- elasticsearch 版本 -->
+        <elasticsearch.version>7.6.2</elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -151,6 +153,13 @@
                 <artifactId>nacos-config-spring-boot-actuator</artifactId>
                 <version>${nacos.version}</version>
             </dependency>
+            <!-- 指定es版本 -->
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
