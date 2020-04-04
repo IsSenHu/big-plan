@@ -1,15 +1,15 @@
-package com.gapache.blog.server.model;
+package com.gapache.blog.admin.model;
 
 import com.gapache.commons.model.Error;
 
 /**
  * @author HuSen
- * create on 2020/4/3 2:08 下午
+ * create on 2020/4/5 03:43
  */
 public enum BlogError implements Error {
     //
-    NOT_FOUND(70001, "没有找到对应的博客!"),
-    OP_ERROR(70002, "删除失败!");
+    FILE_IS_NULL(60001, "文件不能为空!"),
+    CREATE_ERROR(60002, "创建博客失败!");
 
     private Integer code;
     private String error;

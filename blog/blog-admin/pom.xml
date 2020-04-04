@@ -8,11 +8,11 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>blog-service</artifactId>
-    <name>blog-service</name>
+    <artifactId>blog-admin</artifactId>
+    <name>blog-admin</name>
     <packaging>jar</packaging>
     <description>
-        博客服务
+        博客管理后台
     </description>
 
     <dependencies>
@@ -20,18 +20,6 @@
             <groupId>com.gapache</groupId>
             <artifactId>support-web</artifactId>
             <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>support-redis</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.6.2</version>
         </dependency>
 
         <dependency>
@@ -48,7 +36,7 @@
     </dependencies>
 
     <build>
-        <finalName>blog-service</finalName>
+        <finalName>blog-admin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -5,6 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>blog-service</module>
+        <module>blog-admin</module>
+        <module>blog-sdk</module>
     </modules>
     <parent>
         <groupId>com.gapache</groupId>

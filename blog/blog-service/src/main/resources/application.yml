@@ -8,3 +8,8 @@ spring:
     password: 521428Slyt
 server:
   port: 8090
+dubbo:
+  application:
+    name: blog-server
+  registry:
+    address: zookeeper://118.24.38.46:2181
