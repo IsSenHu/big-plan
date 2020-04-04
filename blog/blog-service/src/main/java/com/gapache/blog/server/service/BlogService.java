@@ -3,7 +3,6 @@ package com.gapache.blog.server.service;
 import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.model.vo.ArchiveVO;
 import com.gapache.commons.model.JsonResult;
-import org.elasticsearch.action.index.IndexResponse;
 
 /**
  * @author HuSen
@@ -32,4 +31,12 @@ public interface BlogService {
      * @return 博客
      */
     JsonResult<Blog> get(String id);
+
+    /**
+     * 删除博客
+     *
+     * @param id ID
+     * @return 操作结果
+     */
+    JsonResult<String> delete(String id);
 }

@@ -32,4 +32,12 @@ public interface BlogRepository {
      * @return 博客
      */
     Blog get(String id);
+
+    /**
+     * 删除博客
+     *
+     * @param id ID
+     * @return 操作结果
+     */
+    boolean delete(String id);
 }

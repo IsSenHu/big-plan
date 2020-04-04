@@ -8,7 +8,8 @@ import com.gapache.commons.model.Error;
  */
 public enum BlogError implements Error {
     //
-    NOT_FOUND(60001, "没有找到对应的博客!");
+    NOT_FOUND(60001, "没有找到对应的博客!"),
+    OP_ERROR(60002, "删除失败!");
 
     private Integer code;
     private String error;

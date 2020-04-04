@@ -2,6 +2,7 @@ package com.gapache.blog.server.dao.document;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
  * create on 2020/4/3 1:04 下午
  */
 @Data
-public class Blog {
+public class Blog implements Serializable {
+    private static final long serialVersionUID = 4014985602890356538L;
     /**
      * id
      */

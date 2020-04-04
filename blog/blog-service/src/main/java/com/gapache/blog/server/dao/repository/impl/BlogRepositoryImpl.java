@@ -4,6 +4,8 @@ import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogRepository;
 import com.gapache.commons.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -14,6 +16,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Repository;
 
@@ -56,7 +59,11 @@ public class BlogRepositoryImpl implements BlogRepository {
                     .source(jsonBuilder);
 
 
-            return client.index(request, RequestOptions.DEFAULT);
+            IndexResponse response = client.index(request, RequestOptions.DEFAULT);
+            if (log.isDebugEnabled()) {
+                log.debug("index:{}", response);
+            }
+            return response;
         } catch (IOException e) {
             log.error("index error.", e);
             return null;
@@ -106,6 +113,21 @@ public class BlogRepositoryImpl implements BlogRepository {
         } catch (IOException e) {
             log.error("get error.", e);
             return null;
+        }
+    }
+
+    @Override
+    public boolean delete(String id) {
+        DeleteRequest request = new DeleteRequest()
+                .index("blog")
+                .id(id);
+
+        try {
+            DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
+            return response.status().equals(RestStatus.OK);
+        } catch (IOException e) {
+            log.error("delete error.", e);
+            return false;
         }
     }
 }

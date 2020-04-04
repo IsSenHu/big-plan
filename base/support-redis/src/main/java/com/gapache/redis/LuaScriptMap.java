@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.lang.NonNull;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,33 +21,27 @@ public class LuaScriptMap {
 
     private static final Map<String, RedisScript<String>> REDIS_SCRIPT_MAP = new HashMap<>(12);
 
-    protected void addLuaScript(String prefixPath, String luaScriptName) {
-        if (StringUtils.isBlank(luaScriptName)) {
-            log.warn("luaScriptName is blank!");
+    protected void addLuaScript(String path) {
+        if (StringUtils.isBlank(path)) {
+            log.warn("path is blank!");
             return;
         }
-        if (REDIS_SCRIPT_MAP.containsKey(luaScriptName)) {
-            log.warn("luaScrip:[{}] is existed!", luaScriptName);
+        if (REDIS_SCRIPT_MAP.containsKey(path)) {
+            log.warn("luaScrip:[{}] is existed!", path);
             return;
         }
-        String fullPath = toFullPath(prefixPath, luaScriptName);
-        ClassPathResource resource = new ClassPathResource(fullPath);
+        ClassPathResource resource = new ClassPathResource(path);
         try {
             byte[] bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
             RedisScript<String> redisScript = new DefaultRedisScript<>(new String(bytes, StandardCharsets.UTF_8), String.class);
-            REDIS_SCRIPT_MAP.putIfAbsent(fullPath, redisScript);
+            REDIS_SCRIPT_MAP.putIfAbsent(path, redisScript);
         } catch (Exception e) {
-            log.error("[{}] luaScript is load fail:", luaScriptName, e);
+            log.error("[{}] luaScript is load fail:", path, e);
         }
     }
 
     @NonNull
-    public RedisScript<String> getLuaScript(String prefixPath, String luaScriptName) {
-        String fullPath = toFullPath(prefixPath, luaScriptName);
-        return REDIS_SCRIPT_MAP.get(fullPath);
-    }
-
-    private String toFullPath(String prefixPath, String luaScriptName) {
-        return StringUtils.isBlank(prefixPath) ? luaScriptName : prefixPath.concat(File.separator).concat(luaScriptName);
+    public RedisScript<String> getLuaScript(String path) {
+        return REDIS_SCRIPT_MAP.get(path);
     }
 }

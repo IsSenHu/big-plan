@@ -7,23 +7,17 @@ import com.gapache.redis.LuaScript;
  * create on 2020/1/15 14:07
  */
 public enum AliceLuaScript implements LuaScript {
-    SEND_SMS("lua", "sendSms.lua");
+    //
+    SEND_SMS("lua/sendSms.lua");
 
-    private String prefixPath;
-    private String luaScriptName;
+    private String path;
 
-    AliceLuaScript(String prefixPath, String luaScriptName) {
-        this.prefixPath = prefixPath;
-        this.luaScriptName = luaScriptName;
+    AliceLuaScript(String path) {
+        this.path = path;
     }
 
     @Override
-    public String prefixPath() {
-        return this.prefixPath;
-    }
-
-    @Override
-    public String luaScriptName() {
-        return this.luaScriptName;
+    public String path() {
+        return this.path;
     }
 }

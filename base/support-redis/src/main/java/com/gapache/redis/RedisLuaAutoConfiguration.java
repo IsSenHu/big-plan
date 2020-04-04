@@ -36,7 +36,7 @@ public class RedisLuaAutoConfiguration {
                     if (anEnum) {
                         LuaScript[] scripts = aClass.getEnumConstants();
                         for (LuaScript script : scripts) {
-                            luaScriptMap.addLuaScript(script.prefixPath(), script.luaScriptName());
+                            luaScriptMap.addLuaScript(script.path());
                         }
                     }
                 }

@@ -5,6 +5,5 @@ package com.gapache.redis;
  * create on 2020/1/15 12:00
  */
 public interface LuaScript {
-    String prefixPath();
-    String luaScriptName();
+    String path();
 }

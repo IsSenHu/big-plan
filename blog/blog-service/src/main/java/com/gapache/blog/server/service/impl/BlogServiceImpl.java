@@ -2,6 +2,8 @@ package com.gapache.blog.server.service.impl;
 
 import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogRepository;
+import com.gapache.blog.server.dao.repository.CategoryRepository;
+import com.gapache.blog.server.dao.repository.TagRepository;
 import com.gapache.blog.server.model.BlogError;
 import com.gapache.blog.server.model.vo.ArchiveItemVO;
 import com.gapache.blog.server.model.vo.ArchiveVO;
@@ -11,7 +13,9 @@ import com.gapache.commons.model.ThrowUtils;
 import com.gapache.commons.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -29,9 +33,13 @@ import java.util.stream.Collectors;
 public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
+    private final TagRepository tagRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BlogServiceImpl(BlogRepository blogRepository) {
+    public BlogServiceImpl(BlogRepository blogRepository, TagRepository tagRepository, CategoryRepository categoryRepository) {
         this.blogRepository = blogRepository;
+        this.tagRepository = tagRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -72,7 +80,12 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public void index(Blog blog) {
-        blogRepository.index(blog);
+        IndexResponse response = blogRepository.index(blog);
+        if (response == null || !response.status().equals(RestStatus.OK)) {
+            return;
+        }
+        tagRepository.increment(blog.getTags());
+        categoryRepository.add(blog.getCategory());
     }
 
     @Override
@@ -80,5 +93,11 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogRepository.get(id);
         ThrowUtils.throwIfTrue(blog == null, BlogError.NOT_FOUND);
         return JsonResult.of(blog);
+    }
+
+    @Override
+    public JsonResult<String> delete(String id) {
+        ThrowUtils.throwIfTrue(!blogRepository.delete(id), BlogError.OP_ERROR);
+        return JsonResult.of(id);
     }
 }

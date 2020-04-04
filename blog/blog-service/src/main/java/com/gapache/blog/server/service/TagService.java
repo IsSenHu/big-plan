@@ -1,6 +1,6 @@
 package com.gapache.blog.server.service;
 
-import com.gapache.blog.server.dao.document.Tag;
+import com.gapache.blog.server.dao.ro.Tag;
 import com.gapache.commons.model.JsonResult;
 
 import java.util.List;

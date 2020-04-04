@@ -1,20 +1,15 @@
 package com.gapache.blog.server.dao.repository.impl;
 
-import com.gapache.blog.server.dao.document.Tag;
+import com.gapache.blog.server.dao.ro.Tag;
 import com.gapache.blog.server.dao.repository.TagRepository;
+import com.gapache.blog.server.lua.TagLuaScript;
+import com.gapache.redis.RedisLuaExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author HuSen
@@ -24,33 +19,42 @@ import java.util.Map;
 @Repository
 public class TagRepositoryImpl implements TagRepository {
 
-    private final RestHighLevelClient client;
+    private final StringRedisTemplate template;
+    private final RedisLuaExecutor luaExecutor;
 
-    public TagRepositoryImpl(RestHighLevelClient client) {
-        this.client = client;
+    public TagRepositoryImpl(StringRedisTemplate template, RedisLuaExecutor luaExecutor) {
+        this.template = template;
+        this.luaExecutor = luaExecutor;
     }
 
     @Override
     public List<Tag> get() {
-        SearchRequest request = new SearchRequest("tag");
+        return Optional
+                .ofNullable(template.opsForZSet().reverseRangeWithScores("Blog:Tags", 0, -1))
+                .map(x -> x
+                        .stream()
+                        .map(tuple ->
+                        {
+                            Tag tag = new Tag();
+                            tag.setName(tuple.getValue());
+                            tag.setCount(null != tuple.getScore() ? tuple.getScore().intValue() : 0);
+                            return tag;
+                        })
+                        .collect(Collectors.toList()))
+                .orElseGet(() ->
+                {
+                    log.error("get error was return null!");
+                    return new ArrayList<>();
+                });
+    }
 
-        try {
-            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
-            SearchHits searchHits = response.getHits();
-            List<Tag> tags = new ArrayList<>(Long.valueOf(searchHits.getTotalHits().value).intValue());
-            for (SearchHit hit : searchHits.getHits()) {
-                Tag tag = new Tag();
-                tags.add(tag);
-                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-                tag.setId(hit.getId());
-                tag.setName(sourceAsMap.get("name").toString());
-                tag.setCount(Integer.parseInt(sourceAsMap.get("count").toString()));
-            }
+    @Override
+    public void increment(String[] tags) {
+        luaExecutor.execute(TagLuaScript.INCREMENT, Collections.singletonList("Blog:Tags"), String.join(",", tags));
+    }
 
-            return tags;
-        } catch (IOException e) {
-            log.error("get error.", e);
-            return new ArrayList<>(0);
-        }
+    @Override
+    public void decrement(String[] tags) {
+        luaExecutor.execute(TagLuaScript.DECREMENT, Collections.singletonList("Blog:Tags"), String.join(",", tags));
     }
 }
