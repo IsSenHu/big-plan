@@ -9,7 +9,8 @@ import com.gapache.redis.LuaScript;
 public enum CategoryLuaScript implements LuaScript {
     //
     INCREMENT("lua/incrementCategory.lua"),
-    DECREMENT("lua/decrementCategory.lua");
+    DECREMENT("lua/decrementCategory.lua"),
+    DECREMENT_DECREMENT("lua/decrementThenIncrementCategory.lua");
 
     private String path;
 

@@ -1,6 +1,6 @@
 package com.gapache.blog.server.dao.repository.impl;
 
-import com.gapache.blog.server.dao.ro.Tag;
+import com.gapache.blog.server.dao.data.Tag;
 import com.gapache.blog.server.dao.repository.TagRepository;
 import com.gapache.blog.server.lua.TagLuaScript;
 import com.gapache.redis.RedisLuaExecutor;
@@ -56,5 +56,10 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public void decrement(String[] tags) {
         luaExecutor.execute(TagLuaScript.DECREMENT, Collections.singletonList("Blog:Tags"), String.join(",", tags));
+    }
+
+    @Override
+    public void decrementThenIncrement(String[] old, String[] current) {
+        luaExecutor.execute(TagLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:Tags"), String.join(",", old), String.join(",", current));
     }
 }

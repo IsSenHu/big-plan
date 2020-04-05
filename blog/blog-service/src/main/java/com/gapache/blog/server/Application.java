@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * 目前操作都不能算是原子性的，因为缺少回滚的功能
+ *
  * @author HuSen
  * create on 2020/4/2 2:22 下午
  */

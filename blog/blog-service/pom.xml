@@ -45,6 +45,12 @@
             <artifactId>blog-sdk</artifactId>
             <version>0.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>support-protobuf</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>

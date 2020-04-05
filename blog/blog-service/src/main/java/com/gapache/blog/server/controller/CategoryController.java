@@ -1,6 +1,6 @@
 package com.gapache.blog.server.controller;
 
-import com.gapache.blog.server.dao.ro.Category;
+import com.gapache.blog.server.dao.data.Category;
 import com.gapache.blog.server.service.CategoryService;
 import com.gapache.commons.model.JsonResult;
 import org.springframework.web.bind.annotation.GetMapping;

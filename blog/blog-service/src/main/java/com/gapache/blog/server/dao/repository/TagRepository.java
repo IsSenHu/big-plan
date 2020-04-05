@@ -1,6 +1,6 @@
 package com.gapache.blog.server.dao.repository;
 
-import com.gapache.blog.server.dao.ro.Tag;
+import com.gapache.blog.server.dao.data.Tag;
 
 import java.util.List;
 
@@ -30,4 +30,12 @@ public interface TagRepository {
      * @param tags 指定标签
      */
     void decrement(String[] tags);
+
+    /**
+     * 先将旧的减1再将新的加1
+     *
+     * @param old     旧的
+     * @param current 新的
+     */
+    void decrementThenIncrement(String[] old, String[] current);
 }

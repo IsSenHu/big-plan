@@ -1,4 +1,4 @@
-package com.gapache.blog.server.dao.document;
+package com.gapache.blog.server.model.vo;
 
 import lombok.Data;
 
@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 
 /**
  * @author HuSen
- * create on 2020/4/3 1:04 下午
+ * create on 2020/4/5 21:17
  */
 @Data
-public class Blog implements Serializable {
-    private static final long serialVersionUID = 4014985602890356538L;
+public class SimpleBlogVO implements Serializable {
+    private static final long serialVersionUID = 6510707188800914385L;
+
     /**
      * id
      */
@@ -20,10 +21,6 @@ public class Blog implements Serializable {
      * 标题
      */
     private String title;
-    /**
-     * 文章内容
-     */
-    private String content;
     /**
      * 介绍
      */
@@ -37,7 +34,7 @@ public class Blog implements Serializable {
      */
     private String category;
     /**
-     * 标签
+     * 阅读数量
      */
-    private String[] tags;
+    private Integer views;
 }

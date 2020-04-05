@@ -1,7 +1,7 @@
 package com.gapache.blog.server.dao.repository.impl;
 
 import com.gapache.blog.server.dao.repository.CategoryRepository;
-import com.gapache.blog.server.dao.ro.Category;
+import com.gapache.blog.server.dao.data.Category;
 import com.gapache.blog.server.lua.CategoryLuaScript;
 import com.gapache.redis.RedisLuaExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,5 +54,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public void delete(String category) {
         luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList("Blog:categories"), category);
+    }
+
+    @Override
+    public void deleteThenAdd(String delete, String add) {
+        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:categories"), delete, add);
     }
 }

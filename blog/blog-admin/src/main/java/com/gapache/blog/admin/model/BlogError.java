@@ -9,7 +9,8 @@ import com.gapache.commons.model.Error;
 public enum BlogError implements Error {
     //
     FILE_IS_NULL(60001, "文件不能为空!"),
-    CREATE_ERROR(60002, "创建博客失败!");
+    CREATE_ERROR(60002, "创建失败!"),
+    UPDATE_ERROR(60003, "更新失败!");
 
     private Integer code;
     private String error;

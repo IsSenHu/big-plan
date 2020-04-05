@@ -9,7 +9,8 @@ import com.gapache.redis.LuaScript;
 public enum TagLuaScript implements LuaScript {
     //
     INCREMENT("lua/incrementTag.lua"),
-    DECREMENT("lua/decrementTag.lua");
+    DECREMENT("lua/decrementTag.lua"),
+    DECREMENT_DECREMENT("lua/decrementThenIncrementTag.lua");
 
     private String path;
 

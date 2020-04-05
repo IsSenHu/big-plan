@@ -1,4 +1,4 @@
-package com.gapache.blog.server.dao.ro;
+package com.gapache.blog.server.dao.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,7 +2,11 @@ package com.gapache.blog.server.service;
 
 import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.model.vo.ArchiveVO;
+import com.gapache.blog.server.model.vo.RankVO;
+import com.gapache.blog.server.model.vo.SimpleBlogVO;
 import com.gapache.commons.model.JsonResult;
+
+import java.util.List;
 
 /**
  * @author HuSen
@@ -18,13 +22,6 @@ public interface BlogService {
     JsonResult<ArchiveVO> archive();
 
     /**
-     *  为Blog文档建立索引
-     *
-     * @param blog Blog文档
-     */
-    void index(Blog blog);
-
-    /**
      * 查询博客
      *
      * @param id ID
@@ -33,10 +30,18 @@ public interface BlogService {
     JsonResult<Blog> get(String id);
 
     /**
-     * 删除博客
+     * 增加阅读数
      *
-     * @param id ID
-     * @return 操作结果
+     * @param id 博客ID
+     * @return justSuccess
      */
-    JsonResult<String> delete(String id);
+    JsonResult<Object> views(String id);
+
+    /**
+     * 获取指定前 {number} 的博客排行
+     *
+     * @param number {number}
+     * @return 指定前 {number} 的博客排行
+     */
+    JsonResult<List<RankVO<SimpleBlogVO>>> top(Integer number);
 }

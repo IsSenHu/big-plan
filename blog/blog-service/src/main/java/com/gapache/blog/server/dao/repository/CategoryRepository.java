@@ -1,6 +1,6 @@
 package com.gapache.blog.server.dao.repository;
 
-import com.gapache.blog.server.dao.ro.Category;
+import com.gapache.blog.server.dao.data.Category;
 
 import java.util.List;
 
@@ -30,4 +30,13 @@ public interface CategoryRepository {
      * @param category 分类
      */
     void delete(String category);
+
+
+    /**
+     * 先删除再新增
+     *
+     * @param delete 删除的
+     * @param add    新增的
+     */
+    void deleteThenAdd(String delete, String add);
 }
