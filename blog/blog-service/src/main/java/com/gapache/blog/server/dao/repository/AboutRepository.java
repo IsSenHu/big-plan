@@ -14,4 +14,11 @@ public interface AboutRepository {
      * @param about 关于我
      */
     void save(About about);
+
+    /**
+     * 获取关于我的信息
+     *
+     * @return 关于我
+     */
+    About get();
 }

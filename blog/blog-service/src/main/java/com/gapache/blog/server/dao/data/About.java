@@ -1,5 +1,6 @@
 package com.gapache.blog.server.dao.data;
 
+import com.dyuproject.protostuff.Tag;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 @Data
 public class About implements Serializable {
     private static final long serialVersionUID = 489793814892217821L;
+    @Tag(1)
     private byte[] content;
+    @Tag(2)
     private LocalDateTime lastOpTime;
 }

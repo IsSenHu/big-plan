@@ -8,6 +8,10 @@ import com.gapache.redis.EnableRedis;
 import com.gapache.redis.EnableRedisLua;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * 目前操作都不能算是原子性的，因为缺少回滚的功能
@@ -20,6 +24,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableRedisLua(value = {TagLuaScript.class, CategoryLuaScript.class})
 @SpringBootApplication
 public class Application {
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", buildConfig());
+        return new CorsFilter(urlBasedCorsConfigurationSource);
+    }
+
+    private CorsConfiguration buildConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        // 允许任何域名
+        corsConfiguration.addAllowedOrigin("*");
+        // 允许任何头
+        corsConfiguration.addAllowedHeader("*");
+        // 允许任何方法
+        corsConfiguration.addAllowedMethod("*");
+        return corsConfiguration;
+    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

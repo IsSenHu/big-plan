@@ -55,6 +55,8 @@
         <nacos.version>0.2.4</nacos.version>
         <!-- elasticsearch 版本 -->
         <elasticsearch.version>7.6.2</elasticsearch.version>
+        <!-- jwt版本 -->
+        <jwt.version>0.9.1</jwt.version>
     </properties>
 
     <dependencies>
@@ -170,7 +172,12 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
-
+            <!-- 指定jwt -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

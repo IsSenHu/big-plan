@@ -1,7 +1,7 @@
 package com.gapache.blog.server.service;
 
-import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.model.vo.ArchiveVO;
+import com.gapache.blog.server.model.vo.BlogVO;
 import com.gapache.blog.server.model.vo.RankVO;
 import com.gapache.blog.server.model.vo.SimpleBlogVO;
 import com.gapache.commons.model.JsonResult;
@@ -27,7 +27,7 @@ public interface BlogService {
      * @param id ID
      * @return 博客
      */
-    JsonResult<Blog> get(String id);
+    JsonResult<BlogVO> get(String id);
 
     /**
      * 增加阅读数

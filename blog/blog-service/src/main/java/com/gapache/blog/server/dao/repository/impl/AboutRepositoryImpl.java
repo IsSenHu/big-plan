@@ -3,13 +3,10 @@ package com.gapache.blog.server.dao.repository.impl;
 import com.gapache.blog.server.dao.repository.AboutRepository;
 import com.gapache.blog.server.dao.data.About;
 import com.gapache.commons.utils.IStringUtils;
-import com.gapache.commons.utils.TimeUtils;
+import com.gapache.protobuf.utils.ProtocstuffUtils;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author HuSen
@@ -25,15 +22,24 @@ public class AboutRepositoryImpl implements AboutRepository {
     }
 
     @Override
+    public About get() {
+        return redisTemplate.execute((RedisCallback<About>) connection ->
+        {
+            final byte[] keyBytes = IStringUtils.getBytes("Blog:About");
+            byte[] bytes = connection.get(keyBytes);
+            return ProtocstuffUtils.byte2Bean(bytes, About.class);
+        });
+    }
+
+    @Override
     public void save(About about) {
         redisTemplate.execute((RedisCallback<Object>) connection ->
         {
             final byte[] keyBytes = IStringUtils.getBytes("Blog:About");
-            Map<byte[], byte[]> hashes = new HashMap<>(2);
-            hashes.put(IStringUtils.getBytes("content"), about.getContent());
-            hashes.put(IStringUtils.getBytes("lastOpTime"), IStringUtils.getBytes(TimeUtils.format(TimeUtils.Format._3, about.getLastOpTime())));
-
-            connection.hMSet(keyBytes, hashes);
+            byte[] bytes = ProtocstuffUtils.bean2Byte(about, About.class);
+            if (bytes != null) {
+                connection.set(keyBytes, bytes);
+            }
             return null;
         });
     }

@@ -2,6 +2,7 @@ package com.gapache.blog.server.controller;
 
 import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.model.vo.ArchiveVO;
+import com.gapache.blog.server.model.vo.BlogVO;
 import com.gapache.blog.server.model.vo.RankVO;
 import com.gapache.blog.server.model.vo.SimpleBlogVO;
 import com.gapache.blog.server.service.BlogService;
@@ -25,7 +26,7 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Blog> get(@PathVariable String id) {
+    public JsonResult<BlogVO> get(@PathVariable String id) {
         return blogService.get(id);
     }
 

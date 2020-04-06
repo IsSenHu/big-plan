@@ -1,21 +1,20 @@
 package com.gapache.blog.server.service.impl;
 
 import com.gapache.blog.server.dao.data.BlogData;
-import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogRepository;
 import com.gapache.blog.server.lua.ViewsLuaScript;
-import com.gapache.blog.server.model.vo.ArchiveItemVO;
-import com.gapache.blog.server.model.vo.ArchiveVO;
-import com.gapache.blog.server.model.vo.RankVO;
-import com.gapache.blog.server.model.vo.SimpleBlogVO;
+import com.gapache.blog.server.model.BlogError;
+import com.gapache.blog.server.model.vo.*;
 import com.gapache.blog.server.service.BlogService;
 import com.gapache.commons.model.JsonResult;
+import com.gapache.commons.model.ThrowUtils;
 import com.gapache.commons.utils.IStringUtils;
 import com.gapache.commons.utils.TimeUtils;
 import com.gapache.protobuf.utils.ProtocstuffUtils;
 import com.gapache.redis.RedisLuaExecutor;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -94,8 +93,30 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public JsonResult<Blog> get(String id) {
-        return null;
+    public JsonResult<BlogVO> get(String id) {
+        List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection ->
+        {
+            byte[] keyBytes = IStringUtils.getBytes("Blog:Blog:".concat(id));
+            connection.get(keyBytes);
+            byte[] bytes = connection.get(keyBytes);
+            if (bytes != null) {
+                connection.zScore(IStringUtils.getBytes("Blog:Views"), IStringUtils.getBytes(id));
+            }
+            return null;
+        });
+        ThrowUtils.throwIfTrue(CollectionUtils.isEmpty(objects), BlogError.NOT_FOUND);
+
+        BlogVO vo = new BlogVO();
+        for (Object object : objects) {
+            if (object instanceof byte[]) {
+                BlogData data = ProtocstuffUtils.byte2Bean((byte[]) object, BlogData.class);
+                BeanUtils.copyProperties(data, vo, "content");
+                vo.setContent(IStringUtils.newString(data.getContent()));
+            } else if (object instanceof Double) {
+                vo.setViews(((Double) object).intValue());
+            }
+        }
+        return JsonResult.of(vo);
     }
 
     @Override
@@ -136,9 +157,12 @@ public class BlogServiceImpl implements BlogService {
     }
 
     private List<SimpleBlogVO> findAllByIds(Collection<String> ids, Map<String, Integer> scoreMap) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Lists.newArrayList();
+        }
         return redisTemplate.execute((RedisCallback<List<SimpleBlogVO>>) connection ->
         {
-            byte[][] keys = ids.stream().map(IStringUtils::getBytes).toArray(byte[][]::new);
+            byte[][] keys = ids.stream().map(id -> IStringUtils.getBytes("Blog:Blog:".concat(id))).toArray(byte[][]::new);
             List<byte[]> bytes = connection.mGet(keys);
             if (bytes == null) {
                 return Lists.newArrayList();
