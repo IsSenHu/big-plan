@@ -62,11 +62,16 @@ public class BlogApiServiceImpl implements BlogApiService {
         redisTemplate.execute((RedisCallback<Object>) connection ->
         {
             final String key = "Blog:Blog:".concat(blog.getId());
+            final String contentKey = "Blog:Content:".concat(blog.getId());
             BlogData data = new BlogData();
-            BeanUtils.copyProperties(blog, data);
+            BeanUtils.copyProperties(blog, data, "content");
             byte[] bytes = ProtocstuffUtils.bean2Byte(data, BlogData.class);
             if (bytes != null) {
+                connection.multi();
                 connection.set(IStringUtils.getBytes(key), bytes);
+                connection.set(IStringUtils.getBytes(contentKey), blog.getContent());
+                connection.zAdd(IStringUtils.getBytes("Blog:ids"), 0, IStringUtils.getBytes(blog.getId()));
+                connection.exec();
             }
             return null;
         });
@@ -85,9 +90,10 @@ public class BlogApiServiceImpl implements BlogApiService {
         log.info("Delete Blog:{}", id);
 
         ITuple<Boolean, BlogData> result = new ITuple<>();
-        redisTemplate.executePipelined((RedisCallback<Blog>) connection ->
+        redisTemplate.execute((RedisCallback<Blog>) connection ->
         {
             final String key = "Blog:Blog:".concat(id);
+            final String contentKey = "Blog:Content:".concat(id);
             byte[] keyBytes = IStringUtils.getBytes(key);
             BlogData right = getBlog(connection, keyBytes);
             if (right == null) {
@@ -97,7 +103,11 @@ public class BlogApiServiceImpl implements BlogApiService {
             result.setRight(right);
 
             Long del = connection.del(keyBytes);
-            result.setLeft(del != null && del > 0);
+            Long delContent = connection.del(IStringUtils.getBytes(contentKey));
+            Long zRem = connection.zRem(IStringUtils.getBytes("Blog:ids"), IStringUtils.getBytes(id));
+            log.info("{}.{}.{}", del, delContent, zRem);
+
+            result.setLeft(del != null && del > 0 && zRem != null && zRem > 0 && delContent !=null && delContent > 0);
             return null;
         });
         if (!result.getLeft()) {
@@ -118,9 +128,10 @@ public class BlogApiServiceImpl implements BlogApiService {
                 blog.getId(), blog.getTitle(), blog.getIntroduction(), blog.getPublishTime(), blog.getCategory(), Arrays.toString(blog.getTags()));
 
         ITuple<Boolean, BlogData> result = new ITuple<>();
-        redisTemplate.executePipelined((RedisCallback<Boolean>) connection ->
+        redisTemplate.execute((RedisCallback<Boolean>) connection ->
         {
             final String key = "Blog:Blog:".concat(blog.getId());
+            final String contentKey = "Blog:Content:".concat(blog.getId());
             byte[] keyBytes = IStringUtils.getBytes(key);
             Boolean exists = connection.exists(keyBytes);
             if (exists == null || !exists) {
@@ -136,7 +147,7 @@ public class BlogApiServiceImpl implements BlogApiService {
             result.setRight(right);
 
             BlogData data = new BlogData();
-            BeanUtils.copyProperties(blog, data);
+            BeanUtils.copyProperties(blog, data, "content");
             byte[] bytes = ProtocstuffUtils.bean2Byte(data, BlogData.class);
             if (bytes == null) {
                 result.setLeft(false);
@@ -144,6 +155,7 @@ public class BlogApiServiceImpl implements BlogApiService {
             }
 
             connection.set(keyBytes, bytes);
+            connection.set(IStringUtils.getBytes(contentKey), blog.getContent());
             result.setLeft(true);
             return null;
         });
@@ -164,7 +176,8 @@ public class BlogApiServiceImpl implements BlogApiService {
     @Override
     public PageResult<SimpleBlogVO> findAll(IPageRequest<BlogQueryVO> iPageRequest) {
         PageResult<SimpleBlogVO> result = PageResult.empty();
-        redisTemplate.executePipelined((RedisCallback<Object>) connection ->
+
+        redisTemplate.execute((RedisCallback<Object>) connection ->
         {
             byte[] keyBytes = IStringUtils.getBytes("Blog:ids");
             Long count = connection.zCount(keyBytes, 0, 1);

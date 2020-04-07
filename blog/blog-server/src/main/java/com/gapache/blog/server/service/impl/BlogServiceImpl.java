@@ -98,7 +98,9 @@ public class BlogServiceImpl implements BlogService {
         List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection ->
         {
             byte[] keyBytes = IStringUtils.getBytes("Blog:Blog:".concat(id));
+            final String contentKey = "Blog:Content:".concat(id);
             connection.get(keyBytes);
+            connection.get(IStringUtils.getBytes(contentKey));
             byte[] bytes = connection.get(keyBytes);
             if (bytes != null) {
                 connection.zScore(IStringUtils.getBytes("Blog:Views"), IStringUtils.getBytes(id));
@@ -108,13 +110,15 @@ public class BlogServiceImpl implements BlogService {
         ThrowUtils.throwIfTrue(CollectionUtils.isEmpty(objects), BlogError.NOT_FOUND);
 
         BlogVO vo = new BlogVO();
-        for (Object object : objects) {
-            if (object instanceof byte[]) {
-                BlogData data = ProtocstuffUtils.byte2Bean((byte[]) object, BlogData.class);
+        for (int i = 0; i < objects.size(); i++) {
+            Object o = objects.get(i);
+            if (i == 0) {
+                BlogData data = ProtocstuffUtils.byte2Bean((byte[]) o, BlogData.class);
                 BeanUtils.copyProperties(data, vo, "content");
-                vo.setContent(IStringUtils.newString(data.getContent()));
-            } else if (object instanceof Double) {
-                vo.setViews(((Double) object).intValue());
+            } else if (i == 2) {
+                vo.setContent(IStringUtils.newString((byte[]) o));
+            } else {
+                vo.setViews(((Double) o).intValue());
             }
         }
         return JsonResult.of(vo);

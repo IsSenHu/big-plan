@@ -19,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -34,7 +35,7 @@ public class BlogController {
     private BlogApiService blogApiService;
 
     @PutMapping
-    public JsonResult<String> create(@RequestBody BlogCreateVO vo, MultipartFile file) {
+    public JsonResult<String> create(BlogCreateVO vo, MultipartFile file) {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
         byte[] content = IOUtils.getContent(file);
@@ -42,8 +43,10 @@ public class BlogController {
 
         BlogVO blogVO = new BlogVO();
         blogVO.setId(UUID.randomUUID().toString());
-        BeanUtils.copyProperties(vo, blogVO, "id", "content");
+        BeanUtils.copyProperties(vo, blogVO, "id", "content", "tags");
+        blogVO.setTags(vo.getTags().split(","));
         blogVO.setContent(content);
+        blogVO.setPublishTime(LocalDateTime.now());
 
         blogApiService.create(blogVO);
 

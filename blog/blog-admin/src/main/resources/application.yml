@@ -4,6 +4,11 @@ dubbo:
     qos-port: 22224
   registry:
     address: zookeeper://118.24.38.46:2181
+    timeout: 5000
+  provider:
+    timeout: 5000
+  consumer:
+    timeout: 5000
 server:
   port: 8091
   servlet:

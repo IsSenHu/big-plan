@@ -33,5 +33,5 @@ public class BlogCreateVO implements Serializable {
     /**
      * 标签
      */
-    private List<String> tags;
+    private String tags;
 }

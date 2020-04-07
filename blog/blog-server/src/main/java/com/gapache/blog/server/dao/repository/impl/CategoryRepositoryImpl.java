@@ -33,7 +33,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public List<Category> get() {
         return Optional
-                .ofNullable(redisTemplate.opsForZSet().range("Blog:categories", 0, -1))
+                .ofNullable(redisTemplate.opsForZSet().range("Utils.hexToInttegories", 0, -1))
                 .map(members ->
                         members
                                 .stream()
@@ -48,16 +48,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void add(String category) {
-        luaExecutor.execute(CategoryLuaScript.INCREMENT, Collections.singletonList("Blog:categories"), category);
+        luaExecutor.execute(CategoryLuaScript.INCREMENT, Collections.singletonList("Blog:Categories"), category);
     }
 
     @Override
     public void delete(String category) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList("Blog:categories"), category);
+        luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList("Blog:Categories"), category);
     }
 
     @Override
     public void deleteThenAdd(String delete, String add) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:categories"), delete, add);
+        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:Categories"), delete, add);
     }
 }

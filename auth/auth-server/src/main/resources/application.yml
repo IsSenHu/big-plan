@@ -33,5 +33,10 @@ dubbo:
   registry:
     address: zookeeper://118.24.38.46:2181
     port: 25222
+    timeout: 5000
   protocol:
     port: 20080
+  consumer:
+    timeout: 5000
+  provider:
+    timeout: 5000
