@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>auth-server</module>
-        <module>auth-core</module>
+        <module>auth-need</module>
         <module>auth-sdk</module>
     </modules>
     <parent>

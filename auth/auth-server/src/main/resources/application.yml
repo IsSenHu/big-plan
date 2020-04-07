@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: SMS_SERVER
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.24.38.46:3306/auth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
+    password: 521428Slyt!
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+  redis:
+    host: 118.24.38.46
+    port: 6379
+    password: 521428Slyt
+    database: 2
+  data:
+    redis:
+      repositories:
+        enabled: false
+server:
+  port: 8092
+  servlet:
+    context-path: /auth
+dubbo:
+  application:
+    name: auth-server
+  registry:
+    address: zookeeper://118.24.38.46:2181
+    port: 25222
+  protocol:
+    port: 20080

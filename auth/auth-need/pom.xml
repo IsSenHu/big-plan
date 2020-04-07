@@ -8,23 +8,17 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>auth-server</artifactId>
-    <name>auth-server</name>
+    <artifactId>auth-need</artifactId>
+    <name>auth-need</name>
     <packaging>jar</packaging>
     <description>
-        认证服务
+        认证核心
     </description>
 
     <dependencies>
         <dependency>
             <groupId>com.gapache</groupId>
-            <artifactId>support-web</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>auth-sdk</artifactId>
+            <artifactId>support-protobuf</artifactId>
             <version>0.0.1</version>
         </dependency>
 
@@ -39,29 +33,18 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>support-redis</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>auth-server</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <finalName>auth-need</finalName>
     </build>
 </project>

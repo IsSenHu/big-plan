@@ -5,8 +5,12 @@ import com.gapache.blog.admin.model.BlogError;
 import com.gapache.blog.admin.model.vo.BlogCreateVO;
 import com.gapache.blog.admin.model.vo.BlogUpdateVO;
 import com.gapache.blog.sdk.dubbo.blog.BlogApiService;
+import com.gapache.blog.sdk.dubbo.blog.BlogQueryVO;
 import com.gapache.blog.sdk.dubbo.blog.BlogVO;
+import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
+import com.gapache.commons.model.IPageRequest;
 import com.gapache.commons.model.JsonResult;
+import com.gapache.commons.model.PageResult;
 import com.gapache.commons.model.ThrowUtils;
 import com.gapache.blog.admin.utils.IOUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -65,5 +69,10 @@ public class BlogController {
         blogApiService.update(blogVO);
 
         return JsonResult.of(vo.getId());
+    }
+
+    @PostMapping("/page")
+    public JsonResult<PageResult<SimpleBlogVO>> page(@RequestBody IPageRequest<BlogQueryVO> iPageRequest) {
+        return JsonResult.of(blogApiService.findAll(iPageRequest));
     }
 }

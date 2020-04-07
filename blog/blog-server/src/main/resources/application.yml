@@ -1,0 +1,21 @@
+spring:
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+  redis:
+    host: 118.24.38.46
+    database: 3
+    password: 521428Slyt
+server:
+  port: 8090
+  servlet:
+    context-path: /blog
+dubbo:
+  application:
+    name: blog-server
+    qos-port: 22223
+  registry:
+    address: zookeeper://118.24.38.46:2181
+    port: 25223
+  protocol:
+    port: 20081

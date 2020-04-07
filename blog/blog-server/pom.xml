@@ -8,11 +8,11 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>blog-admin</artifactId>
-    <name>blog-admin</name>
+    <artifactId>blog-server</artifactId>
+    <name>blog-server</name>
     <packaging>jar</packaging>
     <description>
-        博客管理后台
+        博客服务
     </description>
 
     <dependencies>
@@ -24,13 +24,31 @@
 
         <dependency>
             <groupId>com.gapache</groupId>
+            <artifactId>support-redis</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gapache</groupId>
             <artifactId>blog-sdk</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>support-protobuf</artifactId>
             <version>0.0.1</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>blog-admin</finalName>
+        <finalName>blog-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

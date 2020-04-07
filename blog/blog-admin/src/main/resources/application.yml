@@ -1,8 +1,10 @@
 dubbo:
   application:
     name: blog-admin
-    qos-port: 22223
+    qos-port: 22224
   registry:
     address: zookeeper://118.24.38.46:2181
 server:
   port: 8091
+  servlet:
+    context-path: /blog-admin
