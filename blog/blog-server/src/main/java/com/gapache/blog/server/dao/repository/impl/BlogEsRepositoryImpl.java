@@ -1,7 +1,7 @@
 package com.gapache.blog.server.dao.repository.impl;
 
 import com.gapache.blog.server.dao.document.Blog;
-import com.gapache.blog.server.dao.repository.BlogRepository;
+import com.gapache.blog.server.dao.repository.BlogEsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -27,11 +27,11 @@ import java.io.IOException;
  */
 @Slf4j
 @Repository
-public class BlogRepositoryImpl implements BlogRepository {
+public class BlogEsRepositoryImpl implements BlogEsRepository {
 
     private final RestHighLevelClient client;
 
-    public BlogRepositoryImpl(RestHighLevelClient client) {
+    public BlogEsRepositoryImpl(RestHighLevelClient client) {
         this.client = client;
     }
 

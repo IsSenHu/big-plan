@@ -1,6 +1,6 @@
 package com.gapache.blog.server.dao.repository.impl;
 
-import com.gapache.blog.server.dao.repository.CategoryRepository;
+import com.gapache.blog.server.dao.repository.CategoryRedisRepository;
 import com.gapache.blog.server.dao.data.Category;
 import com.gapache.blog.server.lua.CategoryLuaScript;
 import com.gapache.redis.RedisLuaExecutor;
@@ -14,18 +14,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.gapache.blog.server.dao.data.Structures.CATEGORIES;
+
 /**
  * @author HuSen
  * create on 2020/4/4 22:35
  */
 @Slf4j
 @Repository
-public class CategoryRepositoryImpl implements CategoryRepository {
+public class CategoryRedisRepositoryImpl implements CategoryRedisRepository {
 
     private final StringRedisTemplate redisTemplate;
     private final RedisLuaExecutor luaExecutor;
 
-    public CategoryRepositoryImpl(StringRedisTemplate redisTemplate, RedisLuaExecutor luaExecutor) {
+    public CategoryRedisRepositoryImpl(StringRedisTemplate redisTemplate, RedisLuaExecutor luaExecutor) {
         this.redisTemplate = redisTemplate;
         this.luaExecutor = luaExecutor;
     }
@@ -33,7 +35,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public List<Category> get() {
         return Optional
-                .ofNullable(redisTemplate.opsForZSet().range("Utils.hexToInttegories", 0, -1))
+                .ofNullable(redisTemplate.opsForZSet().range(CATEGORIES.key(), 0, -1))
                 .map(members ->
                         members
                                 .stream()
@@ -48,16 +50,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void add(String category) {
-        luaExecutor.execute(CategoryLuaScript.INCREMENT, Collections.singletonList("Blog:Categories"), category);
+        luaExecutor.execute(CategoryLuaScript.INCREMENT, Collections.singletonList(CATEGORIES.key()), category);
     }
 
     @Override
     public void delete(String category) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList("Blog:Categories"), category);
+        luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList(CATEGORIES.key()), category);
     }
 
     @Override
     public void deleteThenAdd(String delete, String add) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:Categories"), delete, add);
+        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList(CATEGORIES.key()), delete, add);
     }
 }

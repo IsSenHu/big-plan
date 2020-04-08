@@ -1,7 +1,7 @@
 package com.gapache.blog.server.service.impl;
 
 import com.gapache.blog.server.dao.data.About;
-import com.gapache.blog.server.dao.repository.AboutRepository;
+import com.gapache.blog.server.dao.repository.AboutRedisRepository;
 import com.gapache.blog.server.service.AboutService;
 import com.gapache.commons.model.JsonResult;
 import org.springframework.stereotype.Service;
@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AboutServiceImpl implements AboutService {
 
-    private final AboutRepository aboutRepository;
+    private final AboutRedisRepository aboutRedisRepository;
 
-    public AboutServiceImpl(AboutRepository aboutRepository) {
-        this.aboutRepository = aboutRepository;
+    public AboutServiceImpl(AboutRedisRepository aboutRedisRepository) {
+        this.aboutRedisRepository = aboutRedisRepository;
     }
 
     @Override
     public JsonResult<String> get() {
-        About about = aboutRepository.get();
+        About about = aboutRedisRepository.get();
         return null;
     }
 }

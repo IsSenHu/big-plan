@@ -8,7 +8,7 @@ import org.elasticsearch.action.search.SearchResponse;
  * @author HuSen
  * create on 2020/4/3 1:13 下午
  */
-public interface BlogRepository {
+public interface BlogEsRepository {
 
     /**
      * 为Blog文档建立索引

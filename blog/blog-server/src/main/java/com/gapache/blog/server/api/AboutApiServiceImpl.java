@@ -1,7 +1,7 @@
 package com.gapache.blog.server.api;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.gapache.blog.server.dao.repository.AboutRepository;
+import com.gapache.blog.server.dao.repository.AboutRedisRepository;
 import com.gapache.blog.server.dao.data.About;
 import com.gapache.blog.skd.dubbo.about.AboutApiService;
 import com.gapache.blog.skd.dubbo.about.AboutVO;
@@ -16,16 +16,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AboutApiServiceImpl implements AboutApiService {
 
-    private final AboutRepository aboutRepository;
+    private final AboutRedisRepository aboutRedisRepository;
 
-    public AboutApiServiceImpl(AboutRepository aboutRepository) {
-        this.aboutRepository = aboutRepository;
+    public AboutApiServiceImpl(AboutRedisRepository aboutRedisRepository) {
+        this.aboutRedisRepository = aboutRedisRepository;
     }
 
     @Override
     public void save(AboutVO vo) {
         About about = new About();
         BeanUtils.copyProperties(vo, about);
-        aboutRepository.save(about);
+        aboutRedisRepository.save(about);
     }
 }

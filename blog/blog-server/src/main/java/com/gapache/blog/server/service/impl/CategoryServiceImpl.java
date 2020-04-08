@@ -1,6 +1,6 @@
 package com.gapache.blog.server.service.impl;
 
-import com.gapache.blog.server.dao.repository.CategoryRepository;
+import com.gapache.blog.server.dao.repository.CategoryRedisRepository;
 import com.gapache.blog.server.dao.data.Category;
 import com.gapache.blog.server.service.CategoryService;
 import com.gapache.commons.model.JsonResult;
@@ -15,15 +15,15 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryRedisRepository categoryRedisRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryServiceImpl(CategoryRedisRepository categoryRedisRepository) {
+        this.categoryRedisRepository = categoryRedisRepository;
     }
 
     @Override
     public JsonResult<List<Category>> get() {
-        List<Category> categories = categoryRepository.get();
+        List<Category> categories = categoryRedisRepository.get();
         return JsonResult.of(categories);
     }
 }

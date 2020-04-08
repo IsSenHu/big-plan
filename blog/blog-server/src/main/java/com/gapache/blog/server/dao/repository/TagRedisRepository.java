@@ -8,7 +8,7 @@ import java.util.List;
  * @author HuSen
  * create on 2020/4/3 5:11 下午
  */
-public interface TagRepository {
+public interface TagRedisRepository {
 
     /**
      * 获取所有的标签

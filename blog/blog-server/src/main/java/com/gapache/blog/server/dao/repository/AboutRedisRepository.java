@@ -6,7 +6,7 @@ import com.gapache.blog.server.dao.data.About;
  * @author HuSen
  * create on 2020/4/5 20:23
  */
-public interface AboutRepository {
+public interface AboutRedisRepository {
 
     /**
      * 保存关于我

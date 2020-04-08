@@ -1,23 +1,24 @@
 package com.gapache.blog.server.dao.repository.impl;
 
-import com.gapache.blog.server.dao.repository.AboutRepository;
+import com.gapache.blog.server.dao.repository.AboutRedisRepository;
 import com.gapache.blog.server.dao.data.About;
-import com.gapache.commons.utils.IStringUtils;
 import com.gapache.protobuf.utils.ProtocstuffUtils;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
+
+import static com.gapache.blog.server.dao.data.Structures.ABOUT;
 
 /**
  * @author HuSen
  * create on 2020/4/5 20:23
  */
 @Repository
-public class AboutRepositoryImpl implements AboutRepository {
+public class AboutRedisRepositoryImpl implements AboutRedisRepository {
 
     private final StringRedisTemplate redisTemplate;
 
-    public AboutRepositoryImpl(StringRedisTemplate redisTemplate) {
+    public AboutRedisRepositoryImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -25,8 +26,7 @@ public class AboutRepositoryImpl implements AboutRepository {
     public About get() {
         return redisTemplate.execute((RedisCallback<About>) connection ->
         {
-            final byte[] keyBytes = IStringUtils.getBytes("Blog:About");
-            byte[] bytes = connection.get(keyBytes);
+            byte[] bytes = connection.get(ABOUT.keyBytes());
             return ProtocstuffUtils.byte2Bean(bytes, About.class);
         });
     }
@@ -35,10 +35,9 @@ public class AboutRepositoryImpl implements AboutRepository {
     public void save(About about) {
         redisTemplate.execute((RedisCallback<Object>) connection ->
         {
-            final byte[] keyBytes = IStringUtils.getBytes("Blog:About");
             byte[] bytes = ProtocstuffUtils.bean2Byte(about, About.class);
             if (bytes != null) {
-                connection.set(keyBytes, bytes);
+                connection.set(ABOUT.keyBytes(), bytes);
             }
             return null;
         });

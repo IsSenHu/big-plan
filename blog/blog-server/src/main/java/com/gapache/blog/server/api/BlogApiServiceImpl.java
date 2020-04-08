@@ -6,9 +6,9 @@ import com.gapache.blog.sdk.dubbo.blog.BlogQueryVO;
 import com.gapache.blog.sdk.dubbo.blog.BlogVO;
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
 import com.gapache.blog.server.dao.document.Blog;
-import com.gapache.blog.server.dao.repository.BlogRepository;
-import com.gapache.blog.server.dao.repository.CategoryRepository;
-import com.gapache.blog.server.dao.repository.TagRepository;
+import com.gapache.blog.server.dao.repository.BlogEsRepository;
+import com.gapache.blog.server.dao.repository.CategoryRedisRepository;
+import com.gapache.blog.server.dao.repository.TagRedisRepository;
 import com.gapache.blog.server.dao.data.BlogData;
 import com.gapache.blog.server.service.BlogService;
 import com.gapache.commons.model.IPageRequest;
@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.gapache.blog.server.dao.data.Structures.*;
+
 /**
  * @author HuSen
  * create on 2020/4/5 03:33
@@ -40,16 +42,16 @@ import java.util.stream.Collectors;
 public class BlogApiServiceImpl implements BlogApiService {
 
     private final StringRedisTemplate redisTemplate;
-    private final BlogRepository blogRepository;
-    private final TagRepository tagRepository;
-    private final CategoryRepository categoryRepository;
+    private final BlogEsRepository blogEsRepository;
+    private final TagRedisRepository tagRedisRepository;
+    private final CategoryRedisRepository categoryRedisRepository;
     private final BlogService blogService;
 
-    public BlogApiServiceImpl(StringRedisTemplate redisTemplate, BlogRepository blogRepository, TagRepository tagRepository, CategoryRepository categoryRepository, BlogService blogService) {
+    public BlogApiServiceImpl(StringRedisTemplate redisTemplate, BlogEsRepository blogEsRepository, TagRedisRepository tagRedisRepository, CategoryRedisRepository categoryRedisRepository, BlogService blogService) {
         this.redisTemplate = redisTemplate;
-        this.blogRepository = blogRepository;
-        this.tagRepository = tagRepository;
-        this.categoryRepository = categoryRepository;
+        this.blogEsRepository = blogEsRepository;
+        this.tagRedisRepository = tagRedisRepository;
+        this.categoryRedisRepository = categoryRedisRepository;
         this.blogService = blogService;
     }
 
@@ -61,16 +63,14 @@ public class BlogApiServiceImpl implements BlogApiService {
         // 只要这里成功了就行，下面的其他操作失败了都没关系，到时候是可以用这个真正的数据进行核对的（除了views字段）
         redisTemplate.execute((RedisCallback<Object>) connection ->
         {
-            final String key = "Blog:Blog:".concat(blog.getId());
-            final String contentKey = "Blog:Content:".concat(blog.getId());
             BlogData data = new BlogData();
             BeanUtils.copyProperties(blog, data, "content");
             byte[] bytes = ProtocstuffUtils.bean2Byte(data, BlogData.class);
             if (bytes != null) {
                 connection.multi();
-                connection.set(IStringUtils.getBytes(key), bytes);
-                connection.set(IStringUtils.getBytes(contentKey), blog.getContent());
-                connection.zAdd(IStringUtils.getBytes("Blog:ids"), 0, IStringUtils.getBytes(blog.getId()));
+                connection.set(BLOG.keyBytes(blog.getId()), bytes);
+                connection.set(CONTENT.keyBytes(blog.getId()), blog.getContent());
+                connection.zAdd(IDS.keyBytes(), 0, IStringUtils.getBytes(blog.getId()));
                 connection.exec();
             }
             return null;
@@ -80,9 +80,9 @@ public class BlogApiServiceImpl implements BlogApiService {
         BeanUtils.copyProperties(blog, document, "content");
         document.setContent(new String(blog.getContent(), StandardCharsets.UTF_8));
 
-        blogRepository.index(document);
-        tagRepository.increment(blog.getTags());
-        categoryRepository.add(blog.getCategory());
+        blogEsRepository.index(document);
+        tagRedisRepository.increment(blog.getTags());
+        categoryRedisRepository.add(blog.getCategory());
     }
 
     @Override
@@ -92,19 +92,18 @@ public class BlogApiServiceImpl implements BlogApiService {
         ITuple<Boolean, BlogData> result = new ITuple<>();
         redisTemplate.execute((RedisCallback<Blog>) connection ->
         {
-            final String key = "Blog:Blog:".concat(id);
-            final String contentKey = "Blog:Content:".concat(id);
-            byte[] keyBytes = IStringUtils.getBytes(key);
+            byte[] keyBytes = BLOG.keyBytes(id);
             BlogData right = getBlog(connection, keyBytes);
             if (right == null) {
                 result.setLeft(false);
                 return null;
             }
+            // TODO 修改将getBlog提到外面，并对以下的删除操作加上事务处理
             result.setRight(right);
 
             Long del = connection.del(keyBytes);
-            Long delContent = connection.del(IStringUtils.getBytes(contentKey));
-            Long zRem = connection.zRem(IStringUtils.getBytes("Blog:ids"), IStringUtils.getBytes(id));
+            Long delContent = connection.del(CONTENT.keyBytes(id));
+            Long zRem = connection.zRem(IDS.keyBytes(), IStringUtils.getBytes(id));
             log.info("{}.{}.{}", del, delContent, zRem);
 
             result.setLeft(del != null && del > 0 && zRem != null && zRem > 0 && delContent !=null && delContent > 0);
@@ -114,10 +113,10 @@ public class BlogApiServiceImpl implements BlogApiService {
             return false;
         }
         BlogData data = result.getRight();
-        boolean delete = blogRepository.delete(id);
+        boolean delete = blogEsRepository.delete(id);
         if (delete) {
-            tagRepository.decrement(data.getTags());
-            categoryRepository.delete(data.getCategory());
+            tagRedisRepository.decrement(data.getTags());
+            categoryRedisRepository.delete(data.getCategory());
         }
         return delete;
     }
@@ -130,9 +129,7 @@ public class BlogApiServiceImpl implements BlogApiService {
         ITuple<Boolean, BlogData> result = new ITuple<>();
         redisTemplate.execute((RedisCallback<Boolean>) connection ->
         {
-            final String key = "Blog:Blog:".concat(blog.getId());
-            final String contentKey = "Blog:Content:".concat(blog.getId());
-            byte[] keyBytes = IStringUtils.getBytes(key);
+            byte[] keyBytes = BLOG.keyBytes(blog.getId());
             Boolean exists = connection.exists(keyBytes);
             if (exists == null || !exists) {
                 result.setLeft(false);
@@ -154,8 +151,10 @@ public class BlogApiServiceImpl implements BlogApiService {
                 return null;
             }
 
+            // TODO 和delete一样
+
             connection.set(keyBytes, bytes);
-            connection.set(IStringUtils.getBytes(contentKey), blog.getContent());
+            connection.set(CONTENT.keyBytes(blog.getId()), blog.getContent());
             result.setLeft(true);
             return null;
         });
@@ -166,11 +165,12 @@ public class BlogApiServiceImpl implements BlogApiService {
         Blog document = new Blog();
         BeanUtils.copyProperties(blog, document, "content");
         document.setContent(new String(blog.getContent(), StandardCharsets.UTF_8));
-        blogRepository.update(document);
+        blogEsRepository.update(document);
 
         BlogData old = result.getRight();
-        categoryRepository.deleteThenAdd(old.getCategory(), blog.getCategory());
-        tagRepository.decrementThenIncrement(old.getTags(), blog.getTags());
+        // TODO 将这两个操作合并到一起
+        categoryRedisRepository.deleteThenAdd(old.getCategory(), blog.getCategory());
+        tagRedisRepository.decrementThenIncrement(old.getTags(), blog.getTags());
     }
 
     @Override
@@ -179,7 +179,7 @@ public class BlogApiServiceImpl implements BlogApiService {
 
         redisTemplate.execute((RedisCallback<Object>) connection ->
         {
-            byte[] keyBytes = IStringUtils.getBytes("Blog:ids");
+            byte[] keyBytes = IDS.keyBytes();
             Long count = connection.zCount(keyBytes, 0, 1);
             if (count == null) {
                 return null;

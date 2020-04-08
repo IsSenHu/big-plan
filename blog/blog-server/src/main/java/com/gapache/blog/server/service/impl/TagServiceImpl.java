@@ -1,7 +1,7 @@
 package com.gapache.blog.server.service.impl;
 
 import com.gapache.blog.server.dao.data.Tag;
-import com.gapache.blog.server.dao.repository.TagRepository;
+import com.gapache.blog.server.dao.repository.TagRedisRepository;
 import com.gapache.blog.server.service.TagService;
 import com.gapache.commons.model.JsonResult;
 import org.springframework.stereotype.Service;
@@ -15,14 +15,14 @@ import java.util.List;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private final TagRepository tagRepository;
+    private final TagRedisRepository tagRedisRepository;
 
-    public TagServiceImpl(TagRepository tagRepository) {
-        this.tagRepository = tagRepository;
+    public TagServiceImpl(TagRedisRepository tagRedisRepository) {
+        this.tagRedisRepository = tagRedisRepository;
     }
 
     @Override
     public JsonResult<List<Tag>> get() {
-        return JsonResult.of(tagRepository.get());
+        return JsonResult.of(tagRedisRepository.get());
     }
 }

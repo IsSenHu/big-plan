@@ -2,7 +2,7 @@ package com.gapache.blog.server.service.impl;
 
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
 import com.gapache.blog.server.dao.data.BlogData;
-import com.gapache.blog.server.dao.repository.BlogRepository;
+import com.gapache.blog.server.dao.repository.BlogEsRepository;
 import com.gapache.blog.server.lua.ViewsLuaScript;
 import com.gapache.blog.server.model.BlogError;
 import com.gapache.blog.server.model.vo.*;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @Service
 public class BlogServiceImpl implements BlogService {
 
-    private final BlogRepository blogRepository;
+    private final BlogEsRepository blogEsRepository;
     private final RedisLuaExecutor luaExecutor;
     private final StringRedisTemplate redisTemplate;
 
@@ -51,15 +51,15 @@ public class BlogServiceImpl implements BlogService {
         taskExecutor.initialize();
     }
 
-    public BlogServiceImpl(BlogRepository blogRepository, RedisLuaExecutor luaExecutor, StringRedisTemplate redisTemplate) {
-        this.blogRepository = blogRepository;
+    public BlogServiceImpl(BlogEsRepository blogEsRepository, RedisLuaExecutor luaExecutor, StringRedisTemplate redisTemplate) {
+        this.blogEsRepository = blogEsRepository;
         this.luaExecutor = luaExecutor;
         this.redisTemplate = redisTemplate;
     }
 
     @Override
     public JsonResult<ArchiveVO> archive() {
-        SearchResponse archly = blogRepository.archly();
+        SearchResponse archly = blogEsRepository.archly();
         SearchHits searchHits = archly.getHits();
         log.info("共归档到{}个文件", searchHits.getTotalHits().value);
 

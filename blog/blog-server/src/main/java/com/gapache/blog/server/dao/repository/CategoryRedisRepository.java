@@ -8,7 +8,7 @@ import java.util.List;
  * @author HuSen
  * create on 2020/4/4 22:35
  */
-public interface CategoryRepository {
+public interface CategoryRedisRepository {
 
     /**
      * 查询所有的分裂

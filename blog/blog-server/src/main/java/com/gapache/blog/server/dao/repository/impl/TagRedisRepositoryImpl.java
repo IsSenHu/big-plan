@@ -1,7 +1,7 @@
 package com.gapache.blog.server.dao.repository.impl;
 
 import com.gapache.blog.server.dao.data.Tag;
-import com.gapache.blog.server.dao.repository.TagRepository;
+import com.gapache.blog.server.dao.repository.TagRedisRepository;
 import com.gapache.blog.server.lua.TagLuaScript;
 import com.gapache.redis.RedisLuaExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,18 +11,20 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.gapache.blog.server.dao.data.Structures.TAGS;
+
 /**
  * @author HuSen
  * create on 2020/4/3 5:11 下午
  */
 @Slf4j
 @Repository
-public class TagRepositoryImpl implements TagRepository {
+public class TagRedisRepositoryImpl implements TagRedisRepository {
 
     private final StringRedisTemplate template;
     private final RedisLuaExecutor luaExecutor;
 
-    public TagRepositoryImpl(StringRedisTemplate template, RedisLuaExecutor luaExecutor) {
+    public TagRedisRepositoryImpl(StringRedisTemplate template, RedisLuaExecutor luaExecutor) {
         this.template = template;
         this.luaExecutor = luaExecutor;
     }
@@ -30,7 +32,7 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public List<Tag> get() {
         return Optional
-                .ofNullable(template.opsForZSet().reverseRangeWithScores("Blog:Tags", 0, -1))
+                .ofNullable(template.opsForZSet().reverseRangeWithScores(TAGS.key(), 0, -1))
                 .map(x -> x
                         .stream()
                         .map(tuple ->
@@ -50,16 +52,16 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public void increment(String[] tags) {
-        luaExecutor.execute(TagLuaScript.INCREMENT, Collections.singletonList("Blog:Tags"), String.join(",", tags));
+        luaExecutor.execute(TagLuaScript.INCREMENT, Collections.singletonList(TAGS.key()), String.join(",", tags));
     }
 
     @Override
     public void decrement(String[] tags) {
-        luaExecutor.execute(TagLuaScript.DECREMENT, Collections.singletonList("Blog:Tags"), String.join(",", tags));
+        luaExecutor.execute(TagLuaScript.DECREMENT, Collections.singletonList(TAGS.key()), String.join(",", tags));
     }
 
     @Override
     public void decrementThenIncrement(String[] old, String[] current) {
-        luaExecutor.execute(TagLuaScript.DECREMENT_DECREMENT, Collections.singletonList("Blog:Tags"), String.join(",", old), String.join(",", current));
+        luaExecutor.execute(TagLuaScript.DECREMENT_DECREMENT, Collections.singletonList(TAGS.key()), String.join(",", old), String.join(",", current));
     }
 }
