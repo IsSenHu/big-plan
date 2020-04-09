@@ -4,7 +4,6 @@ import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogEsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -15,7 +14,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Repository;
 
@@ -74,17 +72,15 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
     }
 
     @Override
-    public boolean delete(String id) {
+    public void delete(String id) {
         DeleteRequest request = new DeleteRequest()
                 .index("blog")
                 .id(id);
 
         try {
-            DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
-            return response.status().equals(RestStatus.OK);
+            client.delete(request, RequestOptions.DEFAULT);
         } catch (IOException e) {
             log.error("delete error.", e);
-            return false;
         }
     }
 

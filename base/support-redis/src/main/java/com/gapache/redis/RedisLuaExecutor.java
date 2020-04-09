@@ -1,12 +1,11 @@
 package com.gapache.redis;
 
-import com.gapache.commons.utils.IStringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author HuSen
@@ -15,24 +14,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RedisLuaExecutor {
 
-    private final RedisTemplate<byte[], byte[]> template;
+    private final StringRedisTemplate stringRedisTemplate;
     private final LuaScriptMap luaScriptMap;
 
-    public RedisLuaExecutor(RedisTemplate<byte[], byte[]> template, LuaScriptMap luaScriptMap) {
-        this.template = template;
+    public RedisLuaExecutor(StringRedisTemplate stringRedisTemplate, LuaScriptMap luaScriptMap) {
+        this.stringRedisTemplate = stringRedisTemplate;
         this.luaScriptMap = luaScriptMap;
     }
 
-    public byte[] execute(LuaScript script, List<String> keys, Object... args) {
+    public String execute(LuaScript script, List<String> keys, Object... args) {
+        return execute(script, RedisSerializer.string(), keys, args);
+    }
+
+    public String execute(LuaScript script, RedisSerializer<?> argsSerializer, List<String> keys, Object... args) {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("redis 执行 lua 脚本:{}, keys:{}, args:{}", script.path(), keys, Arrays.toString(args));
             }
-            List<byte[]> keyBytesList = keys.stream().map(IStringUtils::getBytes).collect(Collectors.toList());
-            return template.execute(luaScriptMap.getLuaScript(script.path()), keyBytesList, args);
+            return stringRedisTemplate.execute(luaScriptMap.getLuaScript(script.path()), argsSerializer, RedisSerializer.string(), keys, args);
         } catch (Exception e) {
             log.error("Execute Lua Script error.", e);
-            return IStringUtils.getBytes("9999");
+            return "9999";
         }
     }
 }

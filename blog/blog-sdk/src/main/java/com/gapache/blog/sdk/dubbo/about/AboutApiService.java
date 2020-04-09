@@ -1,4 +1,4 @@
-package com.gapache.blog.skd.dubbo.about;
+package com.gapache.blog.sdk.dubbo.about;
 
 /**
  * @author HuSen

@@ -2,8 +2,6 @@ package com.gapache.blog.server.dao.repository.impl;
 
 import com.gapache.blog.server.dao.data.Tag;
 import com.gapache.blog.server.dao.repository.TagRedisRepository;
-import com.gapache.blog.server.lua.TagLuaScript;
-import com.gapache.redis.RedisLuaExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -22,11 +20,9 @@ import static com.gapache.blog.server.dao.data.Structures.TAGS;
 public class TagRedisRepositoryImpl implements TagRedisRepository {
 
     private final StringRedisTemplate template;
-    private final RedisLuaExecutor luaExecutor;
 
-    public TagRedisRepositoryImpl(StringRedisTemplate template, RedisLuaExecutor luaExecutor) {
+    public TagRedisRepositoryImpl(StringRedisTemplate template) {
         this.template = template;
-        this.luaExecutor = luaExecutor;
     }
 
     @Override
@@ -48,20 +44,5 @@ public class TagRedisRepositoryImpl implements TagRedisRepository {
                     log.error("get error was return null!");
                     return new ArrayList<>();
                 });
-    }
-
-    @Override
-    public void increment(String[] tags) {
-        luaExecutor.execute(TagLuaScript.INCREMENT, Collections.singletonList(TAGS.key()), String.join(",", tags));
-    }
-
-    @Override
-    public void decrement(String[] tags) {
-        luaExecutor.execute(TagLuaScript.DECREMENT, Collections.singletonList(TAGS.key()), String.join(",", tags));
-    }
-
-    @Override
-    public void decrementThenIncrement(String[] old, String[] current) {
-        luaExecutor.execute(TagLuaScript.DECREMENT_DECREMENT, Collections.singletonList(TAGS.key()), String.join(",", old), String.join(",", current));
     }
 }

@@ -2,14 +2,11 @@ package com.gapache.blog.server.dao.repository.impl;
 
 import com.gapache.blog.server.dao.repository.CategoryRedisRepository;
 import com.gapache.blog.server.dao.data.Category;
-import com.gapache.blog.server.lua.CategoryLuaScript;
-import com.gapache.redis.RedisLuaExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,11 +22,9 @@ import static com.gapache.blog.server.dao.data.Structures.CATEGORIES;
 public class CategoryRedisRepositoryImpl implements CategoryRedisRepository {
 
     private final StringRedisTemplate redisTemplate;
-    private final RedisLuaExecutor luaExecutor;
 
-    public CategoryRedisRepositoryImpl(StringRedisTemplate redisTemplate, RedisLuaExecutor luaExecutor) {
+    public CategoryRedisRepositoryImpl(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.luaExecutor = luaExecutor;
     }
 
     @Override
@@ -46,20 +41,5 @@ public class CategoryRedisRepositoryImpl implements CategoryRedisRepository {
                     return new ArrayList<>();
                 });
 
-    }
-
-    @Override
-    public void add(String category) {
-        luaExecutor.execute(CategoryLuaScript.INCREMENT, Collections.singletonList(CATEGORIES.key()), category);
-    }
-
-    @Override
-    public void delete(String category) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT, Collections.singletonList(CATEGORIES.key()), category);
-    }
-
-    @Override
-    public void deleteThenAdd(String delete, String add) {
-        luaExecutor.execute(CategoryLuaScript.DECREMENT_DECREMENT, Collections.singletonList(CATEGORIES.key()), delete, add);
     }
 }

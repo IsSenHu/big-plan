@@ -1,5 +1,6 @@
 package com.gapache.blog.server.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
 import com.gapache.blog.server.dao.data.BlogData;
 import com.gapache.blog.server.dao.repository.BlogEsRepository;
@@ -175,9 +176,9 @@ public class BlogServiceImpl implements BlogService {
             }
             return bytes
                     .stream()
-                    .map(pbData ->
+                    .map(jsonData ->
                     {
-                        BlogData data = ProtocstuffUtils.byte2Bean(pbData, BlogData.class);
+                        BlogData data = JSON.parseObject(IStringUtils.newString(jsonData), BlogData.class);
                         SimpleBlogVO vo = new SimpleBlogVO();
                         BeanUtils.copyProperties(data, vo);
                         vo.setViews(viewsMap.getOrDefault(vo.getId(), 0));

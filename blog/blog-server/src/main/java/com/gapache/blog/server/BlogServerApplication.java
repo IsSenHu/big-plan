@@ -2,8 +2,8 @@ package com.gapache.blog.server;
 
 import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
 import com.gapache.blog.server.api.ScanBasePackageClasses;
-import com.gapache.blog.server.lua.CategoryLuaScript;
-import com.gapache.blog.server.lua.TagLuaScript;
+import com.gapache.blog.server.lua.BlogLuaScript;
+import com.gapache.blog.server.lua.ViewsLuaScript;
 import com.gapache.redis.EnableRedis;
 import com.gapache.redis.EnableRedisLua;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @EnableDubbo(scanBasePackageClasses = ScanBasePackageClasses.class)
 @EnableRedis
-@EnableRedisLua(value = {TagLuaScript.class, CategoryLuaScript.class})
+@EnableRedisLua(value = {TagLuaScript.class, CategoryLuaScript.class, ViewsLuaScript.class, BlogLuaScript.class})
 @SpringBootApplication
 public class BlogServerApplication {
 

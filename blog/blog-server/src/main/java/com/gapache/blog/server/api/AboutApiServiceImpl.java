@@ -3,8 +3,8 @@ package com.gapache.blog.server.api;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.gapache.blog.server.dao.repository.AboutRedisRepository;
 import com.gapache.blog.server.dao.data.About;
-import com.gapache.blog.skd.dubbo.about.AboutApiService;
-import com.gapache.blog.skd.dubbo.about.AboutVO;
+import com.gapache.blog.sdk.dubbo.about.AboutApiService;
+import com.gapache.blog.sdk.dubbo.about.AboutVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

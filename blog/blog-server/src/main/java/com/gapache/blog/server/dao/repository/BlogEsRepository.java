@@ -1,7 +1,6 @@
 package com.gapache.blog.server.dao.repository;
 
 import com.gapache.blog.server.dao.document.Blog;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 
 /**
@@ -28,9 +27,8 @@ public interface BlogEsRepository {
      * 删除博客
      *
      * @param id ID
-     * @return 操作结果
      */
-    boolean delete(String id);
+    void delete(String id);
 
     /**
      * 更新博客
