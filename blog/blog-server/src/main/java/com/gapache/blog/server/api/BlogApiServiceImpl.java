@@ -18,6 +18,7 @@ import com.gapache.commons.utils.IStringUtils;
 import com.gapache.protobuf.utils.ProtocstuffUtils;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -59,9 +60,8 @@ public class BlogApiServiceImpl implements BlogApiService {
     public void create(BlogVO blog) {
         log.info("Create Blog:[id:{}, title:{}, introduction:{}, publishTime:{}, category:{}, tags:{}]",
                 blog.getId(), blog.getTitle(), blog.getIntroduction(), blog.getPublishTime(), blog.getCategory(), Arrays.toString(blog.getTags()));
-
         // 只要这里成功了就行，下面的其他操作失败了都没关系，到时候是可以用这个真正的数据进行核对的（除了views字段）
-        redisTemplate.execute((RedisCallback<Object>) connection ->
+        List<Object> executeResults = redisTemplate.executePipelined((RedisCallback<Object>) connection ->
         {
             BlogData data = new BlogData();
             BeanUtils.copyProperties(blog, data, "content");
@@ -76,6 +76,21 @@ public class BlogApiServiceImpl implements BlogApiService {
             return null;
         });
 
+        // 检查结果
+        if (CollectionUtils.isEmpty(executeResults)) {
+            return;
+        }
+        Object o = executeResults.get(0);
+        if (o instanceof List) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) o;
+            for (Object aBoolean : list) {
+                if (!(Boolean) aBoolean) {
+                    return;
+                }
+            }
+        }
+
         Blog document = new Blog();
         BeanUtils.copyProperties(blog, document, "content");
         document.setContent(new String(blog.getContent(), StandardCharsets.UTF_8));
@@ -89,30 +104,32 @@ public class BlogApiServiceImpl implements BlogApiService {
     public boolean delete(String id) {
         log.info("Delete Blog:{}", id);
 
-        ITuple<Boolean, BlogData> result = new ITuple<>();
-        redisTemplate.execute((RedisCallback<Blog>) connection ->
+        List<Object> executeResults = redisTemplate.executePipelined((RedisCallback<Blog>) connection ->
         {
             byte[] keyBytes = BLOG.keyBytes(id);
-            BlogData right = getBlog(connection, keyBytes);
-            if (right == null) {
-                result.setLeft(false);
-                return null;
-            }
-            // TODO 修改将getBlog提到外面，并对以下的删除操作加上事务处理
-            result.setRight(right);
-
-            Long del = connection.del(keyBytes);
-            Long delContent = connection.del(CONTENT.keyBytes(id));
-            Long zRem = connection.zRem(IDS.keyBytes(), IStringUtils.getBytes(id));
-            log.info("{}.{}.{}", del, delContent, zRem);
-
-            result.setLeft(del != null && del > 0 && zRem != null && zRem > 0 && delContent !=null && delContent > 0);
+            connection.watch(keyBytes);
+            connection.multi();
+            connection.get(keyBytes);
+            connection.del(keyBytes);
+            connection.del(CONTENT.keyBytes(id));
+            connection.zRem(IDS.keyBytes(), IStringUtils.getBytes(id));
+            connection.exec();
             return null;
         });
-        if (!result.getLeft()) {
+
+        if (CollectionUtils.isEmpty(executeResults)) {
             return false;
         }
-        BlogData data = result.getRight();
+        Object o = executeResults.get(0);
+        @SuppressWarnings("unchecked")
+        List<Object> results = (List<Object>) o;
+        byte[] blogData = IStringUtils.getBytes(results.get(0).toString());
+        Long del = (Long) results.get(1);
+        Long delContent = (Long) results.get(2);
+        Long zRem = (Long) results.get(3);
+        log.info("{}.{}.{}", del, delContent, zRem);
+        BlogData data = ProtocstuffUtils.byte2Bean(blogData, BlogData.class);
+
         boolean delete = blogEsRepository.delete(id);
         if (delete) {
             tagRedisRepository.decrement(data.getTags());

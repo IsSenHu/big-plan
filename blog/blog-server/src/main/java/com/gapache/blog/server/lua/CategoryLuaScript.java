@@ -10,7 +10,8 @@ public enum CategoryLuaScript implements LuaScript {
     //
     INCREMENT("lua/incrementCategory.lua"),
     DECREMENT("lua/decrementCategory.lua"),
-    DECREMENT_DECREMENT("lua/decrementThenIncrementCategory.lua");
+    DECREMENT_DECREMENT("lua/decrementThenIncrementCategory.lua"),
+    TEST("lua/test.lua");
 
     private String path;
 

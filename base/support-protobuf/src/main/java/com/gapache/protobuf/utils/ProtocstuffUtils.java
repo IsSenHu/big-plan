@@ -5,6 +5,9 @@ import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+/**
+ * @author HuSen
+ */
 public class ProtocstuffUtils {
 
     public static <T> T byte2Bean(byte[] data, Class<T> clazz) {
