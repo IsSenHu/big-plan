@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class RedisAutoConfiguration {
 
     @Bean
     @Primary
-    public StringRedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate(redisConnectionFactory);
         Map<String, Object> enableRedisOnClassBean = applicationContext.getBeansWithAnnotation(EnableRedis.class);
         if (MapUtils.isNotEmpty(enableRedisOnClassBean)) {
@@ -35,6 +36,14 @@ public class RedisAutoConfiguration {
                 redisTemplate.setEnableTransactionSupport(enableRedis.enableTransactionSupport());
             }
         }
+        return redisTemplate;
+    }
+
+    @Bean
+    @Primary
+    public RedisTemplate<byte[], byte[]> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
 }

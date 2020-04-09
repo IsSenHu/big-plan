@@ -22,7 +22,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -42,13 +44,15 @@ import static com.gapache.blog.server.dao.data.Structures.*;
 @Component
 public class BlogApiServiceImpl implements BlogApiService {
 
-    private final StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final RedisTemplate<byte[], byte[]> redisTemplate;
     private final BlogEsRepository blogEsRepository;
     private final TagRedisRepository tagRedisRepository;
     private final CategoryRedisRepository categoryRedisRepository;
     private final BlogService blogService;
 
-    public BlogApiServiceImpl(StringRedisTemplate redisTemplate, BlogEsRepository blogEsRepository, TagRedisRepository tagRedisRepository, CategoryRedisRepository categoryRedisRepository, BlogService blogService) {
+    public BlogApiServiceImpl(StringRedisTemplate stringRedisTemplate, RedisTemplate<byte[], byte[]> redisTemplate, BlogEsRepository blogEsRepository, TagRedisRepository tagRedisRepository, CategoryRedisRepository categoryRedisRepository, BlogService blogService) {
+        this.stringRedisTemplate = stringRedisTemplate;
         this.redisTemplate = redisTemplate;
         this.blogEsRepository = blogEsRepository;
         this.tagRedisRepository = tagRedisRepository;
@@ -74,7 +78,7 @@ public class BlogApiServiceImpl implements BlogApiService {
                 connection.exec();
             }
             return null;
-        });
+        }, RedisSerializer.byteArray());
 
         // 检查结果
         if (CollectionUtils.isEmpty(executeResults)) {
@@ -115,21 +119,25 @@ public class BlogApiServiceImpl implements BlogApiService {
             connection.zRem(IDS.keyBytes(), IStringUtils.getBytes(id));
             connection.exec();
             return null;
-        });
+        }, RedisSerializer.byteArray());
 
         if (CollectionUtils.isEmpty(executeResults)) {
             return false;
         }
+
         Object o = executeResults.get(0);
         @SuppressWarnings("unchecked")
         List<Object> results = (List<Object>) o;
-        byte[] blogData = IStringUtils.getBytes(results.get(0).toString());
+
+        byte[] blogData = (byte[]) results.get(0);
         Long del = (Long) results.get(1);
         Long delContent = (Long) results.get(2);
         Long zRem = (Long) results.get(3);
-        log.info("{}.{}.{}", del, delContent, zRem);
-        BlogData data = ProtocstuffUtils.byte2Bean(blogData, BlogData.class);
+        if (blogData == null || del == null || del == 0 || delContent == null || delContent == 0 || zRem == null || zRem == 0) {
+            return false;
+        }
 
+        BlogData data = ProtocstuffUtils.byte2Bean(blogData, BlogData.class);
         boolean delete = blogEsRepository.delete(id);
         if (delete) {
             tagRedisRepository.decrement(data.getTags());
@@ -144,7 +152,7 @@ public class BlogApiServiceImpl implements BlogApiService {
                 blog.getId(), blog.getTitle(), blog.getIntroduction(), blog.getPublishTime(), blog.getCategory(), Arrays.toString(blog.getTags()));
 
         ITuple<Boolean, BlogData> result = new ITuple<>();
-        redisTemplate.execute((RedisCallback<Boolean>) connection ->
+        stringRedisTemplate.execute((RedisCallback<Boolean>) connection ->
         {
             byte[] keyBytes = BLOG.keyBytes(blog.getId());
             Boolean exists = connection.exists(keyBytes);
@@ -194,7 +202,7 @@ public class BlogApiServiceImpl implements BlogApiService {
     public PageResult<SimpleBlogVO> findAll(IPageRequest<BlogQueryVO> iPageRequest) {
         PageResult<SimpleBlogVO> result = PageResult.empty();
 
-        redisTemplate.execute((RedisCallback<Object>) connection ->
+        stringRedisTemplate.execute((RedisCallback<Object>) connection ->
         {
             byte[] keyBytes = IDS.keyBytes();
             Long count = connection.zCount(keyBytes, 0, 1);

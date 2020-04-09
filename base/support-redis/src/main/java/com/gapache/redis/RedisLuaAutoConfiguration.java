@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class RedisLuaAutoConfiguration {
     }
 
     @Bean
-    public RedisLuaExecutor luaExecutor(StringRedisTemplate redisTemplate) {
+    public RedisLuaExecutor luaExecutor(RedisTemplate<byte[], byte[]> template) {
         LuaScriptMap luaScriptMap = new LuaScriptMap();
         Map<String, Object> enableRedisLuaOnClass = applicationContext.getBeansWithAnnotation(EnableRedisLua.class);
         if (MapUtils.isNotEmpty(enableRedisLuaOnClass)) {
@@ -42,6 +42,6 @@ public class RedisLuaAutoConfiguration {
                 }
             }
         }
-        return new RedisLuaExecutor(redisTemplate, luaScriptMap);
+        return new RedisLuaExecutor(template, luaScriptMap);
     }
 }
