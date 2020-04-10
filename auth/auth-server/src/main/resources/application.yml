@@ -31,7 +31,7 @@ dubbo:
   application:
     name: auth-server
   registry:
-    address: zookeeper://118.24.38.46:2181
+    address: nacos://118.24.38.46:8848
     port: 25222
     timeout: 5000
   protocol:
