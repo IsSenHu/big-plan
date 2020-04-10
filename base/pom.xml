@@ -57,6 +57,8 @@
         <elasticsearch.version>7.6.2</elasticsearch.version>
         <!-- jwt版本 -->
         <jwt.version>0.9.1</jwt.version>
+        <!-- netty 版本 -->
+        <netty.version>4.1.48.Final</netty.version>
     </properties>
 
     <dependencies>
@@ -177,6 +179,12 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <!-- 指定netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
