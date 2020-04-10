@@ -3,6 +3,8 @@ package com.gapache.blog.server.dao.repository;
 import com.gapache.blog.server.dao.document.Blog;
 import org.elasticsearch.action.search.SearchResponse;
 
+import java.util.List;
+
 /**
  * @author HuSen
  * create on 2020/4/3 1:13 下午
@@ -36,4 +38,26 @@ public interface BlogEsRepository {
      * @param blog 博客
      */
     void update(Blog blog);
+
+    /**
+     * 删除所有的博客
+     * @return 是否成功
+     */
+    boolean deleteAll();
+
+    /**
+     * 根据分类查询博客
+     *
+     * @param category 分类
+     * @return 查询结果
+     */
+    List<Blog> findAllByCategory(String category);
+
+    /**
+     * 根据标签查询博客
+     *
+     * @param tag 标签
+     * @return 查询结果
+     */
+    List<Blog> findAllByTag(String tag);
 }

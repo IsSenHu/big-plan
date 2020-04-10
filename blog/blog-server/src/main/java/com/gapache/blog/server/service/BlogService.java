@@ -55,4 +55,20 @@ public interface BlogService {
      * @return 博客集合
      */
     List<SimpleBlogVO> findAllByIds(Collection<String> ids, Map<String, Integer> viewsMap);
+
+    /**
+     * 根据分类查询博客
+     *
+     * @param category 分类
+     * @return 查询结果
+     */
+    JsonResult<List<SimpleBlogVO>> findAllByCategory(String category);
+
+    /**
+     * 根据标签查询博客
+     *
+     * @param tag 标签
+     * @return 查询结果
+     */
+    JsonResult<List<SimpleBlogVO>> findAllByTags(String tag);
 }

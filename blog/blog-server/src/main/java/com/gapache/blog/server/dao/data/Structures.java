@@ -49,4 +49,11 @@ public class Structures {
             return "Blog:Tags";
         }
     };
+
+    public static final BaseDataStructure<String> VIEWS = new BaseDataStructure<String>() {
+        @Override
+        protected String prefix() {
+            return "Blog:Views";
+        }
+    };
 }

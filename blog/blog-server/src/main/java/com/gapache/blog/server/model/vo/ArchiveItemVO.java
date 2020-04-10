@@ -1,5 +1,6 @@
 package com.gapache.blog.server.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,5 +28,6 @@ public class ArchiveItemVO implements Serializable {
     /**
      * 发布时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishTime;
 }

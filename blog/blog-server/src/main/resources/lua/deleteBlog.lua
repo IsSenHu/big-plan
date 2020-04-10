@@ -8,6 +8,8 @@ local idsKey = KEYS[3]
 local categoriesKey = KEYS[4]
 -- 标签ZSET的key
 local tagsKey = KEYS[5]
+-- 阅读数的key
+local viewsKey = KEYS[6]
 -- 博客的ID
 local blogId = ARGV[1]
 local checkExists = redis.call('EXISTS', blogKey)
@@ -34,6 +36,8 @@ if (checkExists == 1) then
             end
         end
     end
+    -- 删除阅读数
+    redis.call('ZREM', viewsKey, blogId)
     -- 删除对应数据
     redis.call('DEL', blogKey)
     redis.call('DEL', contentKey)

@@ -3,6 +3,7 @@ package com.gapache.blog.server.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
 import com.gapache.blog.server.dao.data.BlogData;
+import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogEsRepository;
 import com.gapache.blog.server.lua.ViewsLuaScript;
 import com.gapache.blog.server.model.BlogError;
@@ -12,7 +13,6 @@ import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.ThrowUtils;
 import com.gapache.commons.utils.IStringUtils;
 import com.gapache.commons.utils.TimeUtils;
-import com.gapache.protobuf.utils.ProtocstuffUtils;
 import com.gapache.redis.RedisLuaExecutor;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
+
+import static com.gapache.blog.server.dao.data.Structures.*;
 
 /**
  * @author HuSen
@@ -49,6 +52,11 @@ public class BlogServiceImpl implements BlogService {
 
     @PostConstruct
     public void init() {
+        taskExecutor.setCorePoolSize(1);
+        taskExecutor.setMaxPoolSize(1);
+        taskExecutor.setQueueCapacity(1000);
+        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskExecutor.setThreadFactory(r -> new Thread(r, "views thread"));
         taskExecutor.initialize();
     }
 
@@ -96,47 +104,38 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public JsonResult<BlogVO> get(String id) {
-        List<Object> objects = redisTemplate.executePipelined((RedisCallback<Object>) connection ->
+        BlogVO vo = new BlogVO();
+        redisTemplate.execute((RedisCallback<Object>) connection ->
         {
-            byte[] keyBytes = IStringUtils.getBytes("Blog:Blog:".concat(id));
-            final String contentKey = "Blog:Content:".concat(id);
-            connection.get(keyBytes);
-            connection.get(IStringUtils.getBytes(contentKey));
-            byte[] bytes = connection.get(keyBytes);
-            if (bytes != null) {
-                connection.zScore(IStringUtils.getBytes("Blog:Views"), IStringUtils.getBytes(id));
+            byte[] blogData = connection.get(BLOG.keyBytes(id));
+            if (blogData != null) {
+                BlogData data = JSON.parseObject(IStringUtils.newString(blogData), BlogData.class);
+                BeanUtils.copyProperties(data, vo, "content");
             }
+            byte[] contentData = connection.get(CONTENT.keyBytes(id));
+            if (contentData != null) {
+                vo.setContent(IStringUtils.newString(contentData));
+            }
+            Double score = connection.zScore(VIEWS.keyBytes(), IStringUtils.getBytes(id));
+            vo.setViews(score != null ? score.intValue() : 0);
             return null;
         });
-        ThrowUtils.throwIfTrue(CollectionUtils.isEmpty(objects), BlogError.NOT_FOUND);
-
-        BlogVO vo = new BlogVO();
-        for (int i = 0; i < objects.size(); i++) {
-            Object o = objects.get(i);
-            if (i == 0) {
-                BlogData data = ProtocstuffUtils.byte2Bean((byte[]) o, BlogData.class);
-                BeanUtils.copyProperties(data, vo, "content");
-            } else if (i == 2) {
-                vo.setContent(IStringUtils.newString((byte[]) o));
-            } else {
-                vo.setViews(((Double) o).intValue());
-            }
-        }
+        ThrowUtils.throwIfTrue(vo.getId() == null, BlogError.NOT_FOUND);
         return JsonResult.of(vo);
     }
 
     @Override
     public JsonResult<Object> views(String id) {
         taskExecutor.execute(() ->
-                luaExecutor.execute(ViewsLuaScript.INCREMENT, Collections.singletonList("Blog:Views"), id));
+                luaExecutor.execute(ViewsLuaScript.INCREMENT, Collections.singletonList(VIEWS.key()), id));
         return JsonResult.success();
     }
 
     @Override
     public JsonResult<List<RankVO<SimpleBlogVO>>> top(Integer number) {
         ZSetOperations<String, String> zSet = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<String>> withScores = zSet.reverseRangeWithScores("Blog:Views", 0, number - 1);
-        if (withScores == null) {
+        Set<ZSetOperations.TypedTuple<String>> withScores = zSet.reverseRangeWithScores(VIEWS.key(), 0, number - 1);
+        if (CollectionUtils.isEmpty(withScores)) {
             return JsonResult.of(Lists.newArrayList());
         }
         Set<String> ids = new HashSet<>(withScores.size());
@@ -169,7 +168,7 @@ public class BlogServiceImpl implements BlogService {
         }
         return redisTemplate.execute((RedisCallback<List<SimpleBlogVO>>) connection ->
         {
-            byte[][] keys = ids.stream().map(id -> IStringUtils.getBytes("Blog:Blog:".concat(id))).toArray(byte[][]::new);
+            byte[][] keys = ids.stream().map(BLOG::keyBytes).toArray(byte[][]::new);
             List<byte[]> bytes = connection.mGet(keys);
             if (bytes == null) {
                 return Lists.newArrayList();
@@ -186,5 +185,26 @@ public class BlogServiceImpl implements BlogService {
                     })
                     .collect(Collectors.toList());
         });
+    }
+
+    @Override
+    public JsonResult<List<SimpleBlogVO>> findAllByCategory(String category) {
+        return JsonResult.of(trans2VoList(blogEsRepository.findAllByCategory(category)));
+    }
+
+    @Override
+    public JsonResult<List<SimpleBlogVO>> findAllByTags(String tag) {
+        return JsonResult.of(trans2VoList(blogEsRepository.findAllByTag(tag)));
+    }
+
+    private List<SimpleBlogVO> trans2VoList(List<Blog> blogList) {
+        return blogList.stream().map(blog -> {
+            SimpleBlogVO vo = new SimpleBlogVO();
+            vo.setIntroduction(blog.getId());
+            vo.setTitle(blog.getTitle());
+            vo.setIntroduction(blog.getIntroduction());
+            vo.setPublishTime(blog.getPublishTime());
+            return vo;
+        }).collect(Collectors.toList());
     }
 }

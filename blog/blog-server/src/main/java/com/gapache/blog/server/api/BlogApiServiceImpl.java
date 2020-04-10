@@ -17,17 +17,23 @@ import com.gapache.commons.utils.IStringUtils;
 import com.gapache.redis.RedisLuaExecutor;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import static com.gapache.blog.server.dao.data.Structures.*;
@@ -40,6 +46,18 @@ import static com.gapache.blog.server.dao.data.Structures.*;
 @Service
 @Component
 public class BlogApiServiceImpl implements BlogApiService {
+
+    private final ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+
+    @PostConstruct
+    public void init() {
+        taskExecutor.setCorePoolSize(1);
+        taskExecutor.setMaxPoolSize(1);
+        taskExecutor.setQueueCapacity(10);
+        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskExecutor.setThreadFactory(r -> new Thread(r, "sync thread"));
+        taskExecutor.initialize();
+    }
 
     private final StringRedisTemplate stringRedisTemplate;
     private final BlogEsRepository blogEsRepository;
@@ -63,7 +81,7 @@ public class BlogApiServiceImpl implements BlogApiService {
         BeanUtils.copyProperties(blog, data, "content");
         String jsonString = JSON.toJSONString(data);
         System.out.println(jsonString);
-        String result = luaExecutor.execute(BlogLuaScript.CREATE, RedisSerializer.byteArray(), Lists.newArrayList(BLOG.key(blog.getId()), CONTENT.key(blog.getId()), IDS.key(), CATEGORIES.key(), TAGS.key()),
+        String result = luaExecutor.execute(BlogLuaScript.CREATE, RedisSerializer.byteArray(), Lists.newArrayList(BLOG.key(blog.getId()), CONTENT.key(blog.getId()), IDS.key(), CATEGORIES.key(), TAGS.key(), VIEWS.key()),
                 IStringUtils.getBytes(jsonString), blog.getContent(), IStringUtils.getBytes(blog.getId()));
         log.info("保存博客到Redis结果:{}", result);
         if (!BlogLuaScript.OK.equals(result)) {
@@ -78,10 +96,19 @@ public class BlogApiServiceImpl implements BlogApiService {
     }
 
     @Override
+    public SimpleBlogVO get(String id) {
+        String json = stringRedisTemplate.opsForValue().get(BLOG.key(id));
+        if (StringUtils.isNotBlank(json)) {
+            return JSON.parseObject(json, SimpleBlogVO.class);
+        }
+        return null;
+    }
+
+    @Override
     public boolean delete(String id) {
         log.info("Delete Blog:{}", id);
 
-        String result = luaExecutor.execute(BlogLuaScript.DELETE, Lists.newArrayList(BLOG.key(id), CONTENT.key(id), IDS.key(), CATEGORIES.key(), TAGS.key()), id);
+        String result = luaExecutor.execute(BlogLuaScript.DELETE, Lists.newArrayList(BLOG.key(id), CONTENT.key(id), IDS.key(), CATEGORIES.key(), TAGS.key(), VIEWS.key()), id);
         if (!BlogLuaScript.OK.equals(result)) {
             return false;
         }
@@ -136,5 +163,49 @@ public class BlogApiServiceImpl implements BlogApiService {
             return null;
         });
         return result;
+    }
+
+    @Override
+    public void sync(String id) {
+        Set<String> blogIds;
+        if (StringUtils.isNotBlank(id)) {
+            blogIds = Sets.newHashSet(id);
+        } else {
+            blogIds = stringRedisTemplate.opsForZSet().range(IDS.key(), 0, -1);
+        }
+        taskExecutor.execute(() ->
+        {
+            if (StringUtils.isNotBlank(id)) {
+                blogEsRepository.delete(id);
+            } else {
+                if (!blogEsRepository.deleteAll()) {
+                    return;
+                }
+            }
+            if (CollectionUtils.isEmpty(blogIds)) {
+                return;
+            }
+            stringRedisTemplate.execute((RedisCallback<Object>) connection -> {
+                for (String blogId : blogIds) {
+                    byte[] blogData = connection.get(BLOG.keyBytes(blogId));
+                    if (blogData == null) {
+                        continue;
+                    }
+                    byte[] contentData = connection.get(CONTENT.keyBytes(blogId));
+                    if (contentData == null) {
+                        continue;
+                    }
+                    String json = IStringUtils.newString(blogData);
+                    BlogData blog = JSON.parseObject(json, BlogData.class);
+                    log.info("创建博客:{}", json);
+                    String content = IStringUtils.newString(contentData);
+                    Blog document = new Blog();
+                    BeanUtils.copyProperties(blog, document, "content");
+                    document.setContent(content);
+                    blogEsRepository.index(document);
+                }
+                return null;
+            });
+        });
     }
 }

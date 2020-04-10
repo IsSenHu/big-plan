@@ -1,7 +1,7 @@
 spring:
   elasticsearch:
     rest:
-      uris: http://localhost:9200,http://localhost:9201
+      uris: http://localhost:9200
   redis:
     host: 118.24.38.46
     database: 3

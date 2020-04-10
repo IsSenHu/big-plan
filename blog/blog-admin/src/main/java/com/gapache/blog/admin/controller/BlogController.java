@@ -53,6 +53,13 @@ public class BlogController {
         return JsonResult.of(blogVO.getId());
     }
 
+    @GetMapping("/get/{id}")
+    public JsonResult<SimpleBlogVO> get(@PathVariable String id) {
+        SimpleBlogVO vo = blogApiService.get(id);
+        ThrowUtils.throwIfTrue(vo == null, BlogError.NOT_FOUNT);
+        return JsonResult.of(vo);
+    }
+
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> delete(@PathVariable String id) {
         return JsonResult.of(blogApiService.delete(id));
@@ -77,5 +84,11 @@ public class BlogController {
     @PostMapping("/page")
     public JsonResult<PageResult<SimpleBlogVO>> page(@RequestBody IPageRequest<BlogQueryVO> iPageRequest) {
         return JsonResult.of(blogApiService.findAll(iPageRequest));
+    }
+
+    @GetMapping("/sync")
+    public JsonResult<Object> sync(@RequestParam(required = false) String id) {
+        blogApiService.sync(id);
+        return JsonResult.success();
     }
 }

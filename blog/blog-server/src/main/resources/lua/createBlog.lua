@@ -8,6 +8,8 @@ local idsKey = KEYS[3]
 local categoriesKey = KEYS[4]
 -- 标签ZSET的key
 local tagsKey = KEYS[5]
+-- 阅读数的key
+local viewsKey = KEYS[6]
 -- 博客的数据
 local blogData = ARGV[1]
 -- 博客的内容
@@ -38,6 +40,8 @@ for _, v in pairs(tags) do
         redis.call("ZADD", tagsKey, 1, v)
     end
 end
+-- 初始化阅读数
+redis.call('ZADD', viewsKey, 0, blogId)
 -- 保存博客的数据
 redis.call('SET', blogKey, blogData)
 -- 保存博客的内容

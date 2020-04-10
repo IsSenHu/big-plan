@@ -43,4 +43,14 @@ public class BlogController {
     public JsonResult<List<RankVO<SimpleBlogVO>>> top(@PathVariable Integer number) {
         return blogService.top(number);
     }
+
+    @GetMapping("/findAllByCategory/{category}")
+    public JsonResult<List<SimpleBlogVO>> findAllByCategory(@PathVariable String category) {
+        return blogService.findAllByCategory(category);
+    }
+
+    @GetMapping("/findAllByTag/{tag}")
+    public JsonResult<List<SimpleBlogVO>> findAllByTags(@PathVariable String tag) {
+        return blogService.findAllByTags(tag);
+    }
 }

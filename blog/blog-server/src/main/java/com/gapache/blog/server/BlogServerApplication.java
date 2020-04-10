@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @EnableDubbo(scanBasePackageClasses = ScanBasePackageClasses.class)
 @EnableRedis
-@EnableRedisLua(value = {TagLuaScript.class, CategoryLuaScript.class, ViewsLuaScript.class, BlogLuaScript.class})
+@EnableRedisLua(value = {ViewsLuaScript.class, BlogLuaScript.class})
 @SpringBootApplication
 public class BlogServerApplication {
 

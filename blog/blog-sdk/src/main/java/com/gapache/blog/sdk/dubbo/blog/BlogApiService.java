@@ -1,7 +1,6 @@
 package com.gapache.blog.sdk.dubbo.blog;
 
 import com.gapache.commons.model.IPageRequest;
-import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.PageResult;
 
 /**
@@ -16,6 +15,14 @@ public interface BlogApiService {
      * @param blog 博客
      */
     void create(BlogVO blog);
+
+    /**
+     * 根据ID查询博客
+     *
+     * @param id ID
+     * @return 博客
+     */
+    SimpleBlogVO get(String id);
 
     /**
      * 删除博客
@@ -39,4 +46,12 @@ public interface BlogApiService {
      * @return 分页结果
      */
     PageResult<SimpleBlogVO> findAll(IPageRequest<BlogQueryVO> iPageRequest);
+
+    /**
+     * 同步指定ID的博客到ES
+     * 如果没有指定ID，则同步所有的博客
+     *
+     * @param id ID
+     */
+    void sync(String id);
 }
