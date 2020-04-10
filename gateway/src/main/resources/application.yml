@@ -21,7 +21,7 @@ dubbo:
     name: gateway
     qos-port: 22225
   registry:
-    address: zookeeper://118.24.38.46:2181
+    address: nacos://118.24.38.46:8848
     timeout: 5000
   provider:
     timeout: 5000

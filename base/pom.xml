@@ -59,6 +59,10 @@
         <jwt.version>0.9.1</jwt.version>
         <!-- netty 版本 -->
         <netty.version>4.1.48.Final</netty.version>
+        <!-- dubbo spring boot 版本 -->
+        <dubbo.spring.boot.version>0.2.0</dubbo.spring.boot.version>
+        <!-- dubbo nacos版本 -->
+        <dubbo.nacos.version>2.6.7</dubbo.nacos.version>
     </properties>
 
     <dependencies>
@@ -185,6 +189,17 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+            <!-- 指定Dubbo -->
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${dubbo.nacos.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

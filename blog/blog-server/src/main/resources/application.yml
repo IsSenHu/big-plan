@@ -15,7 +15,7 @@ dubbo:
     name: blog-server
     qos-port: 22223
   registry:
-    address: zookeeper://118.24.38.46:2181
+    address: nacos://118.24.38.46:8848
     port: 25223
     timeout: 5000
   protocol:
