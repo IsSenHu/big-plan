@@ -1,6 +1,7 @@
 package com.gapache.blog.server.service;
 
 import com.gapache.blog.server.model.vo.ArchiveVO;
+import com.gapache.blog.server.model.vo.BlogSummaryVO;
 import com.gapache.blog.server.model.vo.BlogVO;
 import com.gapache.blog.server.model.vo.RankVO;
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
@@ -71,4 +72,12 @@ public interface BlogService {
      * @return 查询结果
      */
     JsonResult<List<SimpleBlogVO>> findAllByTags(String tag);
+
+    /**
+     * 搜索博客
+     *
+     * @param queryString 查询字符串
+     * @return 博客摘要
+     */
+    JsonResult<List<BlogSummaryVO>> search(String queryString);
 }

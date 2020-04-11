@@ -1,6 +1,7 @@
 package com.gapache.blog.server.controller;
 
 import com.gapache.blog.server.model.vo.ArchiveVO;
+import com.gapache.blog.server.model.vo.BlogSummaryVO;
 import com.gapache.blog.server.model.vo.BlogVO;
 import com.gapache.blog.server.model.vo.RankVO;
 import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
@@ -52,5 +53,10 @@ public class BlogController {
     @GetMapping("/findAllByTag/{tag}")
     public JsonResult<List<SimpleBlogVO>> findAllByTags(@PathVariable String tag) {
         return blogService.findAllByTags(tag);
+    }
+
+    @GetMapping("/search")
+    public JsonResult<List<BlogSummaryVO>> search(@RequestParam(required = false) String queryString) {
+        return blogService.search(queryString);
     }
 }

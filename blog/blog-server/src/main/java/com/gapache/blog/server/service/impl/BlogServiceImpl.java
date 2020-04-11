@@ -105,22 +105,11 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public JsonResult<BlogVO> get(String id) {
         BlogVO vo = new BlogVO();
-        redisTemplate.execute((RedisCallback<Object>) connection ->
-        {
-            byte[] blogData = connection.get(BLOG.keyBytes(id));
-            if (blogData != null) {
-                BlogData data = JSON.parseObject(IStringUtils.newString(blogData), BlogData.class);
-                BeanUtils.copyProperties(data, vo, "content");
-            }
-            byte[] contentData = connection.get(CONTENT.keyBytes(id));
-            if (contentData != null) {
-                vo.setContent(IStringUtils.newString(contentData));
-            }
-            Double score = connection.zScore(VIEWS.keyBytes(), IStringUtils.getBytes(id));
-            vo.setViews(score != null ? score.intValue() : 0);
-            return null;
-        });
-        ThrowUtils.throwIfTrue(vo.getId() == null, BlogError.NOT_FOUND);
+        Blog blog = blogEsRepository.get(id);
+        ThrowUtils.throwIfTrue(blog == null, BlogError.NOT_FOUND);
+        BeanUtils.copyProperties(blog, vo, "views");
+        Double score = redisTemplate.opsForZSet().score(VIEWS.key(), id);
+        vo.setViews(score != null ? score.intValue() : 0);
         return JsonResult.of(vo);
     }
 
@@ -195,6 +184,11 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public JsonResult<List<SimpleBlogVO>> findAllByTags(String tag) {
         return JsonResult.of(trans2VoList(blogEsRepository.findAllByTag(tag)));
+    }
+
+    @Override
+    public JsonResult<List<BlogSummaryVO>> search(String queryString) {
+        return JsonResult.of(blogEsRepository.search(queryString));
     }
 
     private List<SimpleBlogVO> trans2VoList(List<Blog> blogList) {

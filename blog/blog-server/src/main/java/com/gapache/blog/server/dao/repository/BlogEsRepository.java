@@ -1,6 +1,7 @@
 package com.gapache.blog.server.dao.repository;
 
 import com.gapache.blog.server.dao.document.Blog;
+import com.gapache.blog.server.model.vo.BlogSummaryVO;
 import org.elasticsearch.action.search.SearchResponse;
 
 import java.util.List;
@@ -60,4 +61,20 @@ public interface BlogEsRepository {
      * @return 查询结果
      */
     List<Blog> findAllByTag(String tag);
+
+    /**
+     * 搜索博客
+     *
+     * @param queryString 查询字符串
+     * @return 博客摘要
+     */
+    List<BlogSummaryVO> search(String queryString);
+
+    /**
+     * 根据ID查询博客
+     *
+     * @param id ID
+     * @return 博客
+     */
+    Blog get(String id);
 }
