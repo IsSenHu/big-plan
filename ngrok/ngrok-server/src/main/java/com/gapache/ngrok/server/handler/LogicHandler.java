@@ -39,7 +39,7 @@ public class LogicHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object request) {
         if (request instanceof ClientResponse) {
             ClientResponse resp = (ClientResponse) request;
-            log.info("ngrok 客户端响应数据:{}", resp);
+            log.info("ngrok 客户端响应数据:{}", resp.getId());
             if (MESSAGE_ID_CONNECTION_MAP.containsKey(resp.getId())) {
                 ChannelHandlerContext connection = MESSAGE_ID_CONNECTION_MAP.get(resp.getId());
                 response(connection, resp.getBody(), resp.getHeaders());
@@ -53,7 +53,7 @@ public class LogicHandler extends SimpleChannelInboundHandler<Object> {
             response(ctx, serverInfo, null);
         } else {
             Message message = (Message) request;
-            log.info("外部请求内部服务:{}", message);
+            log.info("外部请求内部服务:{}, {}", message.getMethod(), message.getDestination());
             String clientId = StringUtils.substringBetween(message.getDestination(), "/");
             if (StringUtils.isNotEmpty(clientId) && CONNECTION_MAP.containsKey(clientId)) {
                 ChannelHandlerContext clientConnection = CONNECTION_MAP.get(clientId);

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author HuSen
  * create on 2020/4/10 9:43 上午
  */
-@Service
+@Service(version = "1.0.0")
 @Component
 public class CategoryApiServiceImpl implements CategoryApiService {
 

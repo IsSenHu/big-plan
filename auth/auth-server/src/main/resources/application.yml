@@ -36,7 +36,10 @@ dubbo:
     timeout: 5000
   protocol:
     port: 20080
+    name: dubbo
   consumer:
     timeout: 5000
   provider:
     timeout: 5000
+  scan:
+    base-packages: com.gapache.auth.server.api

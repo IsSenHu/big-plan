@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author HuSen
  * create on 2020/4/5 20:28
  */
-@Service
+@Service(version = "1.0.0")
 @Component
 public class AboutApiServiceImpl implements AboutApiService {
 

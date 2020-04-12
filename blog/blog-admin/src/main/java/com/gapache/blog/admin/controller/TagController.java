@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/tag")
 public class TagController {
 
-    @Reference(check = false)
+    @Reference(version = "1.0.0")
     private TagApiService tagApiService;
 
     @GetMapping("/findAll")

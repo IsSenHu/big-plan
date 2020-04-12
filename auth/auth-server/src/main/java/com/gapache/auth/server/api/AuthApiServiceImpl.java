@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * create on 2020/4/7 12:22 下午
  */
 @Slf4j
-@Service
+@Service(version = "1.0.0")
 @Component
 public class AuthApiServiceImpl implements AuthApiService {
 

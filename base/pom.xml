@@ -201,12 +201,6 @@
                 <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${dubbo.nacos.version}</version>
             </dependency>
-            <!-- 指定http client -->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

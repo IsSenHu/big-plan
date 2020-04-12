@@ -31,7 +31,7 @@ import java.util.UUID;
 @RequestMapping("/api/blog")
 public class BlogController {
 
-    @Reference(check = false)
+    @Reference(version = "1.0.0")
     private BlogApiService blogApiService;
 
     @PutMapping
@@ -66,7 +66,7 @@ public class BlogController {
     }
 
     @PostMapping
-    public JsonResult<String> update(@RequestBody BlogUpdateVO vo, MultipartFile file) {
+    public JsonResult<String> update(BlogUpdateVO vo, MultipartFile file) {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
         byte[] content = IOUtils.getContent(file);

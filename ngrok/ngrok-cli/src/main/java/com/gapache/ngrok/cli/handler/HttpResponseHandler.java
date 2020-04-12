@@ -47,16 +47,17 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
         ByteBuf content = response.content();
         String resp = content.toString(CharsetUtil.UTF_8);
         JSONObject jsonObject = JSON.parseObject(resp);
-        log.info("message:{}", jsonObject);
         if (jsonObject.containsKey(SERVER_ID)) {
             return;
         }
         Message message = JSON.parseObject(resp, Message.class);
+        log.info("message:{}, {}", message.getMethod(), message.getDestination());
         String clientId = "/" + client.getName();
         String url = LOCAL_IP.concat(":").concat(String.valueOf(localPort)).concat(StringUtils.substring(message.getDestination(), clientId.length()));
+        Map<String, String> headers = message.getHeaders();
         switch (message.getMethod()) {
             case "options": {
-                HttpUtils.optionsAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
+                HttpUtils.optionsAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
                         ClientResponse clientResponse = new ClientResponse();
@@ -85,7 +86,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 break;
             }
             case "get": {
-                HttpUtils.getAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
+                HttpUtils.getAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
                         ClientResponse clientResponse = new ClientResponse();
@@ -114,7 +115,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 break;
             }
             case "post": {
-                HttpUtils.postAsync(url, message.getBody(), message.getHeaders(), new FutureCallback<HttpResponse>() {
+                HttpUtils.postAsync(url, message.getBody(), headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
                         ClientResponse clientResponse = new ClientResponse();
@@ -143,7 +144,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 break;
             }
             case "delete": {
-                HttpUtils.deleteAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
+                HttpUtils.deleteAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
                         ClientResponse clientResponse = new ClientResponse();
@@ -172,7 +173,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 break;
             }
             case "put": {
-                HttpUtils.putAsync(url, message.getBody(), message.getHeaders(), new FutureCallback<HttpResponse>() {
+                HttpUtils.putAsync(url, message.getBody(), headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
                         ClientResponse clientResponse = new ClientResponse();

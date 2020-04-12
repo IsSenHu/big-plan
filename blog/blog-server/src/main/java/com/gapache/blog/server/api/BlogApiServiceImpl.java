@@ -43,7 +43,7 @@ import static com.gapache.blog.server.dao.data.Structures.*;
  * create on 2020/4/5 03:33
  */
 @Slf4j
-@Service
+@Service(version = "1.0.0")
 @Component
 public class BlogApiServiceImpl implements BlogApiService {
 
@@ -80,7 +80,6 @@ public class BlogApiServiceImpl implements BlogApiService {
         BlogData data = new BlogData();
         BeanUtils.copyProperties(blog, data, "content");
         String jsonString = JSON.toJSONString(data);
-        System.out.println(jsonString);
         String result = luaExecutor.execute(BlogLuaScript.CREATE, RedisSerializer.byteArray(), Lists.newArrayList(BLOG.key(blog.getId()), CONTENT.key(blog.getId()), IDS.key(), CATEGORIES.key(), TAGS.key(), VIEWS.key()),
                 IStringUtils.getBytes(jsonString), blog.getContent(), IStringUtils.getBytes(blog.getId()));
         log.info("保存博客到Redis结果:{}", result);

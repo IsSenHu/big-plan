@@ -14,6 +14,7 @@ import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -26,9 +27,9 @@ public class HttpUtils {
 
     static {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(50000)
-                .setSocketTimeout(50000)
-                .setConnectionRequestTimeout(1000)
+                .setConnectTimeout(500000)
+                .setSocketTimeout(500000)
+                .setConnectionRequestTimeout(500000)
                 .build();
 
         IOReactorConfig ioReactorConfig = IOReactorConfig.custom().
@@ -69,16 +70,17 @@ public class HttpUtils {
     }
 
     public static void postAsync(String uri, String body, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
+        headers.remove("Content-Length");
+        HttpPost httpPost = new HttpPost(uri);
+        headers.forEach(httpPost::addHeader);
+        StringEntity entity = null;
         try {
-            headers.remove("Content-Length");
-            HttpPost httpPost = new HttpPost(uri);
-            headers.forEach(httpPost::addHeader);
-            StringEntity entity = new StringEntity(body);
-            httpPost.setEntity(entity);
-            ASYNC_CLIENT.execute(httpPost, callback);
+            entity = new StringEntity(body);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        httpPost.setEntity(entity);
+        ASYNC_CLIENT.execute(httpPost, callback);
     }
 
     public static void deleteAsync(String uri, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
@@ -88,15 +90,11 @@ public class HttpUtils {
     }
 
     public static void putAsync(String uri, String body, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        try {
-            headers.remove("Content-Length");
-            HttpPut httpPut = new HttpPut(uri);
-            headers.forEach(httpPut::addHeader);
-            StringEntity entity = new StringEntity(body);
-            httpPut.setEntity(entity);
-            ASYNC_CLIENT.execute(httpPut, callback);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        headers.remove("Content-Length");
+        HttpPut httpPut = new HttpPut(uri);
+        headers.forEach(httpPut::addHeader);
+        StringEntity entity = new StringEntity(body, StandardCharsets.UTF_8);
+        httpPut.setEntity(entity);
+        ASYNC_CLIENT.execute(httpPut, callback);
     }
 }

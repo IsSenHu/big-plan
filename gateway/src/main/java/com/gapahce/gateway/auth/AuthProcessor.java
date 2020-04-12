@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthProcessor {
 
-    @Reference(check = false)
+    @Reference(version = "1.0.0")
     private AuthApiService authApiService;
 
     public void checkUser() {

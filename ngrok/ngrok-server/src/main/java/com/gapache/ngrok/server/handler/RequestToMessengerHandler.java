@@ -9,6 +9,8 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +21,13 @@ import java.util.UUID;
  * @author HuSen
  * create on 2019/7/23 14:34
  */
+@Slf4j
 public class RequestToMessengerHandler extends MessageToMessageDecoder<FullHttpRequest> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, FullHttpRequest request, List<Object> out) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         HttpHeaders headers = request.headers();
         boolean fromInner = headers.contains("x-ngrok");
         boolean register = headers.contains("x-register");
@@ -45,5 +50,7 @@ public class RequestToMessengerHandler extends MessageToMessageDecoder<FullHttpR
             message.setBody(body);
             out.add(message);
         }
+        log.info("cost time to decoding:{}", stopWatch.getTime());
+        stopWatch.stop();
     }
 }
