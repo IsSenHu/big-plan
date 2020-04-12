@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author HuSen
@@ -30,24 +29,19 @@ public class HttpClient {
     private final EventLoopGroup group;
     private final String host;
     private final int port;
+    private final int localPort;
     private final String name;
     private final int connectionTimeout;
     private Bootstrap bootstrap;
     private volatile boolean started;
+    private volatile boolean connected;
+    private volatile boolean retry;
     private volatile ChannelHandlerContext connection;
 
-    /**
-     * 它会在计数器达到 0 的时候唤醒相应实例上的所有等待线程
-     *
-     * 此时继续调用countDown()并不会导致异常的抛出
-     *
-     * 并且后续执行await()的线程也不会被暂停
-     */
-    private final CountDownLatch open = new CountDownLatch(1);
-
-    public HttpClient(String host, int port, String name, int connectionTimeout) {
+    public HttpClient(String host, int port, int localPort, String name, int connectionTimeout) {
         this.host = host;
         this.port = port;
+        this.localPort = localPort;
         this.name = name;
         this.connectionTimeout = connectionTimeout;
         group = new NioEventLoopGroup();
@@ -72,6 +66,16 @@ public class HttpClient {
                 bootstrap.connect(host, port).syncUninterruptibly();
                 started = true;
             }
+        }
+    }
+
+    public synchronized void retryConnect() {
+        retry = false;
+        init();
+        if (!connected && bootstrap != null) {
+            log.info("HttpClient {} {} is retryConnecting", Thread.currentThread().getName(), name);
+            bootstrap.connect(host, port).syncUninterruptibly();
+            started = true;
         }
     }
 
@@ -101,10 +105,18 @@ public class HttpClient {
             protected void initChannel(SocketChannel ch) {
                 ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast(new HttpClientCodec());
-                pipeline.addLast(new HttpObjectAggregator(1024 * 60));
+                pipeline.addLast(new HttpObjectAggregator(1024 * 1024 * 5));
                 pipeline.addLast(lifeCycleHandler);
                 pipeline.addLast(new HttpResponseHandler(lifeCycleHandler.getClient()));
             }
         };
+    }
+
+    public synchronized boolean isRetry() {
+        return retry;
+    }
+
+    public synchronized void setRetry(boolean retry) {
+        this.retry = retry;
     }
 }

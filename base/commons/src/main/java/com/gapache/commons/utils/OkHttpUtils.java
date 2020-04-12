@@ -1,6 +1,5 @@
 package com.gapache.commons.utils;
 
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,11 +26,11 @@ public class OkHttpUtils {
      * @param params   请求参数
      * @param callback 异步回调
      */
-    public static void getAsync(String url, Map<String, String> params, Callback callback) {
+    public static void getAsync(String url, Map<String, String> params, Headers headers, Callback callback) {
         url = handleUrlParams(url, params);
         Request request = new Request.Builder()
                 .url(url)
-                .get()
+                .headers(headers)
                 .build();
         CLIENT.newCall(request).enqueue(callback);
     }
@@ -54,14 +53,13 @@ public class OkHttpUtils {
     }
 
     /**
-     * 同步Post请求
+     * 异步Post请求
      *
      * @param url     请求地址
      * @param body    请求体
      * @param headers 请求头
-     * @return 响应body
      */
-    public static String postSync(String url, String body, Headers headers) {
+    public static void postAsync(String url, String body, Headers headers, Callback callback) {
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(body, MediaType.get(JSON)));
@@ -69,8 +67,7 @@ public class OkHttpUtils {
             builder.headers(headers);
         }
         Request request = builder.build();
-        Call call = CLIENT.newCall(request);
-        return execAndResp(call);
+        CLIENT.newCall(request).enqueue(callback);
     }
 
     /**

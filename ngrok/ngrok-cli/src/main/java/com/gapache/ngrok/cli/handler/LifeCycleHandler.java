@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.concurrent.*;
 
 /**
  * 生命周期 Handler
@@ -20,6 +20,8 @@ import java.util.UUID;
 @Slf4j
 @Getter
 public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
+
+    private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = new ScheduledThreadPoolExecutor(1, r -> new Thread(r, "retry connecting server"), new ThreadPoolExecutor.CallerRunsPolicy());
 
     private final String host;
     private final int port;
@@ -40,7 +42,7 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) {
-
+        log.info("channelRegistered:{}", this.name);
     }
 
     /**
@@ -50,11 +52,12 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        log.info("连接就绪 {}", Thread.currentThread().getName());
+        log.info("连接就绪:{} {}", this.name, Thread.currentThread().getName());
         client.setConnection(ctx);
-        client.getOpen().countDown();
+        client.setConnected(true);
+
         ClientInfo clientInfo = new ClientInfo();
-        clientInfo.setId(UUID.randomUUID().toString());
+        clientInfo.setId(this.name);
         Map<String, Object> header = new HashMap<>(1);
         header.put("x-register", "1");
         client.request(clientInfo, header);
@@ -67,7 +70,13 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-
+        log.info("channelInactive:{}", this.name);
+        if (client.isRetry()) {
+            return;
+        }
+        client.setRetry(true);
+        client.setConnected(false);
+        SCHEDULED_EXECUTOR_SERVICE.schedule(client::retryConnect, 5L, TimeUnit.SECONDS);
     }
 
     /**
@@ -77,6 +86,12 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) {
-
+        log.info("channelUnregistered:{}", ctx);
+        if (client.isRetry()) {
+            return;
+        }
+        client.setRetry(true);
+        client.setConnected(false);
+        SCHEDULED_EXECUTOR_SERVICE.schedule(client::retryConnect, 5L, TimeUnit.SECONDS);
     }
 }

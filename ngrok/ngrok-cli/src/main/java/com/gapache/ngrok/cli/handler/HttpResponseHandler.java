@@ -1,8 +1,9 @@
 package com.gapache.ngrok.cli.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.gapache.commons.utils.IStringUtils;
-import com.gapache.commons.utils.OkHttpUtils;
+import com.alibaba.fastjson.JSONObject;
+import com.gapache.commons.model.ClientResponse;
+import com.gapache.commons.utils.HttpUtils;
 import com.gapache.commons.model.Message;
 import com.gapache.ngrok.cli.http.HttpClient;
 import io.netty.buffer.ByteBuf;
@@ -12,13 +13,16 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author HuSen
@@ -28,43 +32,188 @@ import java.util.Objects;
 public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
 
     private final HttpClient client;
+    private final int localPort;
+
+    private static final String SERVER_ID = "serverId";
+    private static final String LOCAL_IP = "http://127.0.0.1";
 
     public HttpResponseHandler(HttpClient client) {
         this.client = client;
+        this.localPort = client.getLocalPort();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse response) {
         ByteBuf content = response.content();
         String resp = content.toString(CharsetUtil.UTF_8);
-        Message message = JSON.parseObject(resp, Message.class);
-        if (message.getMethod() == null) {
+        JSONObject jsonObject = JSON.parseObject(resp);
+        log.info("message:{}", jsonObject);
+        if (jsonObject.containsKey(SERVER_ID)) {
             return;
         }
-        log.info("message:{}", message);
+        Message message = JSON.parseObject(resp, Message.class);
+        String clientId = "/" + client.getName();
+        String url = LOCAL_IP.concat(":").concat(String.valueOf(localPort)).concat(StringUtils.substring(message.getDestination(), clientId.length()));
         switch (message.getMethod()) {
-            case "get": {
-                OkHttpUtils.getAsync(message.getDestination(), null, new Callback() {
+            case "options": {
+                HttpUtils.optionsAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
                     @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                    public void completed(HttpResponse httpResponse) {
+                        ClientResponse clientResponse = new ClientResponse();
+                        clientResponse.setId(message.getId());
+                        setHeaders(httpResponse, clientResponse);
+                        try {
+                            clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> requestHeaders = new HashMap<>(1);
+                        requestHeaders.put("x-ngrok", "1");
+                        client.request(clientResponse, requestHeaders);
                     }
 
                     @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        String string = Objects.requireNonNull(response.body()).string();
-                        client.request(string, null);
+                    public void failed(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
                     }
                 });
                 break;
             }
-            case "post":
-            case "delete":
-            case "put": {
+            case "get": {
+                HttpUtils.getAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
+                    @Override
+                    public void completed(HttpResponse httpResponse) {
+                        ClientResponse clientResponse = new ClientResponse();
+                        clientResponse.setId(message.getId());
+                        setHeaders(httpResponse, clientResponse);
+                        try {
+                            clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> requestHeaders = new HashMap<>(1);
+                        requestHeaders.put("x-ngrok", "1");
+                        client.request(clientResponse, requestHeaders);
+                    }
 
+                    @Override
+                    public void failed(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
+                    }
+                });
+                break;
+            }
+            case "post": {
+                HttpUtils.postAsync(url, message.getBody(), message.getHeaders(), new FutureCallback<HttpResponse>() {
+                    @Override
+                    public void completed(HttpResponse httpResponse) {
+                        ClientResponse clientResponse = new ClientResponse();
+                        clientResponse.setId(message.getId());
+                        setHeaders(httpResponse, clientResponse);
+                        try {
+                            clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> requestHeaders = new HashMap<>(1);
+                        requestHeaders.put("x-ngrok", "1");
+                        client.request(clientResponse, requestHeaders);
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
+                    }
+                });
+                break;
+            }
+            case "delete": {
+                HttpUtils.deleteAsync(url, message.getHeaders(), new FutureCallback<HttpResponse>() {
+                    @Override
+                    public void completed(HttpResponse httpResponse) {
+                        ClientResponse clientResponse = new ClientResponse();
+                        clientResponse.setId(message.getId());
+                        setHeaders(httpResponse, clientResponse);
+                        try {
+                            clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> requestHeaders = new HashMap<>(1);
+                        requestHeaders.put("x-ngrok", "1");
+                        client.request(clientResponse, requestHeaders);
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
+                    }
+                });
+                break;
+            }
+            case "put": {
+                HttpUtils.putAsync(url, message.getBody(), message.getHeaders(), new FutureCallback<HttpResponse>() {
+                    @Override
+                    public void completed(HttpResponse httpResponse) {
+                        ClientResponse clientResponse = new ClientResponse();
+                        clientResponse.setId(message.getId());
+                        setHeaders(httpResponse, clientResponse);
+                        try {
+                            clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Map<String, Object> requestHeaders = new HashMap<>(1);
+                        requestHeaders.put("x-ngrok", "1");
+                        client.request(clientResponse, requestHeaders);
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
+                    }
+                });
             }
             default:
         }
+    }
+
+    private void setHeaders(HttpResponse httpResponse, ClientResponse clientResponse) {
+        Header[] allHeaders = httpResponse.getAllHeaders();
+        clientResponse.setHeaders(new HashMap<>(allHeaders.length));
+        for (Header header : allHeaders) {
+            if (clientResponse.getHeaders().containsKey(header.getName())) {
+                clientResponse.getHeaders().put(header.getName(), clientResponse.getHeaders().get(header.getName()).concat("~~~~~~").concat(header.getValue()));
+            } else {
+                clientResponse.getHeaders().put(header.getName(), header.getValue());
+            }
+        }
+        clientResponse.getHeaders().put("Access-Control-Allow-Origin", "*");
     }
 
     @Override

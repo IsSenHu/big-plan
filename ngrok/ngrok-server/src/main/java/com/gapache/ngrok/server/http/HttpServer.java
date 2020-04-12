@@ -104,7 +104,7 @@ public class HttpServer extends AbstractServer {
     protected void doInitLogic(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new HttpObjectAggregator(1024 * 64));
+        pipeline.addLast(new HttpObjectAggregator(1024 * 1024 * 5));
         pipeline.addLast(new RequestToMessengerHandler());
         pipeline.addLast(new LogicHandler());
     }

@@ -11,6 +11,10 @@ import java.util.Map;
 @Data
 public class Message {
     /**
+     * 消息唯一ID
+     */
+    private String id;
+    /**
      * 请求目的地
      */
     private String destination;

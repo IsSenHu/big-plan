@@ -2,6 +2,7 @@ package com.gapache.ngrok.server.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.gapache.commons.model.ClientInfo;
+import com.gapache.commons.model.ClientResponse;
 import com.gapache.commons.model.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -12,6 +13,7 @@ import io.netty.util.CharsetUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author HuSen
@@ -29,9 +31,11 @@ public class RequestToMessengerHandler extends MessageToMessageDecoder<FullHttpR
             ClientInfo clientInfo = JSON.parseObject(body, ClientInfo.class);
             out.add(clientInfo);
         } else if (fromInner) {
-            out.add(body);
+            ClientResponse clientResponse = JSON.parseObject(body, ClientResponse.class);
+            out.add(clientResponse);
         } else {
             Message message = new Message();
+            message.setId(UUID.randomUUID().toString());
             message.setMethod(request.method().name().toLowerCase());
             message.setDestination(request.uri());
             message.setHeaders(new HashMap<>(headers.size()));
