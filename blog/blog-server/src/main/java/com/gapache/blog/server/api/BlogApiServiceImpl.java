@@ -16,7 +16,6 @@ import com.gapache.commons.model.PageResult;
 import com.gapache.commons.utils.IStringUtils;
 import com.gapache.redis.RedisLuaExecutor;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,11 +29,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
 
 import static com.gapache.blog.server.dao.data.Structures.*;
 
@@ -72,7 +68,7 @@ public class BlogApiServiceImpl implements BlogApiService {
     }
 
     @Override
-    public void create(BlogVO blog) {
+    public Boolean create(BlogVO blog) {
         log.info("Create Blog:[id:{}, title:{}, introduction:{}, publishTime:{}, category:{}, tags:{}]",
                 blog.getId(), blog.getTitle(), blog.getIntroduction(), blog.getPublishTime(), blog.getCategory(), Arrays.toString(blog.getTags()));
 
@@ -84,7 +80,7 @@ public class BlogApiServiceImpl implements BlogApiService {
                 IStringUtils.getBytes(jsonString), blog.getContent(), IStringUtils.getBytes(blog.getId()));
         log.info("保存博客到Redis结果:{}", result);
         if (!BlogLuaScript.OK.equals(result)) {
-            return;
+            return false;
         }
 
         Blog document = new Blog();
@@ -92,6 +88,7 @@ public class BlogApiServiceImpl implements BlogApiService {
         document.setContent(new String(blog.getContent(), StandardCharsets.UTF_8));
 
         blogEsRepository.index(document);
+        return true;
     }
 
     @Override
@@ -116,7 +113,7 @@ public class BlogApiServiceImpl implements BlogApiService {
     }
 
     @Override
-    public void update(BlogVO blog) {
+    public Boolean update(BlogVO blog) {
         log.info("Update Blog:[id:{}, title:{}, introduction:{}, publishTime:{}, category:{}, tags:{}]",
                 blog.getId(), blog.getTitle(), blog.getIntroduction(), blog.getPublishTime(), blog.getCategory(), Arrays.toString(blog.getTags()));
 
@@ -126,12 +123,13 @@ public class BlogApiServiceImpl implements BlogApiService {
         String result = luaExecutor.execute(BlogLuaScript.UPDATE, RedisSerializer.byteArray(), Lists.newArrayList(BLOG.key(blog.getId()), CONTENT.key(blog.getId()), IDS.key(), CATEGORIES.key(), TAGS.key()),
                 IStringUtils.getBytes(jsonString), blog.getContent(), IStringUtils.getBytes(blog.getId()));
         if (!BlogLuaScript.OK.equals(result)) {
-            return;
+            return false;
         }
         Blog document = new Blog();
         BeanUtils.copyProperties(blog, document, "content");
         document.setContent(new String(blog.getContent(), StandardCharsets.UTF_8));
         blogEsRepository.update(document);
+        return true;
     }
 
     @Override
@@ -155,8 +153,13 @@ public class BlogApiServiceImpl implements BlogApiService {
             if (bytes == null) {
                 return null;
             }
-            Set<String> ids = bytes.stream().map(IStringUtils::newString).collect(Collectors.toSet());
-            List<SimpleBlogVO> items = blogService.findAllByIds(ids, Maps.newHashMap());
+            Map<String, Integer> scoreMap = new HashMap<>(bytes.size());
+            // TODO 优化
+            for (byte[] aByte : bytes) {
+                Double score = connection.zScore(VIEWS.keyBytes(), aByte);
+                scoreMap.put(IStringUtils.newString(aByte), score == null ? 0 : score.intValue());
+            }
+            List<SimpleBlogVO> items = blogService.findAllByIds(scoreMap.keySet(), scoreMap);
             result.setItems(items);
 
             return null;

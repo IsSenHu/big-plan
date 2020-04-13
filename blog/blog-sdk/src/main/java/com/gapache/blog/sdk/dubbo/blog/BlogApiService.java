@@ -13,8 +13,9 @@ public interface BlogApiService {
      * 创建博客
      *
      * @param blog 博客
+     * @return 是否成功
      */
-    void create(BlogVO blog);
+    Boolean create(BlogVO blog);
 
     /**
      * 根据ID查询博客
@@ -36,8 +37,9 @@ public interface BlogApiService {
      * 更新博客
      *
      * @param blog 博客
+     * @return 是否成功
      */
-    void update(BlogVO blog);
+    Boolean update(BlogVO blog);
 
     /**
      * 分页查询博客

@@ -29,19 +29,21 @@ public class HttpClient {
     private final EventLoopGroup group;
     private final String host;
     private final int port;
-    private final int localPort;
+    private final int innerPort;
     private final String name;
     private final int connectionTimeout;
+    private final String innerAddress;
     private Bootstrap bootstrap;
     private volatile boolean started;
     private volatile boolean connected;
     private volatile boolean retry;
     private volatile ChannelHandlerContext connection;
 
-    public HttpClient(String host, int port, int localPort, String name, int connectionTimeout) {
+    public HttpClient(String host, int port, int innerPort, String innerAddress, String name, int connectionTimeout) {
         this.host = host;
         this.port = port;
-        this.localPort = localPort;
+        this.innerPort = innerPort;
+        this.innerAddress = innerAddress;
         this.name = name;
         this.connectionTimeout = connectionTimeout;
         group = new NioEventLoopGroup();

@@ -3,8 +3,6 @@ package com.gapache.blog.admin.model.vo;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author HuSen
@@ -22,10 +20,6 @@ public class BlogCreateVO implements Serializable {
      * 介绍
      */
     private String introduction;
-    /**
-     * 发布时间
-     */
-    private LocalDateTime publishTime;
     /**
      * 分类
      */

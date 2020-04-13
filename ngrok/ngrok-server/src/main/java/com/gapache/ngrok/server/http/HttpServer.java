@@ -27,7 +27,6 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class HttpServer extends AbstractServer {
     private ServerBootstrap bootstrap;
-    private int bossThreads;
     private volatile boolean running = false;
 
     public HttpServer(int port, String name) {

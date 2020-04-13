@@ -4,6 +4,8 @@ import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.WriteTimeoutException;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
@@ -14,19 +16,17 @@ import java.util.concurrent.ThreadFactory;
  * create on 2019/7/24 9:38
  */
 @Slf4j
+@Setter
+@Getter
 public abstract class AbstractServer {
 
     private volatile boolean initialized = false;
-
     private String bossThreadName;
     private String workerThreadName;
     private Integer bossThreads;
     private Integer workerThreads;
-
     private Boolean useEpoll;
-
     private Integer writeTimeout;
-
     private String name;
     private Integer port;
 
@@ -77,16 +77,38 @@ public abstract class AbstractServer {
         };
     }
 
+    /**
+     * 异常处理
+     *
+     * @param ctx   ChannelHandlerContext
+     * @param cause 异常
+     */
     protected abstract void exceptionCaught0(ChannelHandlerContext ctx, Throwable cause);
 
+    /**
+     * 写超时处理
+     *
+     * @param ctx   ChannelHandlerContext
+     * @param cause 异常
+     */
     protected abstract void writeTimeout(ChannelHandlerContext ctx, Throwable cause);
 
+    /**
+     * 初始化超时处理
+     *
+     * @param ch SocketChannel
+     */
     protected abstract void doInitTimeout(SocketChannel ch);
 
+    /**
+     * 执行初始化的逻辑
+     *
+     * @param ch SocketChannel
+     */
     protected abstract void doInitLogic(SocketChannel ch);
 
     protected boolean trafficLog() {
-        return false;
+        return true;
     }
 
     public void start() {
@@ -109,56 +131,5 @@ public abstract class AbstractServer {
 
     protected ThreadFactory newThreadFactory(String poolName) {
         return new DefaultThreadFactory(poolName);
-    }
-    //=======================================setter
-
-    public void setBossThreads(Integer bossThreads) {
-        this.bossThreads = bossThreads;
-    }
-
-    public void setWorkerThreads(Integer workerThreads) {
-        this.workerThreads = workerThreads;
-    }
-
-    public void setUseEpoll(Boolean useEpoll) {
-        this.useEpoll = useEpoll;
-    }
-
-    public void setWriteTimeout(Integer writeTimeout) {
-        this.writeTimeout = writeTimeout;
-    }
-
-    //=======================================getter
-
-    protected String getBossThreadName() {
-        return bossThreadName;
-    }
-
-    protected String getWorkerThreadName() {
-        return workerThreadName;
-    }
-
-    protected int getBossThreads() {
-        return bossThreads;
-    }
-
-    protected int getWorkerThreads() {
-        return workerThreads;
-    }
-
-    protected Boolean getUseEpoll() {
-        return useEpoll;
-    }
-
-    protected int getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    protected int getPort() {
-        return port;
     }
 }

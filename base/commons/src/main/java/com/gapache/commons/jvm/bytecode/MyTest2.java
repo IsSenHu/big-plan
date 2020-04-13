@@ -1,7 +1,7 @@
 package com.gapache.commons.jvm.bytecode;
 
 /**
- * java verbose -p(打印私有信息)
+ * java -verbose -p(打印私有信息)
  *
  * synchronized
  * moniterenter
