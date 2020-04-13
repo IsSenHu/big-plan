@@ -22,8 +22,8 @@ public class NgrokCliApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NgrokCliApplication.class, args);
+        Scanner scanner = new Scanner(System.in);
         while (true) {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("请输入操作，输入exit可完成");
             String cmd = scanner.nextLine();
             if (StringUtils.equals("exit", cmd)) {

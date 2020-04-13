@@ -35,7 +35,7 @@ public class BlogController {
     private BlogApiService blogApiService;
 
     @PutMapping
-    public JsonResult<String> create(BlogCreateVO vo, MultipartFile file) {
+    public JsonResult<Boolean> create(BlogCreateVO vo, MultipartFile file) {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
         byte[] content = IOUtils.getContent(file);
@@ -48,9 +48,7 @@ public class BlogController {
         blogVO.setContent(content);
         blogVO.setPublishTime(LocalDateTime.now());
 
-        blogApiService.create(blogVO);
-
-        return JsonResult.of(blogVO.getId());
+        return JsonResult.of(blogApiService.create(blogVO));
     }
 
     @GetMapping("/get/{id}")
@@ -66,7 +64,7 @@ public class BlogController {
     }
 
     @PostMapping
-    public JsonResult<String> update(BlogUpdateVO vo, MultipartFile file) {
+    public JsonResult<Boolean> update(BlogUpdateVO vo, MultipartFile file) {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
         byte[] content = IOUtils.getContent(file);
@@ -74,11 +72,10 @@ public class BlogController {
 
         BlogVO blogVO = new BlogVO();
         BeanUtils.copyProperties(vo, blogVO, "content");
+        blogVO.setTags(vo.getTags().split(","));
         blogVO.setContent(content);
 
-        blogApiService.update(blogVO);
-
-        return JsonResult.of(vo.getId());
+        return JsonResult.of(blogApiService.update(blogVO));
     }
 
     @PostMapping("/page")

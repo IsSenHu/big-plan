@@ -1,5 +1,6 @@
 package com.gapache.blog.admin.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class BlogUpdateVO implements Serializable {
     /**
      * 发布时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishTime;
     /**
      * 分类
@@ -37,5 +39,5 @@ public class BlogUpdateVO implements Serializable {
     /**
      * 标签
      */
-    private List<String> tags;
+    private String tags;
 }
