@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class NgrokCliApplication {
 
     private static void client(String localIp, int port, String name) {
-        HttpClient httpClient = new HttpClient(localIp, 7777, port, name, 100);
+        HttpClient httpClient = new HttpClient(localIp, 7777, port, name, Integer.MAX_VALUE);
         httpClient.init();
         httpClient.start();
     }

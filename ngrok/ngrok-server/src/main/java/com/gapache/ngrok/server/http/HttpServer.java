@@ -67,6 +67,8 @@ public class HttpServer extends AbstractServer {
                 // (2) 尽管底层的Socket还没有发送完所有的剩余数据，但已经阻塞了x秒，close()方法的阻塞时间超过x秒，也会返回，剩余未发送的数据被丢弃。
                 // 设为0 该方法也会立即返回，但底层的Socket也会立即关闭，所有未发送完的剩余数据被丢弃
                 .childOption(ChannelOption.SO_LINGER, 0)
+                .childOption(ChannelOption.SO_TIMEOUT, Integer.MAX_VALUE)
+                .childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, Integer.MAX_VALUE)
                 .childHandler(createChannelInitializer());
 
         if (getUseEpoll()) {

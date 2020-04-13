@@ -55,12 +55,13 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
         log.info("连接就绪:{} {}", this.name, Thread.currentThread().getName());
         client.setConnection(ctx);
         client.setConnected(true);
-
-        ClientInfo clientInfo = new ClientInfo();
-        clientInfo.setId(this.name);
-        Map<String, Object> header = new HashMap<>(1);
-        header.put("x-register", "1");
-        client.request(clientInfo, header);
+        SCHEDULED_EXECUTOR_SERVICE.scheduleWithFixedDelay(() -> {
+            ClientInfo clientInfo = new ClientInfo();
+            clientInfo.setId(this.name);
+            Map<String, Object> header = new HashMap<>(1);
+            header.put("x-register", "1");
+            client.request(clientInfo, header);
+        }, 0, 60, TimeUnit.SECONDS);
     }
 
     /**

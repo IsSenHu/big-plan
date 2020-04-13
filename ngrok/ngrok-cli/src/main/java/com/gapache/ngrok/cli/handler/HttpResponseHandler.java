@@ -60,6 +60,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 HttpUtils.optionsAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
+                        log.info("completed:{}", url);
                         ClientResponse clientResponse = new ClientResponse();
                         clientResponse.setId(message.getId());
                         setHeaders(httpResponse, clientResponse);
@@ -89,6 +90,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 HttpUtils.getAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
+                        log.info("completed:{}", url);
                         ClientResponse clientResponse = new ClientResponse();
                         clientResponse.setId(message.getId());
                         setHeaders(httpResponse, clientResponse);
@@ -118,6 +120,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 HttpUtils.postAsync(url, message.getBody(), headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
+                        log.info("completed:{}", url);
                         ClientResponse clientResponse = new ClientResponse();
                         clientResponse.setId(message.getId());
                         setHeaders(httpResponse, clientResponse);
@@ -147,6 +150,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 HttpUtils.deleteAsync(url, headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
+                        log.info("completed:{}", url);
                         ClientResponse clientResponse = new ClientResponse();
                         clientResponse.setId(message.getId());
                         setHeaders(httpResponse, clientResponse);
@@ -176,6 +180,7 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
                 HttpUtils.putAsync(url, message.getBody(), headers, new FutureCallback<HttpResponse>() {
                     @Override
                     public void completed(HttpResponse httpResponse) {
+                        log.info("completed:{}", url);
                         ClientResponse clientResponse = new ClientResponse();
                         clientResponse.setId(message.getId());
                         setHeaders(httpResponse, clientResponse);
