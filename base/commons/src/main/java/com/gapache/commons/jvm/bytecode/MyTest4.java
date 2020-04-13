@@ -16,9 +16,23 @@ package com.gapache.commons.jvm.bytecode;
  *      a = new Tiger();
  *      a.sleep();
  *
+ *
+ * 1.invokeinterface：调用接口中的方法，实际上是在运行期决定的，决定到底调用实现改接口的哪个对象的特定方法。
+ * 2.invokestatic：调用静态方法
+ * 3.invokespecial：调用自己的私有方法、构造方法以及父类的方法
+ * 4.invokevirtual：调用虚方法，运行期动态查找的过程
+ * 5.invokedynamic：动态调用方法
+ *
  * @author HuSen
  * create on 2020/4/2 11:35 上午
  */
 public class MyTest4 {
 
+    public static void test() {
+        System.out.println("test invoked");
+    }
+
+    public static void main(String[] args) {
+        test();
+    }
 }
