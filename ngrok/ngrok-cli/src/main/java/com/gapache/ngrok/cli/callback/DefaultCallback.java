@@ -20,7 +20,6 @@ import java.util.Map;
 @Slf4j
 public class DefaultCallback extends BaseFutureCallback {
 
-    private String messageId;
     private HttpClient client;
 
     public DefaultCallback(HttpClient client, String messageId) {

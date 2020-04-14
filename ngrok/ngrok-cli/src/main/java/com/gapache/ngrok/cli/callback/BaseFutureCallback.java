@@ -17,7 +17,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 public abstract class BaseFutureCallback implements FutureCallback<HttpResponse> {
 
-    private String messageId;
+    protected String messageId;
 
     protected void setHeaders(HttpResponse httpResponse, ClientResponse clientResponse) {
         Header[] allHeaders = httpResponse.getAllHeaders();
