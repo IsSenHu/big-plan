@@ -1,0 +1,26 @@
+spring:
+  elasticsearch:
+    rest:
+      uris: http://192.168.247.136:9200,http://192.168.247.137:9200,http://192.168.247.138:9200
+  redis:
+    host: 192.168.247.129
+    database: 3
+    password: 521428Slyt
+server:
+  port: 8090
+  servlet:
+    context-path: /blog
+dubbo:
+  application:
+    name: blog-server
+    qos-port: 22223
+  registry:
+    address: nacos://118.24.38.46:8848
+    port: 25223
+    timeout: 5000
+  protocol:
+    port: 20081
+  consumer:
+    timeout: 5000
+  provider:
+    timeout: 5000

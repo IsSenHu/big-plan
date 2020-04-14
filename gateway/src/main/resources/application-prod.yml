@@ -1,0 +1,29 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: blog
+        uri: http://localhost:8090
+        predicates:
+        - Path=/blog/**
+      - id: auth
+        uri: http://localhost:8092
+        predicates:
+          - Path=/auth/**
+      - id: blog-admin
+        uri: http://localhost:8091
+        predicates:
+          - Path=/blog-admin/**
+server:
+  port: 9999
+dubbo:
+  application:
+    name: gateway
+    qos-port: 22225
+  registry:
+    address: nacos://118.24.38.46:8848
+    timeout: 5000
+  provider:
+    timeout: 5000
+  consumer:
+    timeout: 5000
