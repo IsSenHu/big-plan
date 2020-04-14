@@ -1,0 +1,7 @@
+server:
+  port: 8099
+  servlet:
+    context-path: ngrok-cli
+spring:
+  application:
+    name: ngrok-cli

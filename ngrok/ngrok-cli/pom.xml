@@ -15,6 +15,14 @@
         内网穿透客户端
     </description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>support-web</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>ngrok-cli</finalName>
         <plugins>

@@ -4,6 +4,7 @@ import com.gapache.commons.model.ClientResponse;
 import com.gapache.ngrok.cli.http.HttpClient;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
@@ -37,6 +38,10 @@ public class DefaultCallback extends BaseFutureCallback {
             clientResponse.setBody(EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8));
             Map<String, Object> requestHeaders = new HashMap<>(1);
             requestHeaders.put("x-ngrok", "1");
+            final int maxShow = 100;
+            if (StringUtils.length(clientResponse.getBody()) < maxShow) {
+                log.info("body:{}", clientResponse.getBody());
+            }
             client.request(clientResponse, requestHeaders);
         } catch (IOException e) {
             log.error("completed message error.", e);
