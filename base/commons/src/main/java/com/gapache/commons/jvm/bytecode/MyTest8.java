@@ -24,4 +24,13 @@ package com.gapache.commons.jvm.bytecode;
  * create on 2020/4/14 6:08 下午
  */
 public class MyTest8 {
+
+    public int myCalculate() {
+        int a = 1;
+        int b = 2;
+        int c = 3;
+        int d = 4;
+
+        return (a + b - c) * d;
+    }
 }
