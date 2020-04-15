@@ -13,6 +13,7 @@ import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.PageResult;
 import com.gapache.commons.model.ThrowUtils;
 import com.gapache.blog.admin.utils.IOUtils;
+import com.gapache.commons.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +32,7 @@ import java.util.UUID;
 @RequestMapping("/api/blog")
 public class BlogController {
 
-    @Reference(version = "1.0.0")
+    @Reference(check = false, version = "1.0.0")
     private BlogApiService blogApiService;
 
     @PutMapping
@@ -71,9 +72,10 @@ public class BlogController {
         ThrowUtils.throwIfTrue(content == null, BlogError.UPDATE_ERROR);
 
         BlogVO blogVO = new BlogVO();
-        BeanUtils.copyProperties(vo, blogVO, "content");
+        BeanUtils.copyProperties(vo, blogVO, "content", "publishTime");
         blogVO.setTags(vo.getTags().split(","));
         blogVO.setContent(content);
+        blogVO.setPublishTime(TimeUtils.parse(TimeUtils.Format._2, vo.getPublishTime()));
 
         return JsonResult.of(blogApiService.update(blogVO));
     }

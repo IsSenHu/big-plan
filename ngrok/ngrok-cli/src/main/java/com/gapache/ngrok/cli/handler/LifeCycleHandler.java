@@ -1,5 +1,6 @@
 package com.gapache.ngrok.cli.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.gapache.commons.model.ClientInfo;
 import com.gapache.ngrok.cli.http.HttpClient;
 import io.netty.channel.ChannelHandlerContext;
@@ -52,6 +53,7 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        // 第一步：注册到ngrok server
         log.info("连接就绪:{} {}", this.name, Thread.currentThread().getName());
         client.setConnection(ctx);
         client.setConnected(true);
@@ -60,7 +62,7 @@ public class LifeCycleHandler extends ChannelInboundHandlerAdapter {
             clientInfo.setId(this.name);
             Map<String, Object> header = new HashMap<>(1);
             header.put("x-register", "1");
-            client.request(clientInfo, header);
+            client.request(JSON.toJSONString(clientInfo), header);
         }, 0, 60, TimeUnit.SECONDS);
     }
 

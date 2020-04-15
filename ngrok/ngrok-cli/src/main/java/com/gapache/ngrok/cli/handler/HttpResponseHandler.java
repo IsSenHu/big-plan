@@ -2,11 +2,11 @@ package com.gapache.ngrok.cli.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.gapache.commons.utils.HttpUtils;
-import com.gapache.commons.model.Message;
 import com.gapache.ngrok.cli.Constants;
-import com.gapache.ngrok.cli.callback.DefaultCallback;
 import com.gapache.ngrok.cli.http.HttpClient;
+import com.gapache.ngrok.cli.http.HttpRequestClient;
+import com.gapache.ngrok.commons.ServerRequest;
+import com.gapache.protobuf.utils.ProtocstuffUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -14,8 +14,6 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import java.util.Map;
 
 /**
  * @author HuSen
@@ -31,45 +29,33 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
     public HttpResponseHandler(HttpClient client) {
         this.client = client;
         this.innerPort = client.getInnerPort();
-        this.innerAddress = "http://" + client.getInnerAddress();
+        this.innerAddress = client.getInnerAddress();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse response) {
         ByteBuf content = response.content();
-        String resp = content.toString(CharsetUtil.UTF_8);
-        JSONObject jsonObject = JSON.parseObject(resp);
-        if (jsonObject.containsKey(Constants.SERVER_ID)) {
-            return;
+        // 第四步：客户端接收到注册成功的消息
+        boolean register = response.headers().contains("x-register");
+        if (register) {
+            String resp = content.toString(CharsetUtil.UTF_8);
+            JSONObject jsonObject = JSON.parseObject(resp);
+            if (jsonObject.containsKey(Constants.SERVER_ID)) {
+                return;
+            }
         }
-        Message message = JSON.parseObject(resp, Message.class);
-        log.info("message:{}, {}", message.getMethod(), message.getDestination());
+
+        // 第七步：客户端接收到ServerRequest，绑定HttpRequestClient，并初始化和启动HttpRequestClient
+        byte[] bytes = new byte[content.readableBytes()];
+        content.getBytes(0, bytes);
+        ServerRequest message = ProtocstuffUtils.byte2Bean(bytes, ServerRequest.class);
+        log.info("message:{}, {}", message.getMethod(), message.getUri());
         String clientId = "/" + client.getName();
-        String url = innerAddress.concat(":").concat(String.valueOf(innerPort)).concat(StringUtils.substring(message.getDestination(), clientId.length()));
-        Map<String, String> headers = message.getHeaders();
-        switch (message.getMethod()) {
-            case "options": {
-                HttpUtils.optionsAsync(url, headers, new DefaultCallback(client, message.getId()));
-                break;
-            }
-            case "get": {
-                HttpUtils.getAsync(url, headers, new DefaultCallback(client, message.getId()));
-                break;
-            }
-            case "post": {
-                HttpUtils.postAsync(url, message.getBody(), headers, new DefaultCallback(client, message.getId()));
-                break;
-            }
-            case "delete": {
-                HttpUtils.deleteAsync(url, headers, new DefaultCallback(client, message.getId()));
-                break;
-            }
-            case "put": {
-                HttpUtils.putAsync(url, message.getBody(), headers, new DefaultCallback(client, message.getId()));
-                break;
-            }
-            default:
-        }
+        String realUri = message.getUri().substring(clientId.length());
+        message.setUri(realUri);
+        HttpRequestClient requestClient = new HttpRequestClient(innerAddress, innerPort, message, client, 100);
+        requestClient.init();
+        requestClient.start();
     }
 
     @Override

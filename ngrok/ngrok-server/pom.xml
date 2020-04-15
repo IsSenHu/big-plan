@@ -15,6 +15,14 @@
         内网穿透服务器
     </description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>ngrok-commons</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>ngrok-server</finalName>
         <plugins>

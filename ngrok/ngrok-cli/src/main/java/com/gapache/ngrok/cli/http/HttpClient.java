@@ -1,9 +1,10 @@
 package com.gapache.ngrok.cli.http;
 
-import com.alibaba.fastjson.JSON;
 import com.gapache.commons.utils.IStringUtils;
 import com.gapache.ngrok.cli.handler.HttpResponseHandler;
 import com.gapache.ngrok.cli.handler.LifeCycleHandler;
+import com.gapache.ngrok.commons.ClientResponse;
+import com.gapache.protobuf.utils.ProtocstuffUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -38,6 +39,7 @@ public class HttpClient {
     private volatile boolean connected;
     private volatile boolean retry;
     private volatile ChannelHandlerContext connection;
+
 
     public HttpClient(String host, int port, int innerPort, String innerAddress, String name, int connectionTimeout) {
         this.host = host;
@@ -81,14 +83,8 @@ public class HttpClient {
         }
     }
 
-    public void request(Object o, Map<String, Object> headers) {
-        String string;
-        if (o instanceof String) {
-            string = o.toString();
-        } else {
-            string = JSON.toJSONString(o);
-        }
-        byte[] bytes = IStringUtils.getBytes(string);
+    public void request(String body, Map<String, Object> headers) {
+        byte[] bytes = IStringUtils.getBytes(body);
         HttpRequest httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "");
         httpRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
         if (MapUtils.isNotEmpty(headers)) {
@@ -98,6 +94,26 @@ public class HttpClient {
         connection.write(httpRequest);
         connection.write(httpContent);
         connection.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+    }
+
+    public ChannelFuture request(ClientResponse clientResponse, Map<String, Object> headers) {
+        HttpRequest httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "");
+        byte[] bytes = ProtocstuffUtils.bean2Byte(clientResponse, ClientResponse.class);
+        HttpContent httpContent = null;
+        if (bytes != null && bytes.length > 0) {
+            httpRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
+            httpContent = new DefaultHttpContent(connection.alloc().buffer(bytes.length).writeBytes(bytes));
+        }
+
+        if (MapUtils.isNotEmpty(headers)) {
+            headers.forEach((key, value) -> httpRequest.headers().add(key, value));
+        }
+
+        connection.write(httpRequest);
+        if (httpContent != null) {
+            connection.write(httpContent);
+        }
+        return connection.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
     }
 
     private ChannelHandler createChannelInitializer() {

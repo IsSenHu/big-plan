@@ -2,20 +2,18 @@ package com.gapache.ngrok.server.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.gapache.commons.model.ClientInfo;
-import com.gapache.commons.model.ClientResponse;
-import com.gapache.commons.model.Message;
+import com.gapache.commons.utils.IStringUtils;
+import com.gapache.ngrok.commons.ClientResponse;
+import com.gapache.ngrok.commons.ServerRequest;
+import com.gapache.protobuf.utils.ProtocstuffUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.StopWatch;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author HuSen
@@ -26,31 +24,51 @@ public class RequestToMessengerHandler extends MessageToMessageDecoder<FullHttpR
 
     @Override
     protected void decode(ChannelHandlerContext ctx, FullHttpRequest request, List<Object> out) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         HttpHeaders headers = request.headers();
-        boolean fromInner = headers.contains("x-ngrok");
+
+        // 第二步：服务端接收客户端的注册
         boolean register = headers.contains("x-register");
-        String body = request.content().toString(CharsetUtil.UTF_8);
         if (register) {
+            String body = request.content().toString(CharsetUtil.UTF_8);
             ClientInfo clientInfo = JSON.parseObject(body, ClientInfo.class);
             out.add(clientInfo);
-        } else if (fromInner) {
-            ClientResponse clientResponse = JSON.parseObject(body, ClientResponse.class);
-            out.add(clientResponse);
-        } else {
-            Message message = new Message();
-            message.setId(UUID.randomUUID().toString());
-            message.setMethod(request.method().name().toLowerCase());
-            message.setDestination(request.uri());
-            message.setHeaders(new HashMap<>(headers.size()));
-            for (Map.Entry<String, String> header : headers) {
-                message.getHeaders().put(header.getKey(), header.getValue());
-            }
-            message.setBody(body);
-            out.add(message);
+            return;
         }
-        log.info("cost time to decoding:{}", stopWatch.getTime());
-        stopWatch.stop();
+
+        byte[] content = new byte[0];
+        int readableBytes = request.content().readableBytes();
+        if (readableBytes > 0) {
+            content = new byte[readableBytes];
+            request.content().getBytes(0, content);
+        }
+
+        // 第十步：接收真正的目的服务器的响应
+        boolean fromInner = headers.contains("x-ngrok");
+        if (fromInner) {
+            ClientResponse clientResponse = ProtocstuffUtils.byte2Bean(content, ClientResponse.class);
+            out.add(clientResponse);
+            return;
+        }
+
+        // 第五步：接收到真正的Http请求，并将其封装为ServerRequest
+        ServerRequest message = new ServerRequest();
+        message.setId(UUID.randomUUID().toString());
+        message.setMethod(request.method().name());
+        message.setProtocolVersion(request.protocolVersion().text());
+        message.setUri(request.uri());
+        message.setHeaders(new ArrayList<>(headers.size()));
+        for (Map.Entry<String, String> header : headers) {
+            Map.Entry<String, String> item = new AbstractMap.SimpleEntry<>(header.getKey(), header.getValue());
+            message.getHeaders().add(item);
+        }
+
+        HttpHeaders trailingHeaders = request.trailingHeaders();
+        message.setTrailingHeaders(new ArrayList<>(trailingHeaders.size()));
+        for (Map.Entry<String, String> header : trailingHeaders) {
+            Map.Entry<String, String> item = new AbstractMap.SimpleEntry<>(header.getKey(), header.getValue());
+            message.getTrailingHeaders().add(item);
+        }
+        message.setContent(content);
+        out.add(message);
     }
 }

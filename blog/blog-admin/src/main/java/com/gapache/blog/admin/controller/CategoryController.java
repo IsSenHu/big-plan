@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Reference(version = "1.0.0")
+    @Reference(check = false, version = "1.0.0")
     private CategoryApiService categoryApiService;
 
     @GetMapping("/findAll")

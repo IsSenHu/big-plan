@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/about")
 public class AboutController {
 
-    @Reference(version = "1.0.0")
+    @Reference(check = false, version = "1.0.0")
     private AboutApiService aboutApiService;
 
     @PutMapping
