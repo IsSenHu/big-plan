@@ -17,7 +17,7 @@ public class NgrokServerApplication {
     @Bean
     public HttpServer server() {
         HttpServer server = new HttpServer(7777, "ngrok");
-        server.setUseEpoll(false);
+        server.setUseEpoll(true);
         server.setBossThreads(1);
         server.setWorkerThreads(1);
         server.setWriteTimeout(20000);
