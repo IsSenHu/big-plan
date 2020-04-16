@@ -116,7 +116,7 @@ public class HttpClient {
         return connection.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
     }
 
-    private ChannelHandler createChannelInitializer() {
+    protected ChannelHandler createChannelInitializer() {
         LifeCycleHandler lifeCycleHandler = new LifeCycleHandler(host, port, name, this);
         return new ChannelInitializer<SocketChannel>() {
             @Override
