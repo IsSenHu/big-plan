@@ -194,6 +194,7 @@ public class BlogServiceImpl implements BlogService {
     private List<SimpleBlogVO> trans2VoList(List<Blog> blogList) {
         return blogList.stream().map(blog -> {
             SimpleBlogVO vo = new SimpleBlogVO();
+            vo.setId(blog.getId());
             vo.setIntroduction(blog.getId());
             vo.setTitle(blog.getTitle());
             vo.setIntroduction(blog.getIntroduction());
