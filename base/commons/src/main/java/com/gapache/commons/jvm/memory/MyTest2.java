@@ -26,7 +26,7 @@ public class MyTest2 {
     }
 
     public static void main(String[] args) {
-        // -Xss160kss
+        // -Xss160k
         MyTest2 myTest2 = new MyTest2();
         try {
             myTest2.test();

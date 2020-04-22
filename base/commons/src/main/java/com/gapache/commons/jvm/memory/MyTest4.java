@@ -12,7 +12,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 public class MyTest4 {
 
     public static void main(String[] args) {
-        // -XX:MaxMetaspaceSize=10m
+        // -XX:MaxMetaspaceSize=200m
         while (true) {
             Enhancer enhancer = new Enhancer();
             enhancer.setSuperclass(MyTest4.class);

@@ -31,6 +31,8 @@ public class MyTest5 {
         // jfr Java Flight Recorder
 
         // jhat
+
+        // System.gc()
         while (true) {
             System.out.println("hello world");
         }
