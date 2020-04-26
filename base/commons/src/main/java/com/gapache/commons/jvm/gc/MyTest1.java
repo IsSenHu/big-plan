@@ -13,6 +13,9 @@ public class MyTest1 {
         // -Xmn10M 堆的新生代的大小
         // -XX:+PrintGCDetails 打印出垃圾回收的详细信息
         // -XX:SurvivorRatio=8 Eden空间与Survivor的比例是8:1 eden:to:from=8:1:1
+
+        // PSYoungGen：Parallel Scavenge（新生代垃圾收集器）
+        // ParOldGen：Parallel Old（老年代垃圾收集器）
         int size = 1024 * 1024;
 
         byte[] myAlloc1 = new byte[3 * size];
