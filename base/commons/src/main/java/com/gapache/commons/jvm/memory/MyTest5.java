@@ -6,7 +6,7 @@ package com.gapache.commons.jvm.memory;
  */
 public class MyTest5 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // jps
         // jmap -clstats pid
         // jmap -heap pid
@@ -35,6 +35,7 @@ public class MyTest5 {
         // System.gc()
         while (true) {
             System.out.println("hello world");
+            Thread.sleep(100);
         }
     }
 }
