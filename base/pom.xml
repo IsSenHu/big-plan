@@ -9,6 +9,7 @@
         <module>support-web</module>
         <module>support-redis</module>
         <module>support-protobuf</module>
+        <module>support-jpa</module>
     </modules>
 
     <!-- 基于spring-boot 2.2.2.RELEASE -->
