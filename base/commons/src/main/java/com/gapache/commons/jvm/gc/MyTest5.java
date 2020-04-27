@@ -18,7 +18,7 @@ public class MyTest5 {
         int size = 1024 * 1024;
         byte[] myAlloc1 = new byte[4 * size];
         System.out.println("111111");
- 
+
         byte[] myAlloc2 = new byte[4 * size];
         System.out.println("222222");
 
