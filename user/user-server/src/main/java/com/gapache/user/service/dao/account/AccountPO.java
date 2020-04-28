@@ -1,4 +1,4 @@
-package com.gapache.user.service.dao.po;
+package com.gapache.user.service.dao.account;
 
 import lombok.Getter;
 import lombok.Setter;

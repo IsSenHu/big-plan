@@ -1,4 +1,4 @@
-package com.gapache.sms.server.dao;
+package com.gapache.jpa;
 
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 @NoRepositoryBean
 public abstract class BaseJpaRepositoryBean<T, ID> extends SimpleJpaRepository<T, ID> {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public BaseJpaRepositoryBean(Class<T> tClass, EntityManager entityManager) {
         super(tClass, entityManager);
     }

@@ -3,8 +3,8 @@ package com.gapache.user.service.service.impl;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.ThrowUtils;
 import com.gapache.uid.UidGenerator;
-import com.gapache.user.service.dao.po.AccountPO;
-import com.gapache.user.service.dao.repository.AccountRepository;
+import com.gapache.user.service.dao.account.AccountPO;
+import com.gapache.user.service.dao.account.AccountRepository;
 import com.gapache.user.service.model.AccountError;
 import com.gapache.user.service.model.AccountRegisterRequest;
 import com.gapache.user.service.model.CheckAccountRequest;
@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * @author HuSen
@@ -30,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountServiceImpl(UidGenerator uidGenerator, AccountRepository accountRepository) {
         this.uidGenerator = uidGenerator;
         this.accountRepository = accountRepository;
+        this.accountRepository.test();
     }
 
     @Override

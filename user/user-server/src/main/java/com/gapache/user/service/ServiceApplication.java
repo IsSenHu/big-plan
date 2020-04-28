@@ -4,7 +4,6 @@ import com.gapache.redis.EnableRedis;
 import com.gapache.uid.annotation.EnableUidGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author HuSen
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableRedis(enableTransactionSupport = true)
 @EnableUidGenerator
 @SpringBootApplication
-@RestController
 public class ServiceApplication {
 
     public static void main(String[] args) {

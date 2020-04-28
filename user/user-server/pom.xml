@@ -8,8 +8,8 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>service</artifactId>
-    <name>service</name>
+    <artifactId>user-server</artifactId>
+    <name>user-server</name>
     <packaging>jar</packaging>
     <description>
         用户中心核心服务，可以提供restful服务/dubbo服务 + spring cloud sdk支持
@@ -35,19 +35,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>com.gapache</groupId>
+            <artifactId>support-jpa</artifactId>
+            <version>0.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-redis</artifactId>
             <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
@@ -58,7 +54,7 @@
     </dependencies>
 
     <build>
-        <finalName>service</finalName>
+        <finalName>user-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

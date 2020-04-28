@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ServerApplication {
 
     public static void main(String[] args) {
-        SmsSignRepository repository = SpringApplication.run(ServerApplication.class, args).getBean(SmsSignRepository.class);
-        repository.findBy();
+        SpringApplication.run(ServerApplication.class, args);
     }
 }
