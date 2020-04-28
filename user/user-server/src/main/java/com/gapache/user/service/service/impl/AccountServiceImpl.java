@@ -29,7 +29,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountServiceImpl(UidGenerator uidGenerator, AccountRepository accountRepository) {
         this.uidGenerator = uidGenerator;
         this.accountRepository = accountRepository;
-        this.accountRepository.test();
     }
 
     @Override
