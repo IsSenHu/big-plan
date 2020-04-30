@@ -8,8 +8,8 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>sms-service</artifactId>
-    <name>sms-service</name>
+    <artifactId>sms-server</artifactId>
+    <name>sms-server</name>
     <packaging>jar</packaging>
     <description>
         短信中心
@@ -61,7 +61,7 @@
     </dependencies>
 
     <build>
-        <finalName>sms-service</finalName>
+        <finalName>sms-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
