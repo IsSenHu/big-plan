@@ -10,6 +10,9 @@
         <module>support-redis</module>
         <module>support-protobuf</module>
         <module>support-jpa</module>
+        <module>support-dubbo</module>
+        <module>support-nacos-config</module>
+        <module>support-nacos-registry</module>
     </modules>
 
     <!-- 基于spring-boot 2.2.2.RELEASE -->
