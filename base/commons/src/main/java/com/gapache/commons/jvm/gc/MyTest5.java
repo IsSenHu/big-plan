@@ -9,6 +9,8 @@ package com.gapache.commons.jvm.gc;
  * -XX:SurvivorRatio=8
  * -XX:+UseConcMarkSweepGC
  *
+ * https://www.oracle.com/technetwork/tutorials/tutorials-1876574.html
+ *
  * @author HuSen
  * create on 2020/4/26 5:46 下午
  */
