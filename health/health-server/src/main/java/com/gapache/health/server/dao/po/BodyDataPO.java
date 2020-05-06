@@ -81,6 +81,6 @@ public class BodyDataPO extends BaseEntity<Long> {
     /**
      * 身体年龄
      */
-    @Column(name = "bone_age", nullable = false)
+    @Column(name = "body_age", nullable = false)
     private Integer bodyAge;
 }
