@@ -13,7 +13,7 @@ public enum BodyType {
     // 偏胖型
     FATTY("偏胖型"),
     // 结实偏胖型
-    STRONG_FAT("偏胖型"),
+    STRONG_FAT("结实偏胖型"),
     // 缺少运动型
     LACK_OF_EXERCISE("缺少运动型"),
     // 标准型
