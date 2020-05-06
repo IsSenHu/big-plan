@@ -19,5 +19,5 @@ public interface BodyDataRepository extends BaseJpaRepository<BodyDataPO, Long> 
      * @param end 结束时间
      * @return 查询结果
      */
-    List<BodyDataPO> findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(LocalDateTime start, LocalDateTime end);
+    List<BodyDataPO> findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(LocalDateTime end, LocalDateTime start);
 }

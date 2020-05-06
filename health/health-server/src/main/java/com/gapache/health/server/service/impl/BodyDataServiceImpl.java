@@ -42,7 +42,7 @@ public class BodyDataServiceImpl implements BodyDataService {
         LocalDateTime checkTime = LocalDateTime.now();
         LocalDateTime start = LocalDateTime.of(checkTime.getYear(), checkTime.getMonthValue(), checkTime.getDayOfMonth(), 0, 0, 0);
         LocalDateTime end = start.plusDays(1).plus(-1, ChronoUnit.NANOS);
-        List<BodyDataPO> oldList = bodyDataRepository.findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(start, end);
+        List<BodyDataPO> oldList = bodyDataRepository.findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(end, start);
         // 只保留最新的
         if (CollectionUtils.isNotEmpty(oldList)) {
             bodyDataRepository.deleteAll(oldList);
