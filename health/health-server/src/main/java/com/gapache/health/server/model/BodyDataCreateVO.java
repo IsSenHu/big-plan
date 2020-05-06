@@ -56,4 +56,8 @@ public class BodyDataCreateVO implements Serializable {
      * 骨量
      */
     private Double boneMass;
+    /**
+     * 身体年龄
+     */
+    private Integer bodyAge;
 }

@@ -78,4 +78,9 @@ public class BodyDataPO extends BaseEntity<Long> {
      */
     @Column(name = "bone_mass", nullable = false)
     private Double boneMass;
+    /**
+     * 身体年龄
+     */
+    @Column(name = "bone_age", nullable = false)
+    private Integer bodyAge;
 }

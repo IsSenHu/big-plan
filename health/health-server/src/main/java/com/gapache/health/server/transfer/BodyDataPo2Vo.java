@@ -27,6 +27,7 @@ public class BodyDataPo2Vo implements Function<BodyDataPO, BodyDataVO> {
         vo.setProtein(po.getProtein());
         vo.setVisceralFat(po.getVisceralFat());
         vo.setWeight(po.getWeight());
+        vo.setBodyAge(po.getBodyAge());
         return vo;
     }
 }
