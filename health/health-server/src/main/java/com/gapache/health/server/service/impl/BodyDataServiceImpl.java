@@ -56,7 +56,7 @@ public class BodyDataServiceImpl implements BodyDataService {
 
     @Override
     public JsonResult<List<BodyDataVO>> statistics() {
-        List<BodyDataPO> all = bodyDataRepository.findAll(Sort.by("check_time").ascending());
+        List<BodyDataPO> all = bodyDataRepository.findAll(Sort.by("checkTime").ascending());
         List<BodyDataVO> result = all.stream().map(po -> new BodyDataPo2Vo().apply(po)).collect(Collectors.toList());
         return JsonResult.of(result);
     }
