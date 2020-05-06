@@ -6,7 +6,6 @@
         <groupId>com.gapache</groupId>
         <artifactId>health</artifactId>
         <version>0.0.1</version>
-        <relativePath/>
     </parent>
     <artifactId>health-server</artifactId>
     <version>0.0.1</version>
