@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author HuSen
@@ -25,6 +26,13 @@ public class PageResult<T> implements Serializable {
         PageResult<T> result = new PageResult<>();
         result.setTotal(total);
         result.setItems(data.stream().map(function).collect(Collectors.toList()));
+        return result;
+    }
+
+    public static <T, PO> PageResult<T> of(long total, Function<PO, T> function, Stream<PO> data) {
+        PageResult<T> result = new PageResult<>();
+        result.setTotal(total);
+        result.setItems(data.map(function).collect(Collectors.toList()));
         return result;
     }
 
