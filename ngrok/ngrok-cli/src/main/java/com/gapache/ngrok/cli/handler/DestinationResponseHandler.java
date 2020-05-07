@@ -70,7 +70,11 @@ public class DestinationResponseHandler extends SimpleChannelInboundHandler<Full
         Map<String, Object> singleMap = new HashMap<>(1);
         singleMap.put("x-ngrok", "1");
         httpClient.request(clientResponse, singleMap)
-                .addListener(future -> ctx.close());
+                .addListener(future -> {
+                    ctx.close();
+                    requestClient.getConnection().close();
+                    requestClient.getGroup().shutdownGracefully();
+                });
     }
 
     @Override
