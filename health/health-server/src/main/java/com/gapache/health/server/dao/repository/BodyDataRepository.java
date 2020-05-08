@@ -13,11 +13,11 @@ import java.util.List;
 public interface BodyDataRepository extends BaseJpaRepository<BodyDataPO, Long> {
 
     /**
-     * 查询检查时间位于start和end之间的身体数据
+     * 查询检查时间大于等于start以及小于end之间的身体数据
      *
      * @param start 开始时间
      * @param end 结束时间
      * @return 查询结果
      */
-    List<BodyDataPO> findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(LocalDateTime end, LocalDateTime start);
+    List<BodyDataPO> findAllByCheckTimeLessThanAndCheckTimeGreaterThanEqual(LocalDateTime end, LocalDateTime start);
 }

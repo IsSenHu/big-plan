@@ -41,8 +41,8 @@ public class BodyDataServiceImpl implements BodyDataService {
     public JsonResult<Long> create(BodyDataCreateVO vo) {
         LocalDateTime checkTime = LocalDateTime.now();
         LocalDateTime start = LocalDateTime.of(checkTime.getYear(), checkTime.getMonthValue(), checkTime.getDayOfMonth(), 0, 0, 0);
-        LocalDateTime end = start.plusDays(1).plus(-1, ChronoUnit.NANOS);
-        List<BodyDataPO> oldList = bodyDataRepository.findAllByCheckTimeLessThanEqualAndCheckTimeGreaterThanEqual(end, start);
+        LocalDateTime end = start.plusDays(1);
+        List<BodyDataPO> oldList = bodyDataRepository.findAllByCheckTimeLessThanAndCheckTimeGreaterThanEqual(end, start);
         // 只保留最新的
         if (CollectionUtils.isNotEmpty(oldList)) {
             bodyDataRepository.deleteAll(oldList);
