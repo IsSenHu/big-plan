@@ -11,7 +11,6 @@ import com.gapache.health.server.model.BodyDataVO;
 import com.gapache.health.server.service.BodyDataService;
 import com.gapache.health.server.transfer.BodyDataPo2Vo;
 import com.gapache.jpa.PageHelper;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +42,7 @@ public class BodyDataServiceImpl implements BodyDataService {
         LocalDateTime end = start.plusDays(1);
         List<BodyDataPO> oldList = bodyDataRepository.findAllByCheckTimeLessThanAndCheckTimeGreaterThanEqual(end, start);
         // 只保留最新的
-        if (CollectionUtils.isNotEmpty(oldList)) {
-            bodyDataRepository.deleteAll(oldList);
-        }
+        bodyDataRepository.deleteAll(oldList);
         BodyDataPO po = new BodyDataPO();
         BeanUtils.copyProperties(vo, po);
         po.setCheckTime(checkTime);
