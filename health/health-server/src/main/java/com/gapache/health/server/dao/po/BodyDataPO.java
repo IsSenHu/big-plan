@@ -1,6 +1,6 @@
 package com.gapache.health.server.dao.po;
 
-import com.gapache.health.server.model.BodyType;
+import com.gapache.health.server.model.body.BodyType;
 import com.gapache.jpa.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;

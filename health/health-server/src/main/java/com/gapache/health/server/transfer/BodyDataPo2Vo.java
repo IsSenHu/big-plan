@@ -1,7 +1,7 @@
 package com.gapache.health.server.transfer;
 
 import com.gapache.health.server.dao.po.BodyDataPO;
-import com.gapache.health.server.model.BodyDataVO;
+import com.gapache.health.server.model.body.BodyDataVO;
 
 import java.util.function.Function;
 

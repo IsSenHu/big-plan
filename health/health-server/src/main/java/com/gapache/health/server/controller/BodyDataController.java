@@ -3,10 +3,10 @@ package com.gapache.health.server.controller;
 import com.gapache.commons.model.IPageRequest;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.PageResult;
-import com.gapache.health.server.model.BodyDataCreateVO;
-import com.gapache.health.server.model.BodyDataQueryVO;
-import com.gapache.health.server.model.BodyDataVO;
-import com.gapache.health.server.model.BodyType;
+import com.gapache.health.server.model.body.BodyDataCreateVO;
+import com.gapache.health.server.model.body.BodyDataQueryVO;
+import com.gapache.health.server.model.body.BodyDataVO;
+import com.gapache.health.server.model.body.BodyType;
 import com.gapache.health.server.service.BodyDataService;
 import org.springframework.web.bind.annotation.*;
 

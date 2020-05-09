@@ -1,21 +1,31 @@
-package com.gapache.health.server.model;
+package com.gapache.health.server.model.body;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author HuSen
- * create on 2020/5/6 10:08 上午
+ * create on 2020/5/6 11:32 上午
  */
 @Data
-public class BodyDataCreateVO implements Serializable {
-    private static final long serialVersionUID = -8393570136758452636L;
-
+public class BodyDataVO implements Serializable {
+    private static final long serialVersionUID = -7188866025965664668L;
+    /**
+     * ID
+     */
+    private Long id;
     /**
      * 身体得分
      */
     private Integer bodyScore;
+    /**
+     * 检查时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private LocalDateTime checkTime;
     /**
      * 体重
      */

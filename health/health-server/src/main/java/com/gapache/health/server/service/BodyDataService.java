@@ -3,9 +3,9 @@ package com.gapache.health.server.service;
 import com.gapache.commons.model.IPageRequest;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.PageResult;
-import com.gapache.health.server.model.BodyDataCreateVO;
-import com.gapache.health.server.model.BodyDataQueryVO;
-import com.gapache.health.server.model.BodyDataVO;
+import com.gapache.health.server.model.body.BodyDataCreateVO;
+import com.gapache.health.server.model.body.BodyDataQueryVO;
+import com.gapache.health.server.model.body.BodyDataVO;
 
 import java.util.List;
 

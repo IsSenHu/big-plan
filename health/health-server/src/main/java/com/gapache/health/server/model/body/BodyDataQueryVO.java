@@ -1,4 +1,4 @@
-package com.gapache.health.server.model;
+package com.gapache.health.server.model.body;
 
 import lombok.Data;
 
