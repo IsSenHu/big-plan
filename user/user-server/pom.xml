@@ -41,6 +41,11 @@
         </dependency>
 
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-redis</artifactId>
             <version>0.0.1</version>
