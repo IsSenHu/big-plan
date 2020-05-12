@@ -69,7 +69,7 @@
         <!-- dubbo nacos版本 -->
         <dubbo.nacos.version>2.6.7</dubbo.nacos.version>
         <!-- spring boot mybatis starter版本 -->
-        <boot.mybatis.version>2.1.1</boot.mybatis.version>
+        <boot.mybatis.version>3.3.1.tmp</boot.mybatis.version>
     </properties>
 
     <dependencies>
@@ -210,8 +210,8 @@
             </dependency>
             <!-- 指定 boot mybatis -->
             <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${boot.mybatis.version}</version>
             </dependency>
         </dependencies>
