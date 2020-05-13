@@ -37,7 +37,7 @@ public class OrderMapperTest {
     public void insert() {
         OrderPO order = new OrderPO();
         order.setOrderBn(UUID.randomUUID().toString().replaceAll("-", ""));
-//        Assert.assertEquals(orderMapper.insert(order), 1);
+        Assert.assertEquals(orderMapper.insert(order), 1);
         System.out.println(JSON.toJSONString(order, true));
     }
 
