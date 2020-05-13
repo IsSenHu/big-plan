@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gapache.mybatis.demo.dao.mapper.OrderMapper">
+
+    <resultMap id="order" type="com.gapache.mybatis.demo.dao.po.OrderPO">
+        <id column="oid" property="id" javaType="java.lang.Long"/>
+        <result column="order_bn" property="orderBn"/>
+        <collection property="items" ofType="com.gapache.mybatis.demo.dao.po.OrderItemPO">
+            <id column="oiid" property="id" javaType="java.lang.Long"/>
+            <result column="order_bn" property="orderBn"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectPage" resultMap="order">
+        SELECT
+            o.id AS oid,
+            o.order_bn AS order_bn,
+            oi.id AS oiid,
+            oi.price AS price
+        FROM tb_order AS o LEFT JOIN tb_order_item AS oi ON o.order_bn = oi.order_bn
+    </select>
+</mapper>
