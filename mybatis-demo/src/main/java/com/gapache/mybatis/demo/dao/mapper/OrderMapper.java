@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderMapper extends BaseMapper<OrderPO> {
 
-    IPage<OrderPO> selectPage(IPage<OrderPO> page);
+    IPage<OrderPO> page(IPage<OrderPO> page);
 }

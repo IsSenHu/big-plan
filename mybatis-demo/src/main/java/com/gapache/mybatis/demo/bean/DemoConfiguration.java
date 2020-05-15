@@ -1,4 +1,4 @@
-package com.gapache.mybatis.demo.dao.test;
+package com.gapache.mybatis.demo.bean;
 
 import com.gapache.mybatis.demo.dao.po.OrderJPO;
 import com.gapache.mybatis.demo.dao.po.OrderPO;

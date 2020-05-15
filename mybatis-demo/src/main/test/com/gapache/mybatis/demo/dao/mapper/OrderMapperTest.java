@@ -62,7 +62,7 @@ public class OrderMapperTest {
         IPage<OrderPO> page = new Page<>();
         page.setCurrent(1);
         page.setSize(2);
-        orderMapper.selectPage(page);
+        orderMapper.page(page);
         System.out.println(JSON.toJSONString(page, true));
     }
 

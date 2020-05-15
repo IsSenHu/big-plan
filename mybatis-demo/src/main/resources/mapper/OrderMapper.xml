@@ -13,7 +13,7 @@
         </collection>
     </resultMap>
 
-    <select id="selectPage" resultMap="order">
+    <select id="page" resultMap="order">
         SELECT
             o.id AS oid,
             o.order_bn AS order_bn,

@@ -23,6 +23,6 @@ public class OrderDaoImpl extends BaseJpaRepositoryBean<OrderJPO, Long> implemen
 
     @Override
     public IPage<OrderPO> selectPage(IPage<OrderPO> page) {
-        return orderMapper.selectPage(page);
+        return orderMapper.page(page);
     }
 }
