@@ -23,8 +23,6 @@ public class DemoService {
         IPage<OrderPO> page = new Page<>();
         page.setCurrent(1).setSize(10);
         orderMapper.page(page);
-        if (log.isInfoEnabled()) {
-            log.info("test:{}", JSON.toJSONString(page));
-        }
+        log.info("test:{}", JSON.toJSONString(page));
     }
 }

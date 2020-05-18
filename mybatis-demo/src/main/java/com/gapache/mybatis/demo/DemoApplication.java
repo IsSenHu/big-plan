@@ -2,6 +2,7 @@ package com.gapache.mybatis.demo;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.gapache.mybatis.demo.annotation.Demo;
 import com.gapache.mybatis.demo.registrar.DemoImportBeanDefinitionRegistrar;
 import com.gapache.mybatis.demo.service.DemoService;
 import org.mybatis.spring.annotation.MapperScan;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @MapperScan("com.gapache.mybatis.demo.dao.mapper")
 @Import(DemoImportBeanDefinitionRegistrar.class)
+@Demo("be handsome")
 public class DemoApplication {
 
     @Bean
