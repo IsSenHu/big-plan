@@ -2,10 +2,13 @@ package com.gapache.mybatis.demo;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.gapache.mybatis.demo.registrar.DemoImportBeanDefinitionRegistrar;
+import com.gapache.mybatis.demo.service.DemoService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author HuSen
@@ -13,6 +16,7 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 @MapperScan("com.gapache.mybatis.demo.dao.mapper")
+@Import(DemoImportBeanDefinitionRegistrar.class)
 public class DemoApplication {
 
     @Bean
@@ -28,6 +32,6 @@ public class DemoApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(DemoApplication.class, args).getBean(DemoService.class).test();
     }
 }
