@@ -1,7 +1,6 @@
 package com.gapache.mybatis.demo.annotation;
 
 import com.gapache.mybatis.demo.aware.DemoImportAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

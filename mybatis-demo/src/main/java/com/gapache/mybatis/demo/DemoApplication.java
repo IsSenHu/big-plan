@@ -3,11 +3,15 @@ package com.gapache.mybatis.demo;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.gapache.mybatis.demo.annotation.Demo;
+import com.gapache.mybatis.demo.properties.DemoProperties;
 import com.gapache.mybatis.demo.registrar.DemoImportBeanDefinitionRegistrar;
+import com.gapache.mybatis.demo.service.AaService;
+import com.gapache.mybatis.demo.service.BbService;
 import com.gapache.mybatis.demo.service.DemoService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -34,6 +38,21 @@ public class DemoApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args).getBean(DemoService.class).test();
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(DemoApplication.class, args);
+        applicationContext.getBean(DemoService.class).test();
+        System.out.println(applicationContext.getBean(DemoProperties.class));
+        AaService aaService = applicationContext.getBean(AaService.class);
+        System.out.println(aaService);
+        aaService.test();
+        aaService = applicationContext.getBean(AaService.class);
+        System.out.println(aaService);
+        aaService.test();
+        System.out.println("===========================================");
+        BbService bbService = applicationContext.getBean(BbService.class);
+        System.out.println(bbService);
+        bbService.test();
+        bbService = applicationContext.getBean(BbService.class);
+        System.out.println(bbService);
+        bbService.test();
     }
 }
