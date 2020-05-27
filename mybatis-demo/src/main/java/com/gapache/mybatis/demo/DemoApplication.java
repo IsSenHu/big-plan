@@ -3,6 +3,7 @@ package com.gapache.mybatis.demo;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.gapache.mybatis.demo.annotation.Demo;
+import com.gapache.mybatis.demo.lookup.BaseLookupDemo;
 import com.gapache.mybatis.demo.properties.DemoProperties;
 import com.gapache.mybatis.demo.registrar.DemoImportBeanDefinitionRegistrar;
 import com.gapache.mybatis.demo.service.AaService;
@@ -54,5 +55,8 @@ public class DemoApplication {
         bbService = applicationContext.getBean(BbService.class);
         System.out.println(bbService);
         bbService.test();
+
+        applicationContext.getBean(BaseLookupDemo.class).process();
+        applicationContext.getBean(BaseLookupDemo.class).process();
     }
 }
