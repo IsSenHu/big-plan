@@ -14,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Import;
 @MapperScan("com.gapache.mybatis.demo.dao.mapper")
 @Import(DemoImportBeanDefinitionRegistrar.class)
 @Demo("be handsome")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class DemoApplication {
 
     @Bean

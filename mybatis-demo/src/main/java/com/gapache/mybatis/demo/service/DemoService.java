@@ -3,6 +3,7 @@ package com.gapache.mybatis.demo.service;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gapache.mybatis.demo.annotation.Log;
 import com.gapache.mybatis.demo.dao.mapper.OrderMapper;
 import com.gapache.mybatis.demo.dao.po.OrderPO;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class DemoService {
     private OrderMapper orderMapper;
 
+    @Log
     public void test() {
         IPage<OrderPO> page = new Page<>();
         page.setCurrent(1).setSize(10);
