@@ -1,7 +1,8 @@
 package com.gapache.commons.algorithm.structure;
 
 /**
- * 数组实现队列
+ * 数组实现环形队列
+ * 最好理解的一种方式
  *
  * @author HuSen
  * @since 2020/5/28 2:36 下午
@@ -11,16 +12,19 @@ public class ArrayQueue {
     private int[] arr;
     /** 表示数组的最大容量 */
     private int maxSize;
-    /** 队列头的前一个位置 */
+    /** 下一个取的位置 */
     private int front;
-    /** 队列尾 */
+    /** 下一个放的位置 */
     private int rear;
+    /** 总大小 */
+    private int size;
 
     public ArrayQueue(int maxSize) {
         this.maxSize = maxSize;
         arr = new int[this.maxSize];
-        front = -1;
-        rear = -1;
+        front = 0;
+        rear = 0;
+        size = 0;
     }
 
     /**
@@ -29,7 +33,7 @@ public class ArrayQueue {
      * @return 队列是否满
      */
     private boolean isFull() {
-        return rear == maxSize - 1;
+        return this.size == maxSize;
     }
 
     /**
@@ -38,7 +42,7 @@ public class ArrayQueue {
      * @return 队列是否为空
      */
     private boolean isEmpty() {
-        return rear == front;
+        return this.size() == 0;
     }
 
     /**
@@ -50,9 +54,9 @@ public class ArrayQueue {
         if (isFull()) {
             return;
         }
-        // Coverage of Spring’s integration with AspectJ is also provided.
-        rear++;
         arr[rear] = n;
+        rear = (rear + 1) % maxSize;
+        size++;
     }
 
     /**
@@ -64,8 +68,11 @@ public class ArrayQueue {
         if (isEmpty()) {
             throw new IllegalStateException("arr is empty!!!");
         }
-        front++;
-        return arr[front];
+        int i = arr[front];
+        arr[front] = 0;
+        front = (front + 1) % maxSize;
+        size--;
+        return i;
     }
 
     /**
@@ -91,12 +98,22 @@ public class ArrayQueue {
         if (isEmpty()) {
             throw new IllegalStateException("arr is empty!!!");
         }
-        return arr[front + 1];
+        return arr[front];
+    }
+
+    /**
+     * 队列中的数据个数
+     *
+     * @return 个数
+     */
+    private int size() {
+        return this.size;
     }
 
     public static void main(String[] args) {
-        ArrayQueue queue = new ArrayQueue(10);
+        ArrayQueue queue = new ArrayQueue(3);
         queue.show();
+        System.out.println(queue.size());
 
         queue.push(1);
         queue.show();
@@ -104,12 +121,19 @@ public class ArrayQueue {
         queue.show();
         queue.push(3);
         queue.show();
+        System.out.println("size: " + queue.size());
 
         System.out.println(queue.peek());
         queue.show();
-
         System.out.println(queue.pop());
+        queue.show();
+        queue.push(4);
+        queue.show();
         System.out.println(queue.pop());
+        queue.show();
         System.out.println(queue.pop());
+        queue.show();
+        System.out.println(queue.pop());
+        queue.show();
     }
 }
