@@ -3,6 +3,7 @@ package com.gapache.commons.algorithm.structure;
 /**
  * 数组实现环形队列
  * 最好理解的一种方式
+ * 还有一种取模的方式
  *
  * @author HuSen
  * @since 2020/5/28 2:36 下午
