@@ -276,6 +276,8 @@ class Node {
     private String name;
     private String nickName;
     private Node next;
+    /** 双向链表用 */
+    private Node pre;
 
     public Node(int no, String name, String nickName) {
         this.no = no;
