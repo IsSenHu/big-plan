@@ -6,6 +6,7 @@
     <modules>
         <module>cloud-provider-payment8001</module>
         <module>cloud-consumer-order8002</module>
+        <module>cloud-sdk</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
