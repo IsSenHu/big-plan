@@ -3,6 +3,8 @@ package com.gapache.commons.algorithm.structure;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Stack;
+
 /**
  * 单链表，有顺序的
  *
@@ -105,6 +107,129 @@ public class LinkedList {
         return sign.getNext() == null;
     }
 
+    public int size() {
+        int size = 0;
+        Node next = sign.getNext();
+        while (next != null) {
+            size++;
+            next = next.getNext();
+        }
+        return size;
+    }
+
+    /**
+     * 找到链表的倒数第index个元素
+     *
+     * @param index 倒数第几个
+     * @return 找到的元素
+     */
+    public Node findByReciprocal(int index) {
+        int size = size();
+        if (index > size) {
+            System.out.println("没有找到!!!");
+            return null;
+        }
+        int target = size - index;
+        Node result = sign.getNext();
+        for (int i = 0; i < target; i++) {
+            result = result.getNext();
+        }
+        return result;
+    }
+
+    /**
+     * 单链表的反转
+     */
+    public void reverse() {
+        if (isEmpty()) {
+            System.out.println("链表为空!!!");
+        }
+        Node newLinkedList = new Node(0, null, null);
+        Node next = sign.getNext();
+        while (next != null) {
+            // 保存临时节点
+            Node temp = next;
+            next = next.getNext();
+            temp.setNext(newLinkedList.getNext());
+            // 新找到的元素作为头节点
+            newLinkedList.setNext(temp);
+        }
+        sign = newLinkedList;
+    }
+
+    /**
+     * 从尾到头打印链表
+     */
+    public void reverseList() {
+        Stack<Node> stack = new Stack<>();
+        Node next = sign.getNext();
+        while (next != null) {
+            stack.push(next);
+            next = next.getNext();
+        }
+        while (!stack.empty()) {
+            System.out.println(stack.pop());
+        }
+    }
+
+    /**
+     * 合并两个有序的单链表，合并之后的单链表依然有序
+     *
+     * @param merged 被合并的链表
+     * @return 合并后的新链表
+     */
+    public LinkedList merge(LinkedList merged) {
+        LinkedList newLinkedList = new LinkedList();
+        if (merged.isEmpty() || this.isEmpty()) {
+            return newLinkedList;
+        }
+        Node head = null;
+        Node temp = null;
+        Node selfHead = sign.getNext();
+        Node mergedHead = merged.sign.getNext();
+        while (selfHead != null || mergedHead != null) {
+            if (selfHead == null) {
+                if (temp != null) {
+                    temp.setNext(mergedHead);
+                }
+                temp = mergedHead;
+                mergedHead = mergedHead.getNext();
+                continue;
+            }
+            if (mergedHead == null) {
+                if (temp != null) {
+                    temp.setNext(selfHead);
+                }
+                temp = selfHead;
+                selfHead = selfHead.getNext();
+                continue;
+            }
+            if (selfHead.getNo() <= mergedHead.getNo()) {
+                if (head == null) {
+                    head = selfHead;
+                }
+                if (temp != null) {
+                    temp.setNext(selfHead);
+                }
+                temp = selfHead;
+                selfHead = selfHead.getNext();
+                continue;
+            }
+            if (selfHead.getNo() > mergedHead.getNo()) {
+                if (temp != null) {
+                    temp.setNext(mergedHead);
+                }
+                temp = mergedHead;
+                mergedHead = mergedHead.getNext();
+            }
+            if (head == null) {
+                head = temp;
+            }
+        }
+        newLinkedList.sign.setNext(head);
+        return newLinkedList;
+    }
+
     public static void main(String[] args) {
         LinkedList linkedList = new LinkedList();
         linkedList.addByNo(new Node(2, "2", "2"));
@@ -123,6 +248,24 @@ public class LinkedList {
         System.out.println(linkedList.remove(4));
         System.out.println("======================");
         linkedList.list();
+        System.out.println(linkedList.size());
+        System.out.println(linkedList.findByReciprocal(3));
+        System.out.println("======================");
+        linkedList.reverse();
+        linkedList.list();
+        System.out.println("======================");
+        linkedList.reverseList();
+        System.out.println("======================");
+        LinkedList linkedList2 = new LinkedList();
+        linkedList2.addByNo(new Node(4, "4", "4"));
+        linkedList2.addByNo(new Node(5, "5", "5"));
+        linkedList2.addByNo(new Node(6, "6", "6"));
+        linkedList2.addByNo(new Node(7, "7", "7"));
+        linkedList.reverse();
+        linkedList.list();
+        System.out.println("======================");
+        LinkedList merge = linkedList.merge(linkedList2);
+        merge.list();
     }
 }
 
