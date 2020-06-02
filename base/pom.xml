@@ -14,6 +14,7 @@
         <module>support-nacos-config</module>
         <module>support-nacos-registry</module>
         <module>support-mybatis</module>
+        <module>../cloud</module>
     </modules>
 
     <!-- 基于spring-boot 2.2.2.RELEASE -->
@@ -131,37 +132,6 @@
                 <artifactId>protostuff-runtime</artifactId>
                 <version>${com.dyuproject.protostuff.version}</version>
             </dependency>
-            <!-- 指定protobuf的依赖包 -->
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${protobuf.version}</version>
-            </dependency>
-            <!-- 指定io.grpc的依赖包 -->
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-netty</artifactId>
-                <version>${grpc.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-protobuf</artifactId>
-                <version>${grpc.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-stub</artifactId>
-                <version>${grpc.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- 指定protobuf-java-format的依赖包 -->
-            <dependency>
-                <groupId>com.googlecode.protobuf-java-format</groupId>
-                <artifactId>protobuf-java-format</artifactId>
-                <version>${protobuf-java-format.version}</version>
-            </dependency>
             <!-- 指定okhttp3的依赖包 -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
@@ -228,24 +198,7 @@
         </extensions>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.xolstice.maven.plugins</groupId>
-                    <artifactId>protobuf-maven-plugin</artifactId>
-                    <version>${protobuf-maven-plugin.version}</version>
-                    <configuration>
-                        <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
-                        <pluginId>grpc-java</pluginId>
-                        <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>compile</goal>
-                                <goal>compile-custom</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
