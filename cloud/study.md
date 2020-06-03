@@ -37,7 +37,7 @@
 #### 服务降级
 1. Hystrix（思想值得借鉴）
 2. resilience4j（官网，国外推荐）
-3. sentient（阿里巴巴的，国内推荐）
+3. sentienl（阿里巴巴的，国内推荐）
 #### 服务网关
 1. Zuul
 2. Zuul2

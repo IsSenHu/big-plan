@@ -4,9 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>cloud-provider-payment8001</module>
-        <module>cloud-consumer-order8002</module>
+        <module>cloud-provider-payment</module>
+        <module>cloud-consumer-order</module>
         <module>cloud-sdk</module>
+        <module>cloud-eureka-server</module>
+        <module>cloud-provider-payment-zk</module>
+        <module>cloud-consumer-order-zk</module>
+        <module>cloud-provider-payment-consul</module>
+        <module>cloud-consumer-order-consul</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

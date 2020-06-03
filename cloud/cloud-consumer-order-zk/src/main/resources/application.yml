@@ -1,0 +1,8 @@
+server:
+  port: 8005
+spring:
+  application:
+    name: cloud-order-service
+  cloud:
+    zookeeper:
+      connect-string: 118.24.38.46:2181
