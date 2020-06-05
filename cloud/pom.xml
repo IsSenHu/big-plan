@@ -12,6 +12,7 @@
         <module>cloud-consumer-order-zk</module>
         <module>cloud-provider-payment-consul</module>
         <module>cloud-consumer-order-consul</module>
+        <module>cloud-consumer-order-feign</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
