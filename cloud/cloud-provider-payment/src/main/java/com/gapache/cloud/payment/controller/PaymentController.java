@@ -4,6 +4,7 @@ import com.gapache.cloud.payment.service.PaymentService;
 import com.gapache.cloud.sdk.PaymentVO;
 import com.gapache.commons.model.JsonResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
+
+    @Value("${server.port}")
+    private Integer port;
 
     private final PaymentService paymentService;
 
@@ -51,5 +55,10 @@ public class PaymentController {
         }
 
         return discoveryClient;
+    }
+
+    @GetMapping("/getPort")
+    public Integer getPort() {
+        return port;
     }
 }
