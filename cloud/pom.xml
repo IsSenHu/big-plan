@@ -13,6 +13,7 @@
         <module>cloud-provider-payment-consul</module>
         <module>cloud-consumer-order-consul</module>
         <module>cloud-consumer-order-feign</module>
+        <module>cloud-provider-hystrix-payment</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

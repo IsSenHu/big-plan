@@ -61,4 +61,14 @@ public class PaymentController {
     public Integer getPort() {
         return port;
     }
+
+    @GetMapping("/getPortTimeout")
+    public Integer getPortTimeout() {
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return port;
+    }
 }

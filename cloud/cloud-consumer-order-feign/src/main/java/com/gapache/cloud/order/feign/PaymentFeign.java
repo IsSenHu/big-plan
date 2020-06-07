@@ -15,4 +15,7 @@ public interface PaymentFeign {
 
     @GetMapping("/{id}")
     JsonResult<PaymentVO> get(@PathVariable("id") Long id);
+
+    @GetMapping("/getPortTimeout")
+    Integer getPortTimeout();
 }
