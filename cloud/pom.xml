@@ -14,6 +14,8 @@
         <module>cloud-consumer-order-consul</module>
         <module>cloud-consumer-order-feign</module>
         <module>cloud-provider-hystrix-payment</module>
+        <module>cloud-hystrix-dashboard</module>
+        <module>cloud-gateway</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
