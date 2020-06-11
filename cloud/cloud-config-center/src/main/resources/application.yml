@@ -13,6 +13,13 @@ spring:
             - cloud/cloud-config
 #          读取分支
       label: master
+#      mq配置
+  rabbitmq:
+    host: 118.24.38.46
+    port: 5672
+    username: husen
+    password: 521428
+    virtual-host: /
 eureka:
   client:
     register-with-eureka: true
@@ -24,3 +31,9 @@ eureka:
     instance-id: config-center
     #    访问路径可以显示ip地址
     prefer-ip-address: true
+#    暴露bus刷新配置的端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'bus-refresh'

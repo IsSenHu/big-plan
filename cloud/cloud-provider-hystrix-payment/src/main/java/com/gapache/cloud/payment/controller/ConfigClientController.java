@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * curl -X POST "http://localhost:8009/actuator/refresh"
+ *
  * @author HuSen
  * @since 2020/6/11 10:44 上午
  */

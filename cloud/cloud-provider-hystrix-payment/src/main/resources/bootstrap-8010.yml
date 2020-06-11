@@ -1,5 +1,5 @@
 server:
-  port: 8009
+  port: 8010
 spring:
   application:
     name: cloud-provider-hystrix-payment
@@ -9,6 +9,12 @@ spring:
       name: payment-hystrix
       profile: dev
       uri: http://localhost:3344
+  rabbitmq:
+    host: 118.24.38.46
+    port: 5672
+    username: husen
+    password: 521428
+    virtual-host: /
 eureka:
   client:
     register-with-eureka: true
