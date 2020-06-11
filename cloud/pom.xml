@@ -17,6 +17,7 @@
         <module>cloud-hystrix-dashboard</module>
         <module>cloud-gateway</module>
         <module>cloud-config-center</module>
+        <module>cloud-stream-rabbitmq-provider</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
