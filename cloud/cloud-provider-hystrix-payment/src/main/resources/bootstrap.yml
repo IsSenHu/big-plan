@@ -1,0 +1,17 @@
+server:
+  port: 8009
+spring:
+  application:
+    name: cloud-provider-hystrix-payment
+  cloud:
+    config:
+      label: master
+      name: payment-hystrix
+      profile: dev
+      uri: http://localhost:3344
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001:7001/eureka/,http://eureka7002:7002/eureka/
