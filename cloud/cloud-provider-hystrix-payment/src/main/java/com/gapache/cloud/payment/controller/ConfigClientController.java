@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * curl -X POST "http://localhost:8009/actuator/refresh"
+ * curl -X POST "http://localhost:3344/actuator/bus-refresh"
  *
  * @author HuSen
  * @since 2020/6/11 10:44 上午
