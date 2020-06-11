@@ -7,10 +7,10 @@ spring:
     config:
       server:
         git:
-          uri: git@github.com:IsSenHu/spring-cloud-config.git
+          uri: https://github.com/IsSenHu/big-plan
 #          搜索目录
           search-paths:
-            - config
+            - cloud/cloud-config
 #          读取分支
       label: master
 eureka:
