@@ -16,6 +16,7 @@
         <module>cloud-provider-hystrix-payment</module>
         <module>cloud-hystrix-dashboard</module>
         <module>cloud-gateway</module>
+        <module>cloud-config-center</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
