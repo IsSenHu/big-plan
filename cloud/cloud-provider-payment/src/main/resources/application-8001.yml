@@ -16,6 +16,12 @@ spring:
     show-sql: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQL57Dialect
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+#      采样率介于0到1之间，1表示全部采集
+      probability: 1
 eureka:
   client:
     register-with-eureka: true

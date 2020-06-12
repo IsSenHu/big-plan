@@ -18,6 +18,7 @@
         <module>cloud-gateway</module>
         <module>cloud-config-center</module>
         <module>cloud-stream-rabbitmq-provider</module>
+        <module>cloud-stream-rabbitmq-consumer</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

@@ -7,6 +7,7 @@
 对具体的一个服务而言，应根据业务上下文，选择合适的语言、工具对其进行构建。
 
 [SpringBoot与SpringCloud版本支持关系](https://start.spring.io/actuator/info)
+https://dl.bintray.com/openzipkin/maven/io/zipkin/java/zipkin-server
 
     **约定大于配置大于编码
 

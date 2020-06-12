@@ -8,14 +8,14 @@
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>cloud-provider-payment</artifactId>
-    <name>cloud-provider-payment</name>
+    <artifactId>cloud-stream-rabbitmq-consumer</artifactId>
+    <name>cloud-stream-rabbitmq-consumer</name>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zipkin</artifactId>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
 
         <dependency>
@@ -32,17 +32,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>support-jpa</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
@@ -66,7 +55,7 @@
     </dependencies>
 
     <build>
-        <finalName>cloud-provider-payment</finalName>
+        <finalName>cloud-stream-rabbitmq-consumer</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
