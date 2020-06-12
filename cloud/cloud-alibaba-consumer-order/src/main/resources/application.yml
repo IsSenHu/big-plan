@@ -1,0 +1,14 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: nacos-order-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 118.24.38.46:8848
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -41,6 +41,8 @@
         <grpc.version>1.26.0</grpc.version>
         <!-- spring-cloud 版本使用Hoxton.SR1 -->
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+        <!--spring-cloud-alibaba 版本-->
+        <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
         <!-- guava 版本 -->
         <guava.version>28.1-jre</guava.version>
         <!-- lang3 版本 -->
@@ -94,6 +96,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 指定spring-cloud-alibaba使用的版本 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
