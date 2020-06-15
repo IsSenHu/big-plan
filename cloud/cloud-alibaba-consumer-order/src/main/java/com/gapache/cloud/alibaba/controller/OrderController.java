@@ -1,6 +1,5 @@
 package com.gapache.cloud.alibaba.controller;
 
-import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.gapache.cloud.alibaba.feign.PaymentFeign;
 import com.gapache.commons.model.JsonResult;
