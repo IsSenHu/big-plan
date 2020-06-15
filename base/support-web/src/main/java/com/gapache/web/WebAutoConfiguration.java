@@ -23,7 +23,7 @@ public class WebAutoConfiguration {
     public static class Advice {
 
         @ExceptionHandler(Exception.class)
-        public JsonResult<Object> exceptionHandler(Exception e) {
+        public JsonResult<String> exceptionHandler(Exception e) {
             log.error("请求发生异常:", e);
             if (e instanceof IException) {
                 IException iE = (IException) e;

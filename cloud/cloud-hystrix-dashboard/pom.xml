@@ -10,7 +10,7 @@
     </parent>
     <artifactId>cloud-hystrix-dashboard</artifactId>
     <name>cloud-hystrix-dashboard</name>
-    <packaging>cloud-hystrix-dashboard</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

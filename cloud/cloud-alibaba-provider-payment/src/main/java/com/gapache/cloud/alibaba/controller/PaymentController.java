@@ -1,5 +1,6 @@
 package com.gapache.cloud.alibaba.controller;
 
+import com.gapache.commons.model.JsonResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,8 @@ public class PaymentController {
     private String configInfo;
 
     @GetMapping("/getPort")
-    public String getPort() {
-        return this.port;
+    public JsonResult<String> getPort() {
+        return JsonResult.of(this.port);
     }
 
     @GetMapping("/getConfigInfo")

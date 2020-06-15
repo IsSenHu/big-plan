@@ -7,8 +7,24 @@ spring:
     nacos:
       discovery:
         server-addr: 118.24.38.46:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
+      datasource:
+        ds1:
+          nacos:
+            server-addr: 118.24.38.46:8848
+            dataId: ${spring.application.name}
+            data-type: json
+            rule-type: flow
+
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+
+feign:
+  hystrix:
+    enabled: true
