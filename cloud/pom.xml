@@ -21,6 +21,9 @@
         <module>cloud-stream-rabbitmq-consumer</module>
         <module>cloud-alibaba-provider-payment</module>
         <module>cloud-alibaba-consumer-order</module>
+        <module>seata-order-service</module>
+        <module>seata-storage-service</module>
+        <module>seata-account-service</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
