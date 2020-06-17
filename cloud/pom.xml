@@ -24,6 +24,7 @@
         <module>seata-order-service</module>
         <module>seata-storage-service</module>
         <module>seata-account-service</module>
+        <module>seata-business-service</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
