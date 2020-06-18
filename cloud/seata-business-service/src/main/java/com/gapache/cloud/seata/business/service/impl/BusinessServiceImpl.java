@@ -24,9 +24,9 @@ public class BusinessServiceImpl implements BusinessService {
     private StorageFeign storageFeign;
 
     @Override
-    @GlobalTransactional
+    @GlobalTransactional(name = "purchase", timeoutMills = 5000, rollbackFor = Exception.class)
     public JsonResult<OrderVO> purchase(String userId, String commodityCode, int orderCount) {
-        storageFeign.deduct(userId, orderCount);
+        storageFeign.deduct(commodityCode, orderCount);
         return orderFeign.create(userId, commodityCode, orderCount);
     }
 }

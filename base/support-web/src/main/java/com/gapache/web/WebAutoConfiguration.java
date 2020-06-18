@@ -1,6 +1,6 @@
 package com.gapache.web;
 
-import com.gapache.commons.model.IException;
+import com.gapache.commons.model.BusinessException;
 import com.gapache.commons.model.JsonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +25,8 @@ public class WebAutoConfiguration {
         @ExceptionHandler(Exception.class)
         public JsonResult<String> exceptionHandler(Exception e) {
             log.error("请求发生异常:", e);
-            if (e instanceof IException) {
-                IException iE = (IException) e;
+            if (e instanceof BusinessException) {
+                BusinessException iE = (BusinessException) e;
                 return JsonResult.of(iE.getError());
             } else {
                 return JsonResult.of(999999999, "未知异常");

@@ -5,9 +5,10 @@ spring:
     name: seata-account-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://118.24.38.46:3306/seata_acount?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://118.24.38.46:3306/seata_account?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
     username: root
     password: 521428Slyt!
+    type: com.alibaba.druid.pool.DruidDataSource
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +21,9 @@ spring:
     nacos:
       discovery:
         server-addr: 118.24.38.46:8848
+    alibaba:
+      seata:
+        tx-service-group: save
 
 management:
   endpoints:
@@ -27,6 +31,13 @@ management:
       exposure:
         include: '*'
 
+#  设置feign客户端超时时间（OpenFeign默认支持ribbon）
+ribbon:
+#  指的是建立连接后从服务器读取到可用资源所用的时间 默认1秒
+  ReadTimeout: 5000
+#  指的是建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用的时间
+  ConnectTimeout: 5000
+
 feign:
   hystrix:
-    enabled: false
+    enabled: true

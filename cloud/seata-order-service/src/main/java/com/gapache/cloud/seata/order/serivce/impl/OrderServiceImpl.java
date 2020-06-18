@@ -6,6 +6,9 @@ import com.gapache.cloud.seata.order.dao.repository.OrderRepository;
 import com.gapache.cloud.seata.order.feign.AccountFeign;
 import com.gapache.cloud.seata.order.serivce.OrderService;
 import com.gapache.commons.model.JsonResult;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.UUID;
  * @author HuSen
  * @since 2020/6/17 4:34 下午
  */
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -26,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
+    @GlobalTransactional(name = "purchase", timeoutMills = 5000, rollbackFor = Exception.class)
     public JsonResult<OrderVO> create(String userId, String commodityCode, int orderCount) {
         int orderMoney = calculate(commodityCode, orderCount);
         accountFeign.debit(userId, orderMoney);
@@ -40,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
         OrderVO vo = new OrderVO();
         BeanUtils.copyProperties(order, vo);
+        vo.setId(order.getId());
         return JsonResult.of(vo);
     }
 

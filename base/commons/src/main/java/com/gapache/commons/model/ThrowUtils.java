@@ -9,7 +9,7 @@ public final class ThrowUtils {
 
     public static void throwIfTrue(boolean testBool, Error error) {
         if (testBool) {
-            throw new IException(error);
+            throw new BusinessException(error);
         }
     }
 }

@@ -4,12 +4,13 @@ import com.gapache.cloud.sdk.OrderVO;
 import com.gapache.commons.model.JsonResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author HuSen
  * @since 2020/6/17 4:07 下午
  */
-@FeignClient(value = "seata-order-service", path = "/api/order")
+@FeignClient(value = "seata-order-service", path = "/api/order", fallback = OrderFeignFallback.class)
 public interface OrderFeign {
 
     /**
@@ -21,5 +22,5 @@ public interface OrderFeign {
      * @return 创建结果
      */
     @PostMapping("/create")
-    JsonResult<OrderVO> create(String userId, String commodityCode, int orderCount);
+    JsonResult<OrderVO> create(@RequestParam String userId, @RequestParam String commodityCode, @RequestParam int orderCount);
 }

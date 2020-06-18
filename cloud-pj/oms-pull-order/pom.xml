@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>oms-pull-order-sdk</module>
+        <module>oms-pull-order-server</module>
+    </modules>
+    <parent>
+        <artifactId>cloud-pj</artifactId>
+        <groupId>com.gapache</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <artifactId>oms-pull-order</artifactId>
+    <name>oms-pull-order</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>commons</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>oms-pull-order</finalName>
+    </build>
+</project>
