@@ -1,4 +1,4 @@
-package com.gapache.oms.order.base.model.vo;
+package com.gapache.oms.order.base.model.vo.order;
 
 import lombok.Data;
 
