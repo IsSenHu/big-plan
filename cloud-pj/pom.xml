@@ -6,6 +6,8 @@
     <modules>
         <module>oms-pull-order</module>
         <module>oms-order-base</module>
+        <module>oms-split-order</module>
+        <module>oms-store-location</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

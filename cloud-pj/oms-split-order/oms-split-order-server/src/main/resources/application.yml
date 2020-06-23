@@ -1,0 +1,28 @@
+server:
+  port: 7002
+spring:
+  application:
+    name: oms-pull-order-server
+  rabbitmq:
+    host: 118.24.38.46
+    port: 5672
+    username: husen
+    password: 521428
+    virtual-host: /
+  cloud:
+    stream:
+      binders:
+        defaultRabbit:
+          type: rabbit
+      bindings:
+        input:
+          destination: orderExchange
+          content-type: application/json
+          group: guangdong
+  redis:
+    host: 118.24.38.46
+    port: 6379
+    password: 521428Slyt
+logging:
+  level:
+    com.gapache.oms.split.order.server.message: debug
