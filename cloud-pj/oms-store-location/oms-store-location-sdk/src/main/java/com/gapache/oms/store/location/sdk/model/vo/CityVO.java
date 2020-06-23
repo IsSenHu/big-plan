@@ -1,5 +1,6 @@
 package com.gapache.oms.store.location.sdk.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2020/6/23 11:19 上午
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CityVO implements Serializable {
     private static final long serialVersionUID = 834713854879292723L;
     /**
