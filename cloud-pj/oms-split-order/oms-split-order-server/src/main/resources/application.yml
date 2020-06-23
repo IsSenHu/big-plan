@@ -2,7 +2,7 @@ server:
   port: 7002
 spring:
   application:
-    name: oms-pull-order-server
+    name: oms-split-order-server
   rabbitmq:
     host: 118.24.38.46
     port: 5672
@@ -10,6 +10,9 @@ spring:
     password: 521428
     virtual-host: /
   cloud:
+    nacos:
+      discovery:
+        server-addr: 118.24.38.46:8848
     stream:
       binders:
         defaultRabbit:
@@ -18,7 +21,7 @@ spring:
         input:
           destination: orderExchange
           content-type: application/json
-          group: guangdong
+          group: sichuan
   redis:
     host: 118.24.38.46
     port: 6379
@@ -26,3 +29,6 @@ spring:
 logging:
   level:
     com.gapache.oms.split.order.server.message: debug
+    com.gapache.oms.split.order.server.service: debug
+    com.gapache.oms.store.location.sdk.feign: debug
+

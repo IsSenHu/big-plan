@@ -13,7 +13,11 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>commons</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>

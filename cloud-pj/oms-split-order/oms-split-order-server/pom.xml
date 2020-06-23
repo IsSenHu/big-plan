@@ -13,6 +13,12 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- nacos 注册中心 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <!-- stream rabbit MQ 支持 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -39,6 +45,13 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-redis</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <!-- 门店中心sdk -->
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>oms-store-location-sdk</artifactId>
             <version>0.0.1</version>
         </dependency>
     </dependencies>

@@ -12,7 +12,7 @@ public enum OrderLuaScript implements LuaScript {
     // 检查订单号唯一性
     CHECK_ORDER_UNIQUE("lua/checkOrderUnique.lua");
 
-    private String path;
+    private final String path;
 
     OrderLuaScript(String path) {
         this.path = path;
