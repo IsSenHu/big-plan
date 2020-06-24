@@ -49,4 +49,8 @@ public class GeoCodeGeoResponseVO implements Serializable {
      * 经度
      */
     private Double longitude;
+    /**
+     * ??????不知道是啥东西
+     */
+    private String level;
 }
