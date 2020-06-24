@@ -7,13 +7,13 @@ import lombok.Getter;
  * create on 2020/1/14 14:25
  */
 @Getter
-public class BusinessException extends RuntimeException {
+public class IException extends RuntimeException {
     private static final long serialVersionUID = -8570405796076634812L;
 
     private Error error;
 
-    public BusinessException(Error error) {
-        super(error.getError(), null, false, false);
+    public IException(Error error) {
+        super(null, null, false, false);
         this.error = error;
     }
 }

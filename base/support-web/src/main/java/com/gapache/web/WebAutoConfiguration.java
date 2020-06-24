@@ -22,6 +22,11 @@ public class WebAutoConfiguration {
     @RestControllerAdvice
     public static class Advice {
 
+        /**
+         * 未知异常
+         */
+        private static final int UNKNOWN_ERROR = 999999999;
+
         @ExceptionHandler(Exception.class)
         public JsonResult<String> exceptionHandler(Exception e) {
             log.error("请求发生异常:", e);
@@ -29,7 +34,7 @@ public class WebAutoConfiguration {
                 BusinessException iE = (BusinessException) e;
                 return JsonResult.of(iE.getError());
             } else {
-                return JsonResult.of(999999999, "未知异常");
+                return JsonResult.of(UNKNOWN_ERROR, "未知异常");
             }
         }
     }

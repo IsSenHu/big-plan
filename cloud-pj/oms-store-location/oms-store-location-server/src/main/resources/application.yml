@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: oms-store-location-server
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
   cloud:
     nacos:
       discovery:
