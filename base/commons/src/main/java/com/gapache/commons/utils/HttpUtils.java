@@ -1,19 +1,13 @@
 package com.gapache.commons.utils;
 
-import org.apache.http.HttpResponse;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
-import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.nio.reactor.ConnectingIOReactor;
-import org.apache.http.nio.reactor.IOReactorException;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -23,7 +17,7 @@ import java.util.Map;
  */
 public class HttpUtils {
 
-    private static final CloseableHttpAsyncClient ASYNC_CLIENT;
+    private static final CloseableHttpClient SYNC_CLIENT;
 
     static {
         RequestConfig requestConfig = RequestConfig.custom()
@@ -32,69 +26,40 @@ public class HttpUtils {
                 .setConnectionRequestTimeout(500000)
                 .build();
 
-        IOReactorConfig ioReactorConfig = IOReactorConfig.custom().
-                setIoThreadCount(Runtime.getRuntime().availableProcessors())
-                .setSoKeepAlive(true)
-                .build();
-
-        ConnectingIOReactor ioReactor=null;
-        try {
-            ioReactor = new DefaultConnectingIOReactor(ioReactorConfig);
-        } catch (IOReactorException e) {
-            e.printStackTrace();
-        }
-
-        assert ioReactor != null;
-        PoolingNHttpClientConnectionManager connManager = new PoolingNHttpClientConnectionManager(ioReactor);
-        connManager.setMaxTotal(100);
-        connManager.setDefaultMaxPerRoute(100);
-
-        ASYNC_CLIENT = HttpAsyncClients.custom().
-                setConnectionManager(connManager)
+        SYNC_CLIENT = HttpClients.custom()
+                .setConnectionManager(new PoolingHttpClientConnectionManager())
                 .setDefaultRequestConfig(requestConfig)
                 .build();
-
-        ASYNC_CLIENT.start();
     }
 
-    public static void optionsAsync(String uri, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        HttpOptions httpOptions = new HttpOptions(uri);
-        headers.forEach(httpOptions::addHeader);
-        ASYNC_CLIENT.execute(httpOptions, callback);
-    }
-
-    public static void getAsync(String uri, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        HttpGet httpGet = new HttpGet(uri);
-        headers.forEach(httpGet::addHeader);
-        ASYNC_CLIENT.execute(httpGet, callback);
-    }
-
-    public static void postAsync(String uri, String body, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        headers.remove("Content-Length");
-        HttpPost httpPost = new HttpPost(uri);
-        headers.forEach(httpPost::addHeader);
-        StringEntity entity = null;
+    public static String getSync(String uri, Map<String, String> params, Map<String, String> headers) {
         try {
-            entity = new StringEntity(body);
-        } catch (UnsupportedEncodingException e) {
+            // 封装参数
+            StringBuilder targetUri = new StringBuilder(uri);
+            targetUri.append("?");
+            if (MapUtils.isNotEmpty(params)) {
+                params.forEach((name, value) -> targetUri.append(name).append("=").append(value).append("&"));
+            }
+            HttpGet httpGet = new HttpGet(targetUri.deleteCharAt(targetUri.length() - 1).toString());
+            // 请求头
+            if (MapUtils.isNotEmpty(headers)) {
+                headers.forEach(httpGet::addHeader);
+            }
+            CloseableHttpResponse response = SYNC_CLIENT.execute(httpGet);
+            return inputStream2String(response.getEntity().getContent());
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        httpPost.setEntity(entity);
-        ASYNC_CLIENT.execute(httpPost, callback);
+        return null;
     }
 
-    public static void deleteAsync(String uri, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        HttpDelete httpDelete = new HttpDelete(uri);
-        headers.forEach(httpDelete::addHeader);
-        ASYNC_CLIENT.execute(httpDelete, callback);
-    }
-
-    public static void putAsync(String uri, String body, Map<String, String> headers, FutureCallback<HttpResponse> callback) {
-        headers.remove("Content-Length");
-        HttpPut httpPut = new HttpPut(uri);
-        headers.forEach(httpPut::addHeader);
-        StringEntity entity = new StringEntity(body, StandardCharsets.UTF_8);
-        httpPut.setEntity(entity);
-        ASYNC_CLIENT.execute(httpPut, callback);
+    private static String inputStream2String(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toString(StandardCharsets.UTF_8.name());
     }
 }

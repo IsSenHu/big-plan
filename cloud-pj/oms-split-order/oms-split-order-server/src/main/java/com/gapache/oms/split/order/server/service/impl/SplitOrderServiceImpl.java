@@ -43,7 +43,7 @@ public class SplitOrderServiceImpl implements SplitOrderService {
         if (log.isDebugEnabled()) {
             log.debug("订单号去重校验结果:{}", result);
         }
-        if (StringUtils.isNotBlank(result)) {
+        if (StringUtils.equalsIgnoreCase(result, Boolean.FALSE.toString())) {
             return;
         }
 

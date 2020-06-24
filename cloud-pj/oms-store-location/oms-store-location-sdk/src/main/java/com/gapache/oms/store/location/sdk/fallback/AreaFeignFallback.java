@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author Husen
+ * @since 2020/06/23 23:59:59
+ */
 @Slf4j
 @Component
 public class AreaFeignFallback implements AreaFeign {

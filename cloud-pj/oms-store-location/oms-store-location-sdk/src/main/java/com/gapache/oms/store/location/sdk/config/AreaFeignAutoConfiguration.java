@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * @author Husen
+ * @since 2020/06/23 23:59:59
+ */
 @Configuration
 @EnableFeignClients(basePackages = "com.gapache.oms.store.location.sdk.feign")
 @ConditionalOnBean(annotation = EnableAreaFeign.class)

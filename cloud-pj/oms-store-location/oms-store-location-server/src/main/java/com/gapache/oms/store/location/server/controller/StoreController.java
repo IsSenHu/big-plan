@@ -1,0 +1,28 @@
+package com.gapache.oms.store.location.server.controller;
+
+import com.gapache.commons.model.JsonResult;
+import com.gapache.oms.store.location.sdk.model.vo.StoreVO;
+import com.gapache.oms.store.location.server.service.StoreService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+
+/**
+ * @author HuSen
+ * @since 2020/6/24 11:36 上午
+ */
+@RestController
+@RequestMapping("/api/store")
+public class StoreController {
+
+    @Resource
+    private StoreService storeService;
+
+    @PostMapping
+    public JsonResult<StoreVO> create(@RequestBody StoreVO store) {
+        return storeService.create(store);
+    }
+}

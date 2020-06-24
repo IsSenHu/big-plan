@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * @author Husen
+ * @since 2020/06/23 23:59:59
+ */
 @FeignClient(value = "oms-store-location-server", path = "/api/area", fallback = AreaFeignFallback.class)
 public interface AreaFeign {
 
