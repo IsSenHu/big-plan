@@ -3,10 +3,7 @@ package com.gapache.oms.store.location.server.controller;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.oms.store.location.sdk.model.vo.StoreVO;
 import com.gapache.oms.store.location.server.service.StoreService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -24,5 +21,10 @@ public class StoreController {
     @PostMapping
     public JsonResult<StoreVO> create(@RequestBody StoreVO store) {
         return storeService.create(store);
+    }
+
+    @GetMapping("/findClosestDistanceByAddress")
+    public JsonResult<StoreVO> findClosestDistanceByAddress(@RequestParam(required = false) String city, String address) {
+        return storeService.findClosestDistanceByAddress(city, address);
     }
 }
