@@ -9,6 +9,7 @@
         <module>oms-split-order</module>
         <module>oms-store-location</module>
         <module>oms-logic</module>
+        <module>oms-inventory-center</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>
