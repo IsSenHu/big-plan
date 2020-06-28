@@ -76,4 +76,8 @@ public class OrderBaseVO implements Serializable {
      * 订单条目
      */
     private List<OrderItemVO> items;
+    /**
+     * 指定门店编码
+     */
+    private String storeCode;
 }

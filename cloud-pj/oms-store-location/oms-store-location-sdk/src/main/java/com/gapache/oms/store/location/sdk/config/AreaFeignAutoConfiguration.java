@@ -1,7 +1,7 @@
 package com.gapache.oms.store.location.sdk.config;
 
-import com.gapache.oms.store.location.sdk.annotation.EnableAreaFeign;
-import com.gapache.oms.store.location.sdk.fallback.AreaFeignFallback;
+import com.gapache.oms.store.location.sdk.annotation.EnableStoreLocationFeign;
+import com.gapache.oms.store.location.sdk.fallback.StoreLocationFeignFallback;
 import feign.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @EnableFeignClients(basePackages = "com.gapache.oms.store.location.sdk.feign")
-@ConditionalOnBean(annotation = EnableAreaFeign.class)
-@Import(AreaFeignFallback.class)
+@ConditionalOnBean(annotation = EnableStoreLocationFeign.class)
+@Import(StoreLocationFeignFallback.class)
 public class AreaFeignAutoConfiguration {
 
     /**
