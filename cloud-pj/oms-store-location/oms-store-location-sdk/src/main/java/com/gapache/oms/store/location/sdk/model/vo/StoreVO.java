@@ -1,5 +1,6 @@
 package com.gapache.oms.store.location.sdk.model.vo;
 
+import com.gapache.oms.store.location.sdk.model.enums.StoreType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -45,4 +46,8 @@ public class StoreVO implements Serializable {
      * 经度
      */
     private Double longitude;
+    /**
+     * 门店类型
+     */
+    private StoreType storeType;
 }

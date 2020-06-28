@@ -1,12 +1,11 @@
 package com.gapache.oms.store.location.server.dao.po;
 
 import com.gapache.jpa.BaseEntity;
+import com.gapache.oms.store.location.sdk.model.enums.StoreType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author HuSen
@@ -57,4 +56,10 @@ public class StorePO extends BaseEntity<Integer> {
      */
     @Column(name = "longitude", nullable = false, scale = 9)
     private Double longitude;
+    /**
+     * 门店类型
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "store_type", nullable = false)
+    private StoreType storeType;
 }
