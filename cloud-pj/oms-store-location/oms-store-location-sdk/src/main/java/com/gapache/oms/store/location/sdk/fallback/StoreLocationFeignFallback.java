@@ -52,4 +52,10 @@ public class StoreLocationFeignFallback implements StoreLocationFeign {
         log.warn("查询区服务进入服务降级!!!");
         return JsonResult.of(ServerCommonError.FALLBACK);
     }
+
+    @Override
+    public JsonResult<StoreVO> findStore(String code) {
+        log.warn("查询区服务进入服务降级!!!");
+        return JsonResult.of(ServerCommonError.FALLBACK);
+    }
 }

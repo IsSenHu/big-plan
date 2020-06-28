@@ -8,6 +8,7 @@
         <module>oms-order-base</module>
         <module>oms-split-order</module>
         <module>oms-store-location</module>
+        <module>oms-logic</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

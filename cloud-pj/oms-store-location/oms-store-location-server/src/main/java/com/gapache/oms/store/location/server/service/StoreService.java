@@ -25,4 +25,12 @@ public interface StoreService {
      * @return 匹配到的门店
      */
     JsonResult<StoreVO> findClosestDistanceByAddress(String city, String address);
+
+    /**
+     * 根据编码查询门店
+     *
+     * @param code 编码
+     * @return 查询结果
+     */
+    JsonResult<StoreVO> findStore(String code);
 }

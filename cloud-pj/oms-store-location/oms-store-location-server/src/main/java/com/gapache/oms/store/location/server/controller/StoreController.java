@@ -27,4 +27,9 @@ public class StoreController {
     public JsonResult<StoreVO> findClosestDistanceByAddress(@RequestParam(required = false) String city, String address) {
         return storeService.findClosestDistanceByAddress(city, address);
     }
+
+    @GetMapping("/{code}")
+    public JsonResult<StoreVO> findStore(@PathVariable("code") String code) {
+        return storeService.findStore(code);
+    }
 }

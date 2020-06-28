@@ -5,6 +5,7 @@ import com.gapache.oms.store.location.sdk.fallback.StoreLocationFeignFallback;
 import com.gapache.oms.store.location.sdk.model.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -73,4 +74,13 @@ public interface StoreLocationFeign {
      */
     @GetMapping("/store/findClosestDistanceByAddress")
     JsonResult<StoreVO> findClosestDistanceByAddress(@RequestParam(required = false) String city, @RequestParam String address);
+
+    /**
+     * 根据编码查询门店
+     *
+     * @param code 编码
+     * @return 查询结果
+     */
+    @GetMapping("/store/{code}")
+    JsonResult<StoreVO> findStore(@PathVariable("code") String code);
 }

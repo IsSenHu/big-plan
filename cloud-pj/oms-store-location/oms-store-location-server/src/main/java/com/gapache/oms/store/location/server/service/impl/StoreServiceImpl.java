@@ -160,4 +160,13 @@ public class StoreServiceImpl implements StoreService {
         }
         return codes;
     }
+
+    @Override
+    public JsonResult<StoreVO> findStore(String code) {
+        StorePO store = storeRepository.findByCode(code);
+        if (Objects.nonNull(store)) {
+            return JsonResult.of(new StorePo2Vo().apply(store));
+        }
+        return JsonResult.success();
+    }
 }

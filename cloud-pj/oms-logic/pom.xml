@@ -4,16 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>oms-store-location-sdk</module>
-        <module>oms-store-location-server</module>
+        <module>oms-logic-sdk</module>
+        <module>oms-logic-server</module>
     </modules>
     <parent>
         <artifactId>cloud-pj</artifactId>
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>oms-store-location</artifactId>
-    <name>oms-store-location</name>
+    <artifactId>oms-logic</artifactId>
+    <name>oms-logic</name>
     <packaging>pom</packaging>
 
     <dependencies>
@@ -25,6 +25,6 @@
     </dependencies>
 
     <build>
-        <finalName>oms-store-location</finalName>
+        <finalName>oms-logic</finalName>
     </build>
 </project>
