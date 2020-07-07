@@ -1,6 +1,6 @@
-package com.spring.demo;
+package com.spring.demo.java;
 
-import com.spring.demo.service.TestService;
+import com.spring.demo.java.service.TestService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

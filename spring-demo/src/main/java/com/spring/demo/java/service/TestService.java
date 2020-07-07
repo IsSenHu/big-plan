@@ -1,4 +1,4 @@
-package com.spring.demo.service;
+package com.spring.demo.java.service;
 
 
 /**
