@@ -8,4 +8,6 @@ package com.spring.demo.java.service;
 public interface TestService {
 
     void test();
+
+    void testInnerAspectJ();
 }
