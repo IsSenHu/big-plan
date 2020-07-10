@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Logger;
+
 /**
  * @author HuSen
  * @since 2020/7/7 5:51 下午
@@ -27,8 +29,9 @@ public class TestServiceImpl implements TestService {
         // @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
         // exposeProxy属性必须设置为true，这样才能暴露出代理对象，然后使用AopContext来进行获取
         TestService proxy = (TestService) AopContext.currentProxy();
-        log.info("this:{}, proxy:{}", this, proxy);
+        log.info("this:{}, proxy:{}, log:{}", this, proxy, log.getClass());
         proxy.testInnerAspectJ();
+        // 也可以将代理对象注入进来，然后使用代理对象来调用这个方法。
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.gapache.mybatis.demo.dao.mapper.OrderMapper;
 import com.gapache.mybatis.demo.dao.po.OrderPO;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Setter
 @Service("demoService")
-public class DemoService {
+public class DemoService implements InitializingBean {
     private OrderMapper orderMapper;
 
     @Log
@@ -26,5 +27,10 @@ public class DemoService {
         page.setCurrent(1).setSize(10);
         orderMapper.page(page);
         log.info("test:{}", JSON.toJSONString(page));
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+
     }
 }

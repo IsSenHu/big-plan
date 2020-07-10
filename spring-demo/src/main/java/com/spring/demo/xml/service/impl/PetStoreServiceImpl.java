@@ -22,8 +22,16 @@ public class PetStoreServiceImpl implements PetStoreService {
         this.itemDao = itemDao;
     }
 
+    @Override
     public void buy(int petId) {
         accountDao.spentMoney(petId);
         itemDao.decrement(petId);
+    }
+
+    public static class InnerPetStoreServiceImpl implements PetStoreService {
+        @Override
+        public void buy(int petId) {
+            System.out.println(petId);
+        }
     }
 }

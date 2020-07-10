@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- import -->
+    <import resource="properties.xml"/>
 
     <!-- service -->
     <bean id="petStoreService" class="com.spring.demo.xml.service.impl.PetStoreServiceImpl">
@@ -10,7 +15,55 @@
         <property name="itemDao" ref="itemDao"/>
     </bean>
 
+    <!-- 配置内部静态类 -->
+    <bean id="innerPetStoreService" class="com.spring.demo.xml.service.impl.PetStoreServiceImpl$InnerPetStoreServiceImpl"/>
+
+    <!-- static factory method -->
+    <bean id="clientService" class="com.spring.demo.xml.service.ClientService" factory-method="createInstance"/>
+
+    <!--
+        no static factory method
+        可以有多个factoryMethod
+     -->
+    <bean id="defaultServiceLocator" class="com.spring.demo.xml.service.DefaultServiceLocator"/>
+    <bean id="clientService2" factory-bean="defaultServiceLocator" factory-method="createClientServiceInstance"/>
+
     <!-- dao -->
     <bean id="accountDao" class="com.spring.demo.xml.dao.AccountDao"/>
     <bean id="itemDao" class="com.spring.demo.xml.dao.ItemDao"/>
+
+    <!-- 构造方法注入 -->
+    <bean id="movieFinder" class="com.spring.demo.xml.service.MovieFinder"/>
+    <bean id="simpleMovieLister" class="com.spring.demo.xml.service.SimpleMovieLister">
+        <!-- name,index,type -->
+        <constructor-arg ref="movieFinder"/>
+    </bean>
+
+    <bean id="clientService3"
+          class="com.spring.demo.xml.service.ClientService"
+          factory-method="createInstance"
+          c:name="HuSen">
+    </bean>
+
+    <!-- 命名空间的使用 -->
+    <bean id="bigLongProperties"
+          class="com.spring.demo.xml.properties.BigLongProperties"
+          p:name="胡森"
+          p:age="26"
+          p:best="true">
+        <!-- Compound Property Names -->
+        <property name="sub.value" value="森森"/>
+    </bean>
+
+    <!-- 别名 -->
+    <alias name="petStoreService" alias="storeService"/>
+
+    <!-- look up -->
+    <bean id="command" class="com.spring.demo.xml.service.Command" scope="prototype"/>
+    <bean id="commandManager" class="com.spring.demo.xml.service.CommandManager">
+        <lookup-method name="createCommand" bean="command"/>
+    </bean>
+
+    <!-- bean post processor -->
+    <bean class="com.spring.demo.xml.extension.InstantiationTracingBeanPostProcessor"/>
 </beans>
