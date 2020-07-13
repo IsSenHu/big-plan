@@ -5,7 +5,6 @@ import com.spring.demo.xml.service.ClientService;
 import com.spring.demo.xml.service.CommandManager;
 import com.spring.demo.xml.service.PetStoreService;
 import com.spring.demo.xml.service.SimpleMovieLister;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
