@@ -17,6 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 精确优先（方法级优先，接口级次之，全局配置再次之）
  * 消费者设置优先（如果级别一样，则消费方优先，提供方次之）
  *
+ * 幂等：方法不管重试多少次结果都一样
+ *
  * @author HuSen
  * create on 2020/4/2 2:22 下午
  */
