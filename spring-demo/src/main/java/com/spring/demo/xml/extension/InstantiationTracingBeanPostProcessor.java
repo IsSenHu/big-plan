@@ -13,13 +13,13 @@ import org.springframework.lang.NonNull;
 public class InstantiationTracingBeanPostProcessor implements BeanPostProcessor {
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         log.info("postProcessBeforeInitialization:{}", beanName);
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(@NonNull Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         log.info("postProcessAfterInitialization:{}", beanName);
         return bean;
     }

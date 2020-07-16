@@ -6,7 +6,7 @@ package com.spring.demo.xml.service;
  */
 public class SimpleMovieLister {
 
-    private MovieFinder movieFinder;
+    private final MovieFinder movieFinder;
 
     public SimpleMovieLister(MovieFinder movieFinder) {
         this.movieFinder = movieFinder;

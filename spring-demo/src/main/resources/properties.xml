@@ -4,12 +4,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="mappings" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="properties">
-            <value>
-                jdbc.driver.className=com.mysql.jdbc.Driver
-                jdbc.url=jdbc:mysql://localhost:3306/mydb
-            </value>
-        </property>
-    </bean>
+<!--    <bean id="mappings" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">-->
+<!--        <property name="properties">-->
+<!--            <value>-->
+<!--                jdbc.driver.className=com.mysql.jdbc.Driver-->
+<!--                jdbc.url=jdbc:mysql://localhost:3306/mydb-->
+<!--            </value>-->
+<!--        </property>-->
+<!--    </bean>-->
 </beans>

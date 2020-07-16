@@ -1,10 +1,9 @@
 package com.spring.demo.xml;
 
+import com.spring.demo.xml.demo.Datasource;
 import com.spring.demo.xml.properties.BigLongProperties;
-import com.spring.demo.xml.service.ClientService;
-import com.spring.demo.xml.service.CommandManager;
-import com.spring.demo.xml.service.PetStoreService;
-import com.spring.demo.xml.service.SimpleMovieLister;
+import com.spring.demo.xml.service.*;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -69,6 +68,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *  8.BeanPostProcesso——处理实例化以后的bean
  *      将回调接口或注解与自定义BeanPostProcessor实现结合使用是扩展Spring IoC容器的常见方法。
  *  9.BeanFactoryPostProcessor——可以改变BeanDefinition
+ *  10.PropertySourcesPlaceholderConfigurer
+ * @see org.springframework.context.support.PropertySourcesPlaceholderConfigurer
+ *  11.FactoryBean
+ * @see FactoryBean#getObject()
+ * @see FactoryBean#isSingleton()
+ * @see FactoryBean#getObjectType()
  *
  * @author HuSen
  * @since 2020/7/7 11:48 下午
@@ -113,6 +118,17 @@ public class Main {
         CommandManager commandManager = context.getBean(CommandManager.class);
         System.out.println(commandManager.process("started"));
         System.out.println(commandManager.process("exited"));
+
+        // bean factory post processor
+        Datasource datasource = context.getBean(Datasource.class);
+        System.out.println(datasource);
+
+        MoneyService moneyService = context.getBean(MoneyService.class);
+        System.out.println(moneyService);
+        Object bean = context.getBean("&moneyService");
+        System.out.println(bean);
+        Object service = context.getBean("moneyService");
+        System.out.println(service.equals(moneyService));
 
         // add a shutdown hook for the above context...
         context.registerShutdownHook();
