@@ -4,7 +4,10 @@ import com.spring.demo.xml.demo.Datasource;
 import com.spring.demo.xml.properties.BigLongProperties;
 import com.spring.demo.xml.service.*;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.context.ApplicationContext;
+import com.spring.demo.xml.service.ClientService;
+import com.spring.demo.xml.service.CommandManager;
+import com.spring.demo.xml.service.PetStoreService;
+import com.spring.demo.xml.service.SimpleMovieLister;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
