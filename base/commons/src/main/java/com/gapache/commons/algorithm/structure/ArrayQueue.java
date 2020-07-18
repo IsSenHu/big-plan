@@ -10,22 +10,19 @@ package com.gapache.commons.algorithm.structure;
  */
 public class ArrayQueue {
     /** 该数组用于存放数据，模拟队列 */
-    private int[] arr;
+    private final int[] arr;
     /** 表示数组的最大容量 */
-    private int maxSize;
+    private final int maxSize;
     /** 下一个取的位置 */
     private int front;
     /** 下一个放的位置 */
     private int rear;
-    /** 总大小 */
-    private int size;
 
     public ArrayQueue(int maxSize) {
-        this.maxSize = maxSize;
+        this.maxSize = maxSize + 1;
         arr = new int[this.maxSize];
         front = 0;
         rear = 0;
-        size = 0;
     }
 
     /**
@@ -34,7 +31,7 @@ public class ArrayQueue {
      * @return 队列是否满
      */
     private boolean isFull() {
-        return this.size == maxSize;
+        return (rear + 1) % maxSize == front;
     }
 
     /**
@@ -43,7 +40,7 @@ public class ArrayQueue {
      * @return 队列是否为空
      */
     private boolean isEmpty() {
-        return this.size() == 0;
+        return front == rear;
     }
 
     /**
@@ -57,7 +54,6 @@ public class ArrayQueue {
         }
         arr[rear] = n;
         rear = (rear + 1) % maxSize;
-        size++;
     }
 
     /**
@@ -72,7 +68,6 @@ public class ArrayQueue {
         int i = arr[front];
         arr[front] = 0;
         front = (front + 1) % maxSize;
-        size--;
         return i;
     }
 
@@ -84,8 +79,9 @@ public class ArrayQueue {
             System.out.println("arr is empty!!!");
             return;
         }
-        for (int i = 0; i < arr.length; i++) {
-            System.out.printf("arr[%d]=%d\t", i, arr[i]);
+        int size = size();
+        for (int i = front; i < front + size; i++) {
+            System.out.printf("arr[%d]=%d\t", i % maxSize, arr[i % maxSize]);
         }
         System.out.println();
     }
@@ -108,7 +104,7 @@ public class ArrayQueue {
      * @return 个数
      */
     private int size() {
-        return this.size;
+        return (rear + maxSize - front) % maxSize;
     }
 
     public static void main(String[] args) {
