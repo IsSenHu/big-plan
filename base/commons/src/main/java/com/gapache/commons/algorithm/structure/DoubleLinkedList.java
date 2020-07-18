@@ -8,7 +8,7 @@ package com.gapache.commons.algorithm.structure;
  */
 public class DoubleLinkedList {
 
-    private Node head = new Node(0, null, null);
+    private final Node head = new Node(0, null, null);
 
     private Node tail;
 
