@@ -1,6 +1,8 @@
 package com.gapache.commons.algorithm.structure;
 
 /**
+ * 基于数组实现栈
+ *
  * @author HuSen
  * @since 2020/7/19 7:25 下午
  */
