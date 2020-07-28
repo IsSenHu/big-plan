@@ -1,5 +1,9 @@
 package com.gapache.commons.lock;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 线程有哪些状态？
  * synchronized 是可重入锁吗？是公平锁吗？实现原理？
@@ -21,7 +25,7 @@ package com.gapache.commons.lock;
  * monitorenter
  * monitorexit
  *
- * cas Unsafe类 compareAndSwap 硬件原语 cmpxchg 硬件原语支持的原子指令（安全的）
+ *  cas Unsafe类 compareAndSwap 硬件原语 cmpxchg 硬件原语支持的原子指令（安全的）
  *
  *  jmm
  *  synchronized和lock的区别，说下AQS
@@ -37,4 +41,12 @@ package com.gapache.commons.lock;
  */
 public class Demo {
 
+    public static void main(String[] args) {
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(1, 10, 1000L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(1000), r -> new Thread(r, "demo"), new ThreadPoolExecutor.CallerRunsPolicy());
+
+        poolExecutor.execute(() -> System.out.println(1));
+
+        poolExecutor.shutdown();
+    }
 }
