@@ -32,8 +32,8 @@ public class Main {
     @CrossOrigin("*")
     public Map login(String code) {
         Map<String, Object> params = new HashMap<>(1);
-        params.put("appid", "wx69990b1463bed1e8");
-        params.put("secret", "17e609cf99f25862109bd541dedc49a9");
+        params.put("appid", "wx69add863fc4e2589");
+        params.put("secret", "7e91fb0ee3f4825cdbab2a72e4edfe9d");
         params.put("js_code", code);
         params.put("grant_type", "authorization_code");
         return restTemplate().getForObject("https://api.weixin.qq.com/sns/jscode2session", Map.class, params);
