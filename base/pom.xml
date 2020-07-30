@@ -17,6 +17,7 @@
         <module>../cloud</module>
         <module>rocketmq</module>
         <module>../wx-login</module>
+        <module>cloud-base</module>
     </modules>
 
     <!-- 基于spring-boot 2.2.2.RELEASE -->
