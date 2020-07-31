@@ -3,26 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>auth-center-server</module>
-        <module>auth-center-common</module>
-        <module>auth-center-security-starter</module>
-    </modules>
     <parent>
-        <artifactId>cloud-base</artifactId>
+        <artifactId>ac</artifactId>
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
-        <relativePath/>
     </parent>
-    <artifactId>ac</artifactId>
-    <name>ac</name>
-    <packaging>pom</packaging>
+    <artifactId>auth-center-common</artifactId>
+    <name>auth-center-common</name>
+    <packaging>jar</packaging>
 
     <dependencies>
-
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>ac</finalName>
+        <finalName>auth-center-common</finalName>
     </build>
 </project>
