@@ -1,6 +1,6 @@
 package com.gapache.cloud.auth.server.dao.repository;
 
-import com.gapache.cloud.auth.server.dao.po.UserEntity;
+import com.gapache.cloud.auth.server.dao.entity.UserEntity;
 import com.gapache.jpa.BaseJpaRepository;
 
 /**

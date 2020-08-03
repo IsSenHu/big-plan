@@ -21,6 +21,8 @@ public class ClientDetailsImpl {
     private String grantTypes;
     private String scopes;
     private String redirectUrl;
+    private Long timeout;
+    private Long refreshTokenTimeout;
 
     public Set<GrantType> getGrantTypes() {
         if (StringUtils.isBlank(grantTypes)) {
@@ -50,5 +52,13 @@ public class ClientDetailsImpl {
 
     public String getRedirectUrl() {
         return redirectUrl;
+    }
+
+    public Long getTimeout() {
+        return timeout;
+    }
+
+    public Long getRefreshTokenTimeout() {
+        return refreshTokenTimeout;
     }
 }

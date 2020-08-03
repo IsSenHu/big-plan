@@ -1,6 +1,6 @@
 package com.gapache.cloud.auth.server.service.impl;
 
-import com.gapache.cloud.auth.server.dao.po.ClientEntity;
+import com.gapache.cloud.auth.server.dao.entity.ClientEntity;
 import com.gapache.cloud.auth.server.dao.repository.ClientRepository;
 import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
 import com.gapache.cloud.auth.server.service.ClientService;

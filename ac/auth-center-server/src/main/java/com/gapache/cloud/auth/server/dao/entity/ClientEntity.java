@@ -1,4 +1,4 @@
-package com.gapache.cloud.auth.server.dao.po;
+package com.gapache.cloud.auth.server.dao.entity;
 
 import com.gapache.jpa.BaseEntity;
 import lombok.Data;

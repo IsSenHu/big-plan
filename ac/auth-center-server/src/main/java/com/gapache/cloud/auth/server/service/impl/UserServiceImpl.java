@@ -1,7 +1,7 @@
 package com.gapache.cloud.auth.server.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.gapache.cloud.auth.server.dao.po.UserEntity;
+import com.gapache.cloud.auth.server.dao.entity.UserEntity;
 import com.gapache.cloud.auth.server.dao.repository.UserRepository;
 import com.gapache.cloud.auth.server.model.UserDetailsImpl;
 import com.gapache.cloud.auth.server.service.UserService;
@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameNotFoundException("用户名或密码不正确");
         }
         UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setId(userEntity.getId());
         userDetails.setUsername(userEntity.getUsername());
         userDetails.setPassword(userEntity.getPassword());
         return userDetails;

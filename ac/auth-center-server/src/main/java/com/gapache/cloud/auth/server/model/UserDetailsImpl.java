@@ -15,6 +15,10 @@ import java.util.List;
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = -7492932138645849421L;
     /**
+     * userId
+     */
+    private Long id;
+    /**
      * 用户名
      */
     private String username;
