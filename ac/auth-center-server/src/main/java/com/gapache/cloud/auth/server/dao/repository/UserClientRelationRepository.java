@@ -10,4 +10,6 @@ import com.gapache.jpa.BaseJpaRepository;
 public interface UserClientRelationRepository extends BaseJpaRepository<UserClientRelationEntity, Long> {
 
     UserClientRelationEntity findByUserIdAndClientId(Long userId, Long clientId);
+
+    Boolean existsByUserIdAndClientId(Long userId, Long clientId);
 }

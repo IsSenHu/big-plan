@@ -9,11 +9,11 @@ import com.gapache.cloud.auth.server.model.UserClientRelationDTO;
 import com.gapache.cloud.auth.server.model.UserDetailsImpl;
 import com.gapache.cloud.auth.server.service.ClientService;
 import com.gapache.cloud.auth.server.service.UserClientRelationService;
-import com.gapache.commons.model.BusinessException;
-import com.gapache.commons.model.JsonResult;
-import com.gapache.commons.model.SystemError;
-import com.gapache.commons.model.ThrowUtils;
+import com.gapache.cloud.auth.server.service.UserService;
+import com.gapache.commons.model.Error;
+import com.gapache.commons.model.*;
 import com.gapache.security.exception.SecurityException;
+import com.gapache.security.model.Certification;
 import com.gapache.security.model.SecurityError;
 import com.gapache.security.model.TokenInfoDTO;
 import com.gapache.security.model.impl.CertificationImpl;
@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +36,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -51,13 +53,20 @@ import java.util.concurrent.TimeUnit;
 public class Oauth2Controller {
 
     @ExceptionHandler
+    @ResponseBody
     public JsonResult<Object> exceptionHandler(Exception e) {
-        log.error("Oauth2Controller error ", e);
         if (e instanceof SecurityException) {
-            return JsonResult.of(((SecurityException) e).getError());
+            SecurityException securityException = (SecurityException) e;
+            Error error = securityException.getError();
+            log.error("SecurityException:{}, {}", error.getCode(), error.getError());
+            return JsonResult.of(error);
         } else if (e instanceof BusinessException) {
-            return JsonResult.of(((BusinessException) e).getError());
+            BusinessException businessException = (BusinessException) e;
+            Error error = businessException.getError();
+            log.error("BusinessException:{}, {}", error.getCode(), error.getError());
+            return JsonResult.of(error);
         } else {
+            log.error("Oauth2Controller error ", e);
             return JsonResult.of(SystemError.SERVER_EXCEPTION);
         }
     }
@@ -70,6 +79,9 @@ public class Oauth2Controller {
 
     @Resource
     private UserDetailsService userDetailsService;
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private PasswordEncoder passwordEncoder;
@@ -116,14 +128,13 @@ public class Oauth2Controller {
                 callback(redirectUri, response);
                 return;
             }
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getDetails();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             UserClientRelationDTO userClientRelationDTO = userClientRelationService.findByUserIdAndClientId(userDetails.getId(), clientDetails.getId());
             if (userClientRelationDTO == null) {
                 log.info("用户不属于该client:{}, {}, {}", clientId, userDetails.getId(), userDetails.getUsername());
                 callback(redirectUri, response);
             }
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            if (CollectionUtils.isEmpty(authorities) || !authorities.contains(new SimpleGrantedAuthority(scope))) {
+            if (CollectionUtils.isEmpty(userDetails.getAuthorities()) || !userDetails.getAuthorities().contains(new SimpleGrantedAuthority(scope))) {
                 log.info("用户没有权限:{}, {}, {}, {}", clientId, userDetails.getId(), userDetails.getUsername(), scope);
                 callback(redirectUri, response);
                 return;
@@ -144,23 +155,36 @@ public class Oauth2Controller {
 
     @PostMapping("/token")
     @ResponseBody
-    public JsonResult<TokenInfoDTO> token(GrantType grantType, String clientId, String clientSecret, String code, String redirectUrl) {
+    public JsonResult<TokenInfoDTO> token(GrantType grantType, String clientId, String clientSecret, String code, String redirectUrl, String refreshToken) {
         switch (grantType) {
             case implicit:
             case password:
-            case refresh_token:
+            case refresh_token: {
+                ThrowUtils.throwIfTrue(StringUtils.isBlank(refreshToken), SecurityError.NEED_REFRESH_TOKEN);
+
+                ClientDetailsImpl clientDetails = clientService.findByClientId(clientId);
+                ThrowUtils.throwIfTrue(clientDetails == null ||
+                        !passwordEncoder.matches(clientSecret, clientDetails.getSecret()), SecurityError.CLIENT_ERROR);
+
+                String refreshTokenDtoStr = stringRedisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + refreshToken);
+                ThrowUtils.throwIfTrue(StringUtils.isBlank(refreshTokenDtoStr), SecurityError.REFRESH_TOKEN_EXPIRED);
+
+                RefreshTokenDTO refreshTokenDTO = JSON.parseObject(refreshTokenDtoStr, RefreshTokenDTO.class);
+
+                break;
+            }
             case client_credentials: {
                 break;
             }
             // 授权码模式
             case authorization_code: {
                 String cacheRedirectUrl = null;
-                ThrowUtils.throwIfTrue(StringUtils.isBlank(code) || (cacheRedirectUrl = CODE_CACHE.remove(code)) == null, SecurityError.ERROR_CODE);
+                ThrowUtils.throwIfTrue(StringUtils.isBlank(code) || (cacheRedirectUrl = CODE_CACHE.get(code)) == null, SecurityError.ERROR_CODE);
 
                 ClientDetailsImpl clientDetails = clientService.findByClientId(clientId);
                 ThrowUtils.throwIfTrue(clientDetails == null ||
-                        passwordEncoder.matches(clientSecret, clientDetails.getSecret()) ||
-                        StringUtils.equals(cacheRedirectUrl, redirectUrl), SecurityError.CLIENT_ERROR);
+                        !passwordEncoder.matches(clientSecret, clientDetails.getSecret()) ||
+                        !StringUtils.equals(cacheRedirectUrl, redirectUrl), SecurityError.CLIENT_ERROR);
                 
                 // 生成Token
                 String username = CODE_USER_CACHE.get(code);
@@ -179,24 +203,28 @@ public class Oauth2Controller {
                 TokenInfoDTO dto = new TokenInfoDTO();
                 dto.setToken(token);
                 // 生成refresh token 如果支持的话
-
-                if (clientDetails.getRefreshTokenTimeout() != 0) {
+                if (clientDetails.getGrantTypes().contains(GrantType.refresh_token) && clientDetails.getRefreshTokenTimeout() != 0) {
                     ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
                     RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO();
                     refreshTokenDTO.setUserId(userDetails.getId());
                     refreshTokenDTO.setClientId(clientDetails.getId());
-                    String refreshToken = UUID.randomUUID().toString();
-                    dto.setRefreshToken(refreshToken);
+                    String newRefreshToken = UUID.randomUUID().toString().replace("-", "");
+                    dto.setRefreshToken(newRefreshToken);
                     if (clientDetails.getRefreshTokenTimeout() != -1) {
-                        opsForValue.setIfAbsent(REFRESH_TOKEN_PREFIX + refreshToken, JSON.toJSONString(refreshTokenDTO), clientDetails.getTimeout(), TimeUnit.MILLISECONDS);
+                        opsForValue.setIfAbsent(REFRESH_TOKEN_PREFIX + newRefreshToken, JSON.toJSONString(refreshTokenDTO), clientDetails.getTimeout(), TimeUnit.MILLISECONDS);
                     } else {
-                        opsForValue.setIfAbsent(REFRESH_TOKEN_PREFIX + refreshToken, JSON.toJSONString(refreshTokenDTO));
+                        opsForValue.setIfAbsent(REFRESH_TOKEN_PREFIX + newRefreshToken, JSON.toJSONString(refreshTokenDTO));
                     }
                 }
                 return JsonResult.of(dto);
             }
             default: throw new SecurityException(SecurityError.NOT_SUPPORT);
         }
+        return null;
+    }
+
+    @PostMapping("/check")
+    public JsonResult<Certification> check() {
         return null;
     }
 

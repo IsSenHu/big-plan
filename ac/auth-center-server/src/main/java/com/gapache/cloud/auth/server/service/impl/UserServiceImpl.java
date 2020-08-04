@@ -5,21 +5,27 @@ import com.gapache.cloud.auth.server.dao.entity.UserEntity;
 import com.gapache.cloud.auth.server.dao.repository.UserRepository;
 import com.gapache.cloud.auth.server.model.UserDetailsImpl;
 import com.gapache.cloud.auth.server.service.UserService;
+import com.gapache.commons.model.ThrowUtils;
 import com.gapache.security.exception.SecurityException;
 import com.gapache.security.model.SecurityError;
+import com.gapache.security.model.UserDTO;
 import com.gapache.security.model.UserInfoDTO;
 import com.gapache.security.model.UserLoginDTO;
 import com.gapache.security.model.impl.CertificationImpl;
 import com.gapache.security.properties.SignatureProperties;
 import com.gapache.security.utils.JwtUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.security.PrivateKey;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * @author HuSen
@@ -50,6 +56,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDetails.setId(userEntity.getId());
         userDetails.setUsername(userEntity.getUsername());
         userDetails.setPassword(userEntity.getPassword());
+
+        userDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("get_resource")));
         return userDetails;
     }
 
@@ -74,5 +82,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userInfoDTO.setToken(token);
         userInfoDTO.setNickname(userEntity.getUsername());
         return userInfoDTO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean create(UserDTO userDTO) {
+        Boolean exists = userRepository.existsByUsername(userDTO.getUsername());
+        ThrowUtils.throwIfTrue(exists, SecurityError.USER_EXISTED);
+
+        UserEntity entity = new UserEntity();
+        entity.setUsername(userDTO.getUsername());
+        entity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        return userRepository.save(entity).getId() > 0;
+    }
+
+    @Override
+    public UserDetailsImpl findById(Long id) {
+        Optional<UserEntity> optional = userRepository.findById(id);
+        return optional.map(userEntity -> {
+            UserDetailsImpl userDetails = new UserDetailsImpl();
+            userDetails.setId(userEntity.getId());
+            userDetails.setUsername(userEntity.getUsername());
+            userDetails.setPassword(userEntity.getPassword());
+            userDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("get_resource")));
+            return userDetails;
+        }).orElse(null);
     }
 }

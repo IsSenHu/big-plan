@@ -51,8 +51,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
 
         http.authorizeRequests()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers(HttpMethod.GET,"/oauth/authorize*").authenticated()
+                .antMatchers(HttpMethod.POST,"/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/user").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/client").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/client/bindUser").permitAll()
+                .antMatchers(HttpMethod.POST, "/oauth/token").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 

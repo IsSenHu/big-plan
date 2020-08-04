@@ -32,4 +32,10 @@ public class ClientEntity extends BaseEntity<Long> {
 
     @Column(name = "redirect_url")
     private String redirectUrl;
+
+    @Column(name = "timeout", nullable = false)
+    private Long timeout;
+
+    @Column(name = "refresh_token_timeout", nullable = false)
+    private Long refreshTokenTimeout;
 }

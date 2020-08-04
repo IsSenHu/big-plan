@@ -1,6 +1,7 @@
 package com.gapache.cloud.auth.server.service;
 
 import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
+import com.gapache.security.model.ClientDTO;
 
 /**
  * @author HuSen
@@ -9,4 +10,8 @@ import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
 public interface ClientService {
 
     ClientDetailsImpl findByClientId(String clientId);
+
+    Boolean create(ClientDTO clientDTO);
+
+    ClientDetailsImpl findById(Long id);
 }

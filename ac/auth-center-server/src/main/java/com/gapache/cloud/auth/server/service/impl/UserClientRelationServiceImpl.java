@@ -4,8 +4,11 @@ import com.gapache.cloud.auth.server.dao.entity.UserClientRelationEntity;
 import com.gapache.cloud.auth.server.dao.repository.UserClientRelationRepository;
 import com.gapache.cloud.auth.server.model.UserClientRelationDTO;
 import com.gapache.cloud.auth.server.service.UserClientRelationService;
+import com.gapache.commons.model.ThrowUtils;
+import com.gapache.security.model.SecurityError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author HuSen
@@ -29,5 +32,16 @@ public class UserClientRelationServiceImpl implements UserClientRelationService 
         UserClientRelationDTO dto = new UserClientRelationDTO();
         BeanUtils.copyProperties(entity, dto);
         return dto;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean create(UserClientRelationDTO userClientRelationDTO) {
+        Boolean exists = userClientRelationRepository.existsByUserIdAndClientId(userClientRelationDTO.getUserId(), userClientRelationDTO.getClientId());
+        ThrowUtils.throwIfTrue(exists, SecurityError.USER_CLIENT_RELATION_EXISTED);
+
+        UserClientRelationEntity entity = new UserClientRelationEntity();
+        BeanUtils.copyProperties(userClientRelationDTO, entity);
+        return userClientRelationRepository.save(entity).getId() > 0;
     }
 }

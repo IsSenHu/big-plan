@@ -16,4 +16,6 @@ public interface UserRepository extends BaseJpaRepository<UserEntity, Long> {
      * @return 用户
      */
     UserEntity findByUsername(String username);
+
+    Boolean existsByUsername(String username);
 }
