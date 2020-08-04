@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table
+@Table(name = "tb_user_client_relation")
 public class UserClientRelationEntity extends BaseEntity<Long> {
 
     @Column(name = "user_id", nullable = false)

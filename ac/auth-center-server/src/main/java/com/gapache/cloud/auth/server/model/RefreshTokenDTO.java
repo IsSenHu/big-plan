@@ -14,5 +14,5 @@ public class RefreshTokenDTO implements Serializable {
 
     private Long userId;
 
-    private Long clientId;
+    private String accessToken;
 }

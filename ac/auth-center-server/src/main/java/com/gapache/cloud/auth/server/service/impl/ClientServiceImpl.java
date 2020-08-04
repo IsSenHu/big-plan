@@ -36,6 +36,7 @@ public class ClientServiceImpl implements ClientService {
         }
         ClientDetailsImpl clientDetails = new ClientDetailsImpl();
         BeanUtils.copyProperties(clientEntity, clientDetails);
+        clientDetails.setId(clientEntity.getId());
         return clientDetails;
     }
 

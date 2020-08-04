@@ -20,6 +20,15 @@ spring:
     host: 118.24.38.46
     port: 6379
     password: 521428Slyt
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+    check-template: false
 com:
   gapache:
     security:

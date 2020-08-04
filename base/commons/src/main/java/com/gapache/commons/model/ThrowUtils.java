@@ -12,4 +12,8 @@ public final class ThrowUtils {
             throw new BusinessException(error);
         }
     }
+
+    public static void throwError(Error error) {
+        throw new BusinessException(error);
+    }
 }

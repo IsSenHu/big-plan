@@ -1,5 +1,6 @@
 package com.gapache.cloud.auth.server.model;
 
+import com.gapache.security.model.CustomerInfo;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,14 @@ public class UserDetailsImpl implements UserDetails {
      * 授予的权限
      */
     private List<GrantedAuthority> authorities;
+    /**
+     * 自定义信息
+     */
+    private CustomerInfo customerInfo;
+    /**
+     * 当前正在进行授权的clientId
+     */
+    private String clientId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

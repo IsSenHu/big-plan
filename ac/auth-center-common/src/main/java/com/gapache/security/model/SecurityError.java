@@ -18,7 +18,10 @@ public enum SecurityError implements Error {
     USER_EXISTED(10507, "username was existed"),
     USER_CLIENT_RELATION_EXISTED(10508, "user client relation was existed"),
     NEED_REFRESH_TOKEN(10509, "need refresh token"),
-    REFRESH_TOKEN_EXPIRED(10510, "refresh token expired");
+    REFRESH_TOKEN_EXPIRED(10510, "refresh token expired"),
+    PLEASE_LOGIN(10511, "please login"),
+    INVALID_PARAMS(10512, "invalid params"),
+    FORBIDDEN(10513, "forbidden");
 
     SecurityError(Integer code, String error) {
         this.code = code;

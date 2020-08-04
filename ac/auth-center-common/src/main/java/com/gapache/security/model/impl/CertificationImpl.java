@@ -5,8 +5,6 @@ import com.gapache.security.model.CustomerInfo;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 /**
  * @author HuSen
  * @since 2020/7/31 1:37 下午
@@ -18,8 +16,6 @@ public class CertificationImpl implements Certification {
 
     private Long id;
 
-    private List<String> authorities;
-
     private CustomerInfo customerInfo;
 
     private String name;
@@ -27,11 +23,6 @@ public class CertificationImpl implements Certification {
     @Override
     public Long getUniqueId() {
         return this.id;
-    }
-
-    @Override
-    public List<String> getAuthorities() {
-        return this.authorities;
     }
 
     @Override

@@ -1,12 +1,20 @@
 package com.gapache.cloud.auth.server.config;
 
+import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
+import com.gapache.cloud.auth.server.security.GenerateRefreshTokenStrategy;
+import com.gapache.cloud.auth.server.security.GenerateTokenStrategy;
+import com.gapache.cloud.auth.server.security.impl.JwtGenerateTokenStrategy;
+import com.gapache.cloud.auth.server.security.impl.RedisAuthorizeInfoManager;
+import com.gapache.cloud.auth.server.security.impl.UUIDGenerateRefreshTokenStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +31,16 @@ import javax.annotation.Resource;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /**
+     * 登录页面
+     */
+    private static final String LOGIN = "/login";
+
+    /**
+     * 登出地址
+     */
+    private static final String LOGOUT = "/logout";
+
     @Resource
     @Qualifier("userService")
     private UserDetailsService userDetailsService;
@@ -30,6 +48,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public GenerateTokenStrategy generateTokenStrategy() {
+        return new JwtGenerateTokenStrategy();
+    }
+
+    @Bean
+    public AuthorizeInfoManager authorizeInfoSaver(StringRedisTemplate stringRedisTemplate) {
+        return new RedisAuthorizeInfoManager(stringRedisTemplate);
+    }
+
+    @Bean
+    public GenerateRefreshTokenStrategy generateRefreshTokenStrategy() {
+        return new UUIDGenerateRefreshTokenStrategy();
     }
 
     @Override
@@ -59,6 +92,26 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 
-        http.formLogin();
+        http.formLogin()
+                .loginPage(LOGIN)
+                .and()
+                .logout().logoutUrl(LOGOUT).logoutSuccessUrl(LOGIN).permitAll();
+    }
+
+    private static final String CSS = "/css/**";
+    private static final String JS = "/js/**";
+    private static final String LIB = "/lib/**";
+    private static final String IMAGES = "/images/**";
+    private static final String FONTS = "/fonts/**";
+    private static final String ELE_TREE = "/eleTree.js";
+    private static final String FAVICON = "/favicon.ico";
+    private static final String EXCEL = "/excel/**";
+    private static final String LAY_EXT = "/layui_exts/**";
+    private static final String LAY = "/layui/**";
+
+    @Override
+    public void configure(WebSecurity web) {
+        // 不去拦截这些静态资源
+        web.ignoring().antMatchers(IMAGES, LIB, CSS, FONTS, JS, ELE_TREE, FAVICON, EXCEL, LAY_EXT, LAY);
     }
 }

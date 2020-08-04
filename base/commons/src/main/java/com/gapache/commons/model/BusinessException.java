@@ -10,10 +10,10 @@ import lombok.Getter;
 public class BusinessException extends RuntimeException {
     private static final long serialVersionUID = -8570405796076634812L;
 
-    private Error error;
+    private final Error error;
 
     public BusinessException(Error error) {
-        super(null, null, false, false);
+        super(error.getError());
         this.error = error;
     }
 }

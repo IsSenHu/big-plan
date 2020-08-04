@@ -2,7 +2,6 @@ package com.gapache.security.model;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.List;
 
 /**
  * @author HuSen
@@ -16,13 +15,6 @@ public interface Certification extends Principal, Serializable {
      * @return 唯一ID
      */
     Long getUniqueId();
-
-    /**
-     * 被授予的权限
-     *
-     * @return 被授予的权限
-     */
-    List<String> getAuthorities();
 
     /**
      * 自定义信息（扩展用，提高灵活性）

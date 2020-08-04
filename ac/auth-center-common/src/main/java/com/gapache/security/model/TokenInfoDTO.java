@@ -12,6 +12,6 @@ import java.io.Serializable;
 public class TokenInfoDTO implements Serializable {
     private static final long serialVersionUID = -5235937523375546667L;
 
-    private String token;
+    private String accessToken;
     private String refreshToken;
 }
