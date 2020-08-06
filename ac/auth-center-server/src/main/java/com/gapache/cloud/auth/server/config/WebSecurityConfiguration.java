@@ -2,7 +2,7 @@ package com.gapache.cloud.auth.server.config;
 
 import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.GenerateRefreshTokenStrategy;
-import com.gapache.cloud.auth.server.security.GenerateTokenStrategy;
+import com.gapache.security.interfaces.GenerateTokenStrategy;
 import com.gapache.cloud.auth.server.security.impl.JwtGenerateTokenStrategy;
 import com.gapache.cloud.auth.server.security.impl.RedisAuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.impl.UUIDGenerateRefreshTokenStrategy;
@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsUtils;
 
 import javax.annotation.Resource;
+import java.security.PrivateKey;
 
 /**
  * @author HuSen
@@ -51,8 +52,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public GenerateTokenStrategy generateTokenStrategy() {
-        return new JwtGenerateTokenStrategy();
+    public GenerateTokenStrategy generateTokenStrategy(PrivateKey privateKey) {
+        return new JwtGenerateTokenStrategy(privateKey);
     }
 
     @Bean

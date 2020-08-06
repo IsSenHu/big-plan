@@ -7,7 +7,7 @@ import com.gapache.security.model.CustomerInfo;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,7 +23,7 @@ public class RedisAuthorizeInfoManager implements AuthorizeInfoManager {
     }
 
     @Override
-    public void save(String token, Long timeout, CustomerInfo customerInfo, List<String> scopes) {
+    public void save(String token, Long timeout, CustomerInfo customerInfo, Collection<String> scopes) {
         ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
         AuthorizeInfoDTO authorizeInfoDTO = new AuthorizeInfoDTO();
         authorizeInfoDTO.setCustomerInfo(customerInfo);

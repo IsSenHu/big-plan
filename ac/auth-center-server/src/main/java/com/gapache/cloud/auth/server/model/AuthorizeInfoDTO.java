@@ -3,7 +3,7 @@ package com.gapache.cloud.auth.server.model;
 import com.gapache.security.model.CustomerInfo;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author HuSen
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class AuthorizeInfoDTO {
 
-    private List<String> scopes;
+    private Collection<String> scopes;
 
     private CustomerInfo customerInfo;
 }

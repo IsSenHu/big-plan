@@ -14,9 +14,9 @@ import com.gapache.security.model.UserLoginDTO;
 import com.gapache.security.model.impl.CertificationImpl;
 import com.gapache.security.properties.SignatureProperties;
 import com.gapache.security.utils.JwtUtils;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Optional;
  * @since 2020/7/31 10:19 上午
  */
 @Service("userService")
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     @Resource
     private UserRepository userRepository;
@@ -56,8 +58,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDetails.setId(userEntity.getId());
         userDetails.setUsername(userEntity.getUsername());
         userDetails.setPassword(userEntity.getPassword());
-
-        userDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("get_resource")));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("get_resource"));
+        authorities.add(new SimpleGrantedAuthority("update_resource"));
+        userDetails.setAuthorities(authorities);
         return userDetails;
     }
 

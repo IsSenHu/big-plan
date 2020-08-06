@@ -14,4 +14,5 @@ public class TokenInfoDTO implements Serializable {
 
     private String accessToken;
     private String refreshToken;
+    private Long expiresIn;
 }

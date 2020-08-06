@@ -1,40 +1,31 @@
 package com.gapache.cloud.auth.server.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.gapache.cloud.auth.server.constant.GrantType;
 import com.gapache.cloud.auth.server.constant.ResponseType;
 import com.gapache.cloud.auth.server.model.*;
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
-import com.gapache.cloud.auth.server.security.GenerateRefreshTokenStrategy;
-import com.gapache.cloud.auth.server.security.GenerateTokenStrategy;
+import com.gapache.cloud.auth.server.security.BaseGenerateTokenLogic;
+import com.gapache.cloud.auth.server.security.CodeStrategy;
+import com.gapache.cloud.auth.server.security.ScopeManager;
 import com.gapache.cloud.auth.server.security.SecurityContextHelper;
 import com.gapache.cloud.auth.server.service.ClientService;
 import com.gapache.cloud.auth.server.service.UserClientRelationService;
-import com.gapache.cloud.auth.server.service.UserService;
 import com.gapache.commons.model.Error;
 import com.gapache.commons.model.*;
 import com.gapache.security.exception.SecurityException;
 import com.gapache.security.model.Certification;
 import com.gapache.security.model.SecurityError;
 import com.gapache.security.model.TokenInfoDTO;
-import com.gapache.security.model.impl.CertificationImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PrivateKey;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +36,15 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/oauth")
 public class Oauth2Controller {
+
+    public Oauth2Controller(Map<String, BaseGenerateTokenLogic> generateTokenLogicMap, CodeStrategy codeStrategy, ClientService clientService, UserClientRelationService userClientRelationService, ScopeManager scopeManager) {
+        this.codeStrategy = codeStrategy;
+        this.clientService = clientService;
+        this.userClientRelationService = userClientRelationService;
+        this.scopeManager = scopeManager;
+        log.info("Oauth2Controller init:{}", generateTokenLogicMap);
+        this.generateTokenLogicMap = generateTokenLogicMap;
+    }
 
     @ExceptionHandler
     @ResponseBody
@@ -65,38 +65,11 @@ public class Oauth2Controller {
         }
     }
 
-    @Resource
-    private ClientService clientService;
-
-    @Resource
-    private UserClientRelationService userClientRelationService;
-
-    @Resource
-    private UserService userService;
-
-    @Resource
-    private PasswordEncoder passwordEncoder;
-
-    @Resource
-    private PrivateKey privateKey;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Resource
-    private GenerateTokenStrategy generateTokenStrategy;
-
-    @Resource
-    private AuthorizeInfoManager authorizeInfoManager;
-
-    @Resource
-    private GenerateRefreshTokenStrategy generateRefreshTokenStrategy;
-
-    private static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
-
-    private static final String SCOPE_CACHE_PREFIX = "scopeCache:";
-
-    private static final String CODE_CACHE_PREFIX = "codeCache:";
+    private final Map<String, BaseGenerateTokenLogic> generateTokenLogicMap;
+    private final CodeStrategy codeStrategy;
+    private final ClientService clientService;
+    private final UserClientRelationService userClientRelationService;
+    private final ScopeManager scopeManager;
 
     @PostMapping("/userAuthorize")
     public void userAuthorize(UserAuthorizeDTO userAuthorizeDTO, HttpServletResponse response) {
@@ -115,40 +88,28 @@ public class Oauth2Controller {
             callback(userAuthorizeDTO.getRedirectUrl(), response);
             return;
         }
+        // 不含有该权限
         List<String> scopeList = Arrays.stream(userAuthorizeDTO.getScopes().split(",")).collect(Collectors.toList());
-        boolean anyMatch = scopeList.stream()
+        boolean notHasThisPermission = scopeList.stream()
                 .anyMatch(scope -> !userDetails.getAuthorities().contains(new SimpleGrantedAuthority(scope)) ||
                 !clientDetails.getScopes().contains(scope));
+        ThrowUtils.throwIfTrue(notHasThisPermission, SecurityError.FORBIDDEN);
 
-        ThrowUtils.throwIfTrue(anyMatch, SecurityError.FORBIDDEN);
-
-        String scopeCacheKey = SCOPE_CACHE_PREFIX + clientId + ":" + userDetails.getId();
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        String scopeStr = JSON.toJSONString(new HashSet<>(scopeList));
-        opsForValue.set(scopeCacheKey, scopeStr, clientDetails.getRefreshTokenTimeout(), TimeUnit.MILLISECONDS);
+        // 临时缓存scopes
+        scopeManager.save(clientId, userDetails.getId(), clientDetails.getRefreshTokenTimeout(), new HashSet<>(scopeList));
 
         String redirectUrl = userAuthorizeDTO.getRedirectUrl();
         if (StringUtils.isBlank(redirectUrl)) {
             redirectUrl = clientDetails.getRedirectUrl();
         }
 
-        generateCode(redirectUrl, userDetails, response);
-    }
-
-    private void generateCode(String redirectUrl, UserDetailsImpl userDetails, HttpServletResponse response) {
-        String code = UUID.randomUUID().toString().replace("-", "");
-        CodeCacheInfoDTO codeCacheInfoDTO = new CodeCacheInfoDTO();
-        codeCacheInfoDTO.setUserId(userDetails.getId());
-        codeCacheInfoDTO.setUsername(userDetails.getUsername());
-        codeCacheInfoDTO.setCustomerInfo(userDetails.getCustomerInfo());
-        // code有效时长为5分钟
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        opsForValue.set(CODE_CACHE_PREFIX + code, JSON.toJSONString(codeCacheInfoDTO), 5, TimeUnit.MINUTES);
+        // 生成code并响应
+        String code = codeStrategy.generate(userDetails.getId(), userDetails.getUsername(), userDetails.getCustomerInfo());
         callback(redirectUrl + "?code=" + code, response);
     }
 
     @GetMapping("/authorize")
-    public void authorize(ResponseType responseType, String clientId, String redirectUrl, String scope, HttpServletResponse response) {
+    public void authorize(ResponseType responseType, String clientId, String redirectUrl, @RequestParam(required = false) String scope, HttpServletResponse response) {
         ClientDetailsImpl clientDetails = clientService.findByClientId(clientId);
         if (clientDetails == null) {
             log.info("client不存在:{}", clientId);
@@ -156,169 +117,103 @@ public class Oauth2Controller {
             return;
         }
         redirectUrl = StringUtils.isNotBlank(redirectUrl) ? redirectUrl : clientDetails.getRedirectUrl();
-        if (responseType.equals(ResponseType.code)) {
-            if (!clientDetails.getGrantTypes().contains(GrantType.authorization_code)) {
-                log.info("只支持授权码模式:{}", clientId);
-                callback(redirectUrl, response);
-                return;
+        switch (responseType) {
+            // 授权码模式
+            case code: {
+                UserDetailsImpl userDetails  = SecurityContextHelper.getUserDetails();
+                if (userDetails == null || !checkAuthorize(clientDetails, userDetails, scope)) {
+                    if (userDetails == null) {
+                        log.info("please login");
+                    }
+                    callback(redirectUrl, response);
+                    return;
+                }
+
+                Long userId = userDetails.getId();
+                String username = userDetails.getUsername();
+                Collection<? extends GrantedAuthority> userDetailsAuthorities = userDetails.getAuthorities();
+
+                userDetails.setClientId(clientId);
+                // 自动选择scope
+                if (clientDetails.getAutoGrant()) {
+                    Set<String> allEnableScope = new HashSet<>();
+                    if (StringUtils.isBlank(scope)) {
+                        Set<String> clientScopes = clientDetails.getScopes();
+                        allEnableScope = clientScopes.stream()
+                                .filter(s -> userDetailsAuthorities.contains(new SimpleGrantedAuthority(s))).collect(Collectors.toSet());
+                    } else {
+                        allEnableScope.add(scope);
+                    }
+                    // 临时缓存scopes
+                    scopeManager.save(clientId, userDetails.getId(), clientDetails.getRefreshTokenTimeout(), allEnableScope);
+                    // 生成code并响应
+                    String code = codeStrategy.generate(userDetails.getId(), username, userDetails.getCustomerInfo());
+                    callback(redirectUrl + "?code=" + code, response);
+                } else {
+                    List<String> cacheScopes = scopeManager.get(clientId, userId);
+                    if (CollectionUtils.isNotEmpty(cacheScopes) && cacheScopes.contains(scope)) {
+                        // 生成code并响应
+                        String code = codeStrategy.generate(userDetails.getId(), username, userDetails.getCustomerInfo());
+                        callback(redirectUrl + "?code=" + code, response);
+                    }
+                    // 需要用户自己确认并选择
+                    else {
+                        if (StringUtils.isNotBlank(scope)) {
+                            callback("/oauth/manualAuthorize?type=1&scopes=" + scope + "&redirectUrl=" + redirectUrl, response);
+                        } else {
+                            callback("/oauth/manualAuthorize?type=2&redirectUrl=" + redirectUrl, response);
+                        }
+                    }
+                }
+                break;
             }
+            // 隐密模式
+            case token: {
+                break;
+            }
+            default: callback(redirectUrl, response);
+        }
+    }
+
+    private boolean checkAuthorize(ClientDetailsImpl clientDetails, UserDetailsImpl userDetails, String scope) {
+        String clientId = clientDetails.getClientId();
+        Long clientUid = clientDetails.getId();
+        Long userId = userDetails.getId();
+        String username = userDetails.getUsername();
+        Collection<? extends GrantedAuthority> userDetailsAuthorities = userDetails.getAuthorities();
+
+        if (!clientDetails.getGrantTypes().contains(GrantType.authorization_code)) {
+            log.info("只支持授权码模式:{}", clientId);
+            return false;
+        }
+
+        UserClientRelationDTO userClientRelationDTO = userClientRelationService.findByUserIdAndClientId(userId, clientUid);
+        if (userClientRelationDTO == null) {
+            log.info("用户不属于该client:{}, {}, {}", clientId, userId, username);
+            return false;
+        }
+
+        if (StringUtils.isNotBlank(scope)) {
             if (!clientDetails.getScopes().contains(scope)) {
                 log.info("该client不拥有该scope:{}, {}", clientId, scope);
-                callback(redirectUrl, response);
-                return;
+                return false;
             }
-            // 检查用户是否有该权限
-            UserDetailsImpl userDetails  = SecurityContextHelper.getUserDetails();
-            if (userDetails == null) {
-                log.info("please login");
-                callback(redirectUrl, response);
-                return;
+            if (CollectionUtils.isEmpty(userDetailsAuthorities) || !userDetailsAuthorities.contains(new SimpleGrantedAuthority(scope))) {
+                log.info("用户没有权限:{}, {}, {}, {}", clientId, userId, username, scope);
+                return false;
             }
-            userDetails.setClientId(clientId);
-
-            UserClientRelationDTO userClientRelationDTO = userClientRelationService.findByUserIdAndClientId(userDetails.getId(), clientDetails.getId());
-            if (userClientRelationDTO == null) {
-                log.info("用户不属于该client:{}, {}, {}", clientId, userDetails.getId(), userDetails.getUsername());
-                callback(redirectUrl, response);
-                return;
-            }
-            if (CollectionUtils.isEmpty(userDetails.getAuthorities()) || !userDetails.getAuthorities().contains(new SimpleGrantedAuthority(scope))) {
-                log.info("用户没有权限:{}, {}, {}, {}", clientId, userDetails.getId(), userDetails.getUsername(), scope);
-                callback(redirectUrl, response);
-                return;
-            }
-
-            // oauth2是需要用户每次去授权的，一个client和user同时只会存在一个token
-            ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-            String scopeCacheKey = SCOPE_CACHE_PREFIX + clientId + ":" + userDetails.getId();
-            // 如果已经有这个权限了则自动授权
-            String scopeCacheStr = opsForValue.get(scopeCacheKey);
-            if (StringUtils.isNotBlank(scopeCacheStr) && JSONArray.parseArray(scopeCacheStr, String.class).contains(scope)) {
-                generateCode(redirectUrl, userDetails, response);
-            }
-            // 没有的话则需要到确认授权页面进行授权
-            else {
-                callback("/oauth/manualAuthorize?type=1&scopes=" + scope + "&redirectUrl=" + redirectUrl, response);
-            }
-        } else {
-            callback(redirectUrl, response);
         }
+        return true;
     }
 
     @PostMapping("/token")
     @ResponseBody
-    public JsonResult<TokenInfoDTO> token(GrantType grantType, String clientId, String clientSecret, String code, String refreshToken) {
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        Map<String, Object> generateTokenParams = new HashMap<>(4);
-        switch (grantType) {
-            case implicit:
-            case password:
-            case refresh_token: {
-                ThrowUtils.throwIfTrue(StringUtils.isBlank(refreshToken), SecurityError.NEED_REFRESH_TOKEN);
-
-                ClientDetailsImpl clientDetails = clientService.findByClientId(clientId);
-                ThrowUtils.throwIfTrue(clientDetails == null ||
-                        !passwordEncoder.matches(clientSecret, clientDetails.getSecret()), SecurityError.CLIENT_ERROR);
-
-                String refreshTokenDtoStr = stringRedisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + refreshToken);
-                ThrowUtils.throwIfTrue(StringUtils.isBlank(refreshTokenDtoStr), SecurityError.REFRESH_TOKEN_EXPIRED);
-
-                RefreshTokenDTO refreshTokenDTO = JSON.parseObject(refreshTokenDtoStr, RefreshTokenDTO.class);
-                UserDetailsImpl userDetails = userService.findById(refreshTokenDTO.getUserId());
-
-                UserClientRelationDTO userClientRelationDTO = userClientRelationService.findByUserIdAndClientId(userDetails.getId(), clientDetails.getId());
-                ThrowUtils.throwIfTrue(userClientRelationDTO == null, SecurityError.CLIENT_ERROR);
-
-                // 删除旧token
-                authorizeInfoManager.delete(refreshTokenDTO.getAccessToken());
-
-                buildGenerateTokenParams(generateTokenParams, clientDetails.getTimeout(), userDetails.getUsername(), userDetails.getId());
-                String token = generateTokenStrategy.generate(generateTokenParams);
-
-                List<String> scopes = loadAuthorizedScope(clientId, userDetails.getId());
-                authorizeInfoManager.save(token, clientDetails.getTimeout(), userDetails.getCustomerInfo(), scopes);
-
-                TokenInfoDTO dto = new TokenInfoDTO();
-                dto.setAccessToken(token);
-                // 生成refresh token 如果支持的话
-                Long refreshTokenTimeout = clientDetails.getRefreshTokenTimeout();
-                if (clientDetails.getGrantTypes().contains(GrantType.refresh_token) && refreshTokenTimeout > 0) {
-                    String newRefreshToken = generateRefreshToken(refreshToken, userDetails.getId(), token, refreshTokenTimeout);
-                    dto.setRefreshToken(newRefreshToken);
-                }
-                return JsonResult.of(dto);
-            }
-            case client_credentials: {
-                break;
-            }
-            // 授权码模式
-            case authorization_code: {
-                ThrowUtils.throwIfTrue(StringUtils.isBlank(code), SecurityError.ERROR_CODE);
-                String codeInfoStr = opsForValue.get(CODE_CACHE_PREFIX + code);
-                ThrowUtils.throwIfTrue(StringUtils.isBlank(codeInfoStr), SecurityError.ERROR_CODE);
-                CodeCacheInfoDTO codeCacheInfoDTO = JSON.parseObject(codeInfoStr, CodeCacheInfoDTO.class);
-
-                ClientDetailsImpl clientDetails = clientService.findByClientId(clientId);
-                ThrowUtils.throwIfTrue(clientDetails == null ||
-                        !passwordEncoder.matches(clientSecret, clientDetails.getSecret()), SecurityError.CLIENT_ERROR);
-
-                // 生成token对应的内容
-                buildGenerateTokenParams(generateTokenParams, clientDetails.getTimeout(), codeCacheInfoDTO.getUsername(), codeCacheInfoDTO.getUserId());
-                String token = generateTokenStrategy.generate(generateTokenParams);
-
-                // 保存token对应的信息
-                List<String> scopes = loadAuthorizedScope(clientId, codeCacheInfoDTO.getUserId());
-                authorizeInfoManager.save(token, clientDetails.getTimeout(), codeCacheInfoDTO.getCustomerInfo(), scopes);
-
-                TokenInfoDTO dto = new TokenInfoDTO();
-                dto.setAccessToken(token);
-                // 生成refresh token 如果支持的话
-                Long refreshTokenTimeout = clientDetails.getRefreshTokenTimeout();
-                if (clientDetails.getGrantTypes().contains(GrantType.refresh_token) && refreshTokenTimeout > 0) {
-                    String newRefreshToken = generateRefreshToken(refreshToken, codeCacheInfoDTO.getUserId(), token, refreshTokenTimeout);
-                    dto.setRefreshToken(newRefreshToken);
-                }
-                return JsonResult.of(dto);
-            }
-            default: throw new SecurityException(SecurityError.NOT_SUPPORT);
-        }
-        return null;
-    }
-
-    private String generateRefreshToken(String oldRefreshToken, Long userId, String token, Long refreshTokenTimeout) {
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        String newRefreshToken = generateRefreshTokenStrategy.generate(null);
-        RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO();
-        refreshTokenDTO.setUserId(userId);
-        refreshTokenDTO.setAccessToken(token);
-        // 删除旧的refresh token
-        if (StringUtils.isNotBlank(oldRefreshToken)) {
-            stringRedisTemplate.delete(oldRefreshToken);
-        }
-        // 保存新的refresh token
-        opsForValue.setIfAbsent(REFRESH_TOKEN_PREFIX + newRefreshToken, JSON.toJSONString(refreshTokenDTO), refreshTokenTimeout, TimeUnit.MILLISECONDS);
-        return newRefreshToken;
-    }
-
-    private List<String> loadAuthorizedScope(String clientId, Long userId) {
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        String scopeCacheStr = opsForValue.get(SCOPE_CACHE_PREFIX + clientId + ":" + userId);
-        List<String> scopes = new ArrayList<>();
-        if (StringUtils.isNotBlank(scopeCacheStr)) {
-            scopes = JSONArray.parseArray(scopeCacheStr, String.class);
-        }
-        return scopes;
-    }
-
-    private void buildGenerateTokenParams(Map<String, Object> generateTokenParams, Long timeout, String username, Long id) {
-        CertificationImpl certification = new CertificationImpl();
-        certification.setName(username);
-        certification.setId(id);
-        String content = JSON.toJSONString(certification);
-
-        generateTokenParams.put("content", content);
-        generateTokenParams.put("privateKey", privateKey);
-        generateTokenParams.put("timeout", timeout);
+    public JsonResult<TokenInfoDTO> token(@RequestBody AuthorizeTokenDTO authorizeTokenDTO) {
+        GrantType grantType = authorizeTokenDTO.getGrantType();
+        BaseGenerateTokenLogic generateTokenLogic = generateTokenLogicMap.get(grantType.name());
+        ThrowUtils.throwIfTrue(generateTokenLogic == null, SecurityError.NOT_SUPPORT);
+        TokenInfoDTO dto = generateTokenLogicMap.get(grantType.name()).execute(authorizeTokenDTO);
+        return JsonResult.of(dto);
     }
 
     @PostMapping("/check")

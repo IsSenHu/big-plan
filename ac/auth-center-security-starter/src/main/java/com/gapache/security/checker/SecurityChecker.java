@@ -1,5 +1,6 @@
 package com.gapache.security.checker;
 
+import com.gapache.security.model.AccessCard;
 import com.gapache.security.model.Certification;
 
 /**
@@ -14,5 +15,5 @@ public interface SecurityChecker {
      * @param token token
      * @return 凭证
      */
-    Certification checking(String token);
+    AccessCard checking(String token);
 }

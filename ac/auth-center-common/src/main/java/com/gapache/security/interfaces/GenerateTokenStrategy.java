@@ -1,4 +1,4 @@
-package com.gapache.cloud.auth.server.security;
+package com.gapache.security.interfaces;
 
 import java.util.Map;
 

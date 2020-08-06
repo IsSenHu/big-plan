@@ -38,4 +38,7 @@ public class ClientEntity extends BaseEntity<Long> {
 
     @Column(name = "refresh_token_timeout", nullable = false)
     private Long refreshTokenTimeout;
+
+    @Column(name = "auto_grant", nullable = false)
+    private Boolean autoGrant;
 }

@@ -27,4 +27,6 @@ public class ClientDTO implements Serializable {
     private Long timeout;
 
     private Long refreshTokenTimeout;
+
+    private Boolean autoGrant;
 }

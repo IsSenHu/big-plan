@@ -1,6 +1,6 @@
 package com.gapache.cloud.auth.server.security.impl;
 
-import com.gapache.cloud.auth.server.security.GenerateTokenStrategy;
+import com.gapache.security.interfaces.GenerateTokenStrategy;
 import com.gapache.security.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,18 +17,22 @@ import java.util.Map;
 public class JwtGenerateTokenStrategy implements GenerateTokenStrategy {
 
     private static final String CONTENT = "content";
-    private static final String PRIVATE_KEY = "privateKey";
     private static final String TIMEOUT = "timeout";
+
+    private final PrivateKey privateKey;
+
+    public JwtGenerateTokenStrategy(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
 
     @Override
     public String generate(Map<String, Object> params) {
         log.info("generate params:{}", params);
-        if (!params.containsKey(CONTENT) || !params.containsKey(PRIVATE_KEY) || !params.containsKey(TIMEOUT)) {
+        if (!params.containsKey(CONTENT) || !params.containsKey(TIMEOUT)) {
             return null;
         }
 
         String content = (String) params.get(CONTENT);
-        PrivateKey privateKey = (PrivateKey) params.get(PRIVATE_KEY);
         Long timeout = (Long) params.get(TIMEOUT);
 
         return JwtUtils.generateToken(content, privateKey, timeout);

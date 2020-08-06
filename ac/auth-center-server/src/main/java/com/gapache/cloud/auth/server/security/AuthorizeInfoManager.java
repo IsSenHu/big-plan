@@ -2,7 +2,7 @@ package com.gapache.cloud.auth.server.security;
 
 import com.gapache.security.model.CustomerInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author HuSen
@@ -18,7 +18,7 @@ public interface AuthorizeInfoManager {
      * @param customerInfo 用户自定义信息
      * @param scopes       作用域
      */
-    void save(String token, Long timeout, CustomerInfo customerInfo, List<String> scopes);
+    void save(String token, Long timeout, CustomerInfo customerInfo, Collection<String> scopes);
 
     /**
      * 删除授权后的信息

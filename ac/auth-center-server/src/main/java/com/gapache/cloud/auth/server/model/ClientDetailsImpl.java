@@ -23,6 +23,7 @@ public class ClientDetailsImpl {
     private String redirectUrl;
     private Long timeout;
     private Long refreshTokenTimeout;
+    private Boolean autoGrant;
 
     public Set<GrantType> getGrantTypes() {
         if (StringUtils.isBlank(grantTypes)) {
@@ -60,5 +61,9 @@ public class ClientDetailsImpl {
 
     public Long getRefreshTokenTimeout() {
         return refreshTokenTimeout;
+    }
+
+    public Boolean getAutoGrant() {
+        return autoGrant;
     }
 }

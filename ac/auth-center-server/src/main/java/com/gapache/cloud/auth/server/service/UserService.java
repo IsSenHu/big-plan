@@ -4,12 +4,13 @@ import com.gapache.cloud.auth.server.model.UserDetailsImpl;
 import com.gapache.security.model.UserDTO;
 import com.gapache.security.model.UserLoginDTO;
 import com.gapache.security.model.UserInfoDTO;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * @author HuSen
  * @since 2020/7/31 10:19 上午
  */
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * 用户登陆
