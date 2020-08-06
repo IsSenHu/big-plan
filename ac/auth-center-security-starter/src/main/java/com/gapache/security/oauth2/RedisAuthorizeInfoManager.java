@@ -1,8 +1,8 @@
-package com.gapache.cloud.auth.server.security.impl;
+package com.gapache.security.oauth2;
 
 import com.alibaba.fastjson.JSON;
-import com.gapache.cloud.auth.server.model.AuthorizeInfoDTO;
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
+import com.gapache.security.interfaces.AuthorizeInfoManager;
+import com.gapache.security.model.AuthorizeInfoDTO;
 import com.gapache.security.model.CustomerInfo;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -34,5 +34,11 @@ public class RedisAuthorizeInfoManager implements AuthorizeInfoManager {
     @Override
     public void delete(String token) {
         stringRedisTemplate.delete(token);
+    }
+
+    @Override
+    public String get(String token) {
+        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+        return opsForValue.get(token);
     }
 }

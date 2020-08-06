@@ -1,7 +1,8 @@
 package com.gapache.cloud.auth.server.model;
 
 import com.gapache.security.model.CustomerInfo;
-import lombok.Data;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +13,8 @@ import java.util.List;
  * @author HuSen
  * @since 2020/7/31 10:15 上午
  */
-@Data
+@Setter
+@ToString
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = -7492932138645849421L;
     /**
@@ -73,5 +75,20 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public CustomerInfo getCustomerInfo() {
+        if (customerInfo != null) {
+            return customerInfo.copy();
+        }
+        return new CustomerInfo();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 }

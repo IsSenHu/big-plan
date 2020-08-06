@@ -15,11 +15,4 @@ public interface Certification extends Principal, Serializable {
      * @return 唯一ID
      */
     Long getUniqueId();
-
-    /**
-     * 自定义信息（扩展用，提高灵活性）
-     *
-     * @return 自定义信息
-     */
-    CustomerInfo getCustomerInfo();
 }

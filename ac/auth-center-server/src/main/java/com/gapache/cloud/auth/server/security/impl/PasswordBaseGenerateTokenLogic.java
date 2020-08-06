@@ -4,7 +4,7 @@ import com.gapache.cloud.auth.server.model.AuthorizeTokenDTO;
 import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
 import com.gapache.cloud.auth.server.model.UserClientRelationDTO;
 import com.gapache.cloud.auth.server.model.UserDetailsImpl;
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
+import com.gapache.security.interfaces.AuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.BaseGenerateTokenLogic;
 import com.gapache.security.interfaces.GenerateTokenStrategy;
 import com.gapache.cloud.auth.server.service.ClientService;
@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;

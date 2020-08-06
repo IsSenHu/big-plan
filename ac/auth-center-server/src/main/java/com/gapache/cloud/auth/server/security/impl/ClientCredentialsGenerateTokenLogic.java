@@ -2,7 +2,7 @@ package com.gapache.cloud.auth.server.security.impl;
 
 import com.gapache.cloud.auth.server.model.AuthorizeTokenDTO;
 import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
+import com.gapache.security.interfaces.AuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.BaseGenerateTokenLogic;
 import com.gapache.cloud.auth.server.service.ClientService;
 import com.gapache.commons.model.ThrowUtils;

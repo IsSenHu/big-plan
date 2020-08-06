@@ -11,8 +11,9 @@ import com.gapache.cloud.auth.server.service.ClientService;
 import com.gapache.cloud.auth.server.service.UserClientRelationService;
 import com.gapache.commons.model.Error;
 import com.gapache.commons.model.*;
+import com.gapache.security.checker.SecurityChecker;
 import com.gapache.security.exception.SecurityException;
-import com.gapache.security.model.Certification;
+import com.gapache.security.model.AccessCard;
 import com.gapache.security.model.SecurityError;
 import com.gapache.security.model.TokenInfoDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +38,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/oauth")
 public class Oauth2Controller {
 
-    public Oauth2Controller(Map<String, BaseGenerateTokenLogic> generateTokenLogicMap, CodeStrategy codeStrategy, ClientService clientService, UserClientRelationService userClientRelationService, ScopeManager scopeManager) {
+    public Oauth2Controller(Map<String, BaseGenerateTokenLogic> generateTokenLogicMap, CodeStrategy codeStrategy, ClientService clientService, UserClientRelationService userClientRelationService, ScopeManager scopeManager, SecurityChecker securityChecker) {
         this.codeStrategy = codeStrategy;
         this.clientService = clientService;
         this.userClientRelationService = userClientRelationService;
         this.scopeManager = scopeManager;
+        this.securityChecker = securityChecker;
         log.info("Oauth2Controller init:{}", generateTokenLogicMap);
         this.generateTokenLogicMap = generateTokenLogicMap;
     }
@@ -70,6 +72,7 @@ public class Oauth2Controller {
     private final ClientService clientService;
     private final UserClientRelationService userClientRelationService;
     private final ScopeManager scopeManager;
+    private final SecurityChecker securityChecker;
 
     @PostMapping("/userAuthorize")
     public void userAuthorize(UserAuthorizeDTO userAuthorizeDTO, HttpServletResponse response) {
@@ -175,6 +178,36 @@ public class Oauth2Controller {
         }
     }
 
+    @PostMapping("/token")
+    @ResponseBody
+    public JsonResult<TokenInfoDTO> token(@RequestBody AuthorizeTokenDTO authorizeTokenDTO) {
+        GrantType grantType = authorizeTokenDTO.getGrantType();
+        BaseGenerateTokenLogic generateTokenLogic = generateTokenLogicMap.get(grantType.name());
+        ThrowUtils.throwIfTrue(generateTokenLogic == null, SecurityError.NOT_SUPPORT);
+        TokenInfoDTO dto = generateTokenLogicMap.get(grantType.name()).execute(authorizeTokenDTO);
+        return JsonResult.of(dto);
+    }
+
+    @PostMapping("/check")
+    @ResponseBody
+    public JsonResult<AccessCard> check(@RequestBody Map<String, String> params) {
+        String token = params.get("token");
+        ThrowUtils.throwIfTrue(StringUtils.isBlank(token), SecurityError.INVALID_PARAMS);
+
+        AccessCard accessCard = securityChecker.checking(token);
+        ThrowUtils.throwIfTrue(accessCard == null, SecurityError.INVALID_TOKEN);
+
+        return JsonResult.of(accessCard);
+    }
+
+    private void callback(String redirectUrl, HttpServletResponse response) {
+        try {
+            response.sendRedirect(redirectUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private boolean checkAuthorize(ClientDetailsImpl clientDetails, UserDetailsImpl userDetails, String scope) {
         String clientId = clientDetails.getClientId();
         Long clientUid = clientDetails.getId();
@@ -204,28 +237,5 @@ public class Oauth2Controller {
             }
         }
         return true;
-    }
-
-    @PostMapping("/token")
-    @ResponseBody
-    public JsonResult<TokenInfoDTO> token(@RequestBody AuthorizeTokenDTO authorizeTokenDTO) {
-        GrantType grantType = authorizeTokenDTO.getGrantType();
-        BaseGenerateTokenLogic generateTokenLogic = generateTokenLogicMap.get(grantType.name());
-        ThrowUtils.throwIfTrue(generateTokenLogic == null, SecurityError.NOT_SUPPORT);
-        TokenInfoDTO dto = generateTokenLogicMap.get(grantType.name()).execute(authorizeTokenDTO);
-        return JsonResult.of(dto);
-    }
-
-    @PostMapping("/check")
-    public JsonResult<Certification> check() {
-        return null;
-    }
-
-    private void callback(String redirectUrl, HttpServletResponse response) {
-        try {
-            response.sendRedirect(redirectUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

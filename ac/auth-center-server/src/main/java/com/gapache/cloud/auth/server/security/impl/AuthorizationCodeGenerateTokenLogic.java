@@ -4,7 +4,7 @@ import com.gapache.cloud.auth.server.constant.GrantType;
 import com.gapache.cloud.auth.server.model.AuthorizeTokenDTO;
 import com.gapache.cloud.auth.server.model.ClientDetailsImpl;
 import com.gapache.cloud.auth.server.model.CodeCacheInfoDTO;
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
+import com.gapache.security.interfaces.AuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.BaseGenerateTokenLogic;
 import com.gapache.cloud.auth.server.security.CodeStrategy;
 import com.gapache.cloud.auth.server.security.GenerateRefreshTokenStrategy;

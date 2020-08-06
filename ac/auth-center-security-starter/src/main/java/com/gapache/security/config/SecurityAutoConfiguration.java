@@ -3,12 +3,15 @@ package com.gapache.security.config;
 import com.gapache.commons.security.RSAUtils;
 import com.gapache.security.checker.SecurityChecker;
 import com.gapache.security.checker.impl.LocalSecurityChecker;
+import com.gapache.security.interfaces.AuthorizeInfoManager;
+import com.gapache.security.oauth2.RedisAuthorizeInfoManager;
 import com.gapache.security.properties.SignatureProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -32,9 +35,9 @@ public class SecurityAutoConfiguration {
 
     @ConditionalOnProperty("com.gapache.security.public-key")
     @Bean("localSecurityChecker")
-    public SecurityChecker localSecurityChecker() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    public SecurityChecker localSecurityChecker(AuthorizeInfoManager authorizeInfoManager) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         log.info("启用公钥解密############");
-        return new LocalSecurityChecker(RSAUtils.getPublicKey(signatureProperties.getPublicKey().trim().replaceAll(" ", "")));
+        return new LocalSecurityChecker(RSAUtils.getPublicKey(signatureProperties.getPublicKey().trim().replaceAll(" ", "")), authorizeInfoManager);
     }
 
     @Bean
@@ -42,5 +45,10 @@ public class SecurityAutoConfiguration {
     public PrivateKey privateKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         log.info("启用私钥进行签名############");
         return RSAUtils.getPrivateKey(signatureProperties.getPrivateKey().trim().replaceAll(" ", ""));
+    }
+
+    @Bean
+    public AuthorizeInfoManager authorizeInfoManager(StringRedisTemplate stringRedisTemplate) {
+        return new RedisAuthorizeInfoManager(stringRedisTemplate);
     }
 }

@@ -21,7 +21,8 @@ public enum SecurityError implements Error {
     REFRESH_TOKEN_EXPIRED(10510, "refresh token expired"),
     PLEASE_LOGIN(10511, "please login"),
     INVALID_PARAMS(10512, "invalid params"),
-    FORBIDDEN(10513, "forbidden");
+    FORBIDDEN(10513, "forbidden"),
+    INVALID_TOKEN(10514, "invalid token");
 
     SecurityError(Integer code, String error) {
         this.code = code;

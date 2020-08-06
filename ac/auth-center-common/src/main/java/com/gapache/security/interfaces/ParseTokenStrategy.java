@@ -11,10 +11,10 @@ import com.gapache.security.model.AccessCard;
 public interface ParseTokenStrategy {
 
     /**
-     * 解析token
+     * 解析token对应的content
      *
-     * @param token token
+     * @param content content
      * @return AccessCard
      */
-    AccessCard parse(String token);
+    AccessCard parse(String content);
 }

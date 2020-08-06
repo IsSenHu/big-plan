@@ -1,4 +1,4 @@
-package com.gapache.cloud.auth.server.security;
+package com.gapache.security.interfaces;
 
 import com.gapache.security.model.CustomerInfo;
 
@@ -26,4 +26,12 @@ public interface AuthorizeInfoManager {
      * @param token token
      */
     void delete(String token);
+
+    /**
+     * info
+     *
+     * @param token token
+     * @return info
+     */
+    String get(String token);
 }

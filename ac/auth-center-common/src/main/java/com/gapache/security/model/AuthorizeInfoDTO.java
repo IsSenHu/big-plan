@@ -1,6 +1,5 @@
-package com.gapache.cloud.auth.server.model;
+package com.gapache.security.model;
 
-import com.gapache.security.model.CustomerInfo;
 import lombok.Data;
 
 import java.util.Collection;
@@ -11,8 +10,6 @@ import java.util.Collection;
  */
 @Data
 public class AuthorizeInfoDTO {
-
     private Collection<String> scopes;
-
     private CustomerInfo customerInfo;
 }

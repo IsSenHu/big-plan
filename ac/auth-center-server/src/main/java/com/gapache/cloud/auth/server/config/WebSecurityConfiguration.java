@@ -1,14 +1,11 @@
 package com.gapache.cloud.auth.server.config;
 
-import com.gapache.cloud.auth.server.security.AuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.GenerateRefreshTokenStrategy;
 import com.gapache.security.interfaces.GenerateTokenStrategy;
 import com.gapache.cloud.auth.server.security.impl.JwtGenerateTokenStrategy;
-import com.gapache.cloud.auth.server.security.impl.RedisAuthorizeInfoManager;
 import com.gapache.cloud.auth.server.security.impl.UUIDGenerateRefreshTokenStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -57,11 +54,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthorizeInfoManager authorizeInfoSaver(StringRedisTemplate stringRedisTemplate) {
-        return new RedisAuthorizeInfoManager(stringRedisTemplate);
-    }
-
-    @Bean
     public GenerateRefreshTokenStrategy generateRefreshTokenStrategy() {
         return new UUIDGenerateRefreshTokenStrategy();
     }
@@ -90,6 +82,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/api/client").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/client/bindUser").permitAll()
                 .antMatchers(HttpMethod.POST, "/oauth/token").permitAll()
+                .antMatchers(HttpMethod.POST, "/oauth/check").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 
