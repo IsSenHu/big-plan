@@ -1,7 +1,9 @@
 package com.gapache.security.model;
 
+import com.dyuproject.protostuff.Tag;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,8 +12,19 @@ import java.util.Set;
  */
 @Data
 public class AccessCard {
+    @Tag(1)
     private Long userId;
+    @Tag(2)
     private String username;
+    @Tag(3)
     private CustomerInfo customerInfo;
+    @Tag(4)
     private Set<String> authorities;
+
+    public static AccessCard createEmpty() {
+        AccessCard accessCard = new AccessCard();
+        accessCard.setCustomerInfo(new CustomerInfo(0));
+        accessCard.setAuthorities(new HashSet<>(0));
+        return accessCard;
+    }
 }

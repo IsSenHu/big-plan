@@ -7,12 +7,13 @@
         <module>auth-center-server</module>
         <module>auth-center-common</module>
         <module>auth-center-security-starter</module>
+        <module>auth-center-resource-starter</module>
     </modules>
     <parent>
         <artifactId>cloud-base</artifactId>
         <groupId>com.gapache</groupId>
         <version>0.0.1</version>
-        <relativePath/>
+        <relativePath>../base/cloud-base/pom.xml</relativePath>
     </parent>
     <artifactId>ac</artifactId>
     <name>ac</name>

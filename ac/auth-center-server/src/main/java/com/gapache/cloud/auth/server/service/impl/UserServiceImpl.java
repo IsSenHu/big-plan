@@ -12,7 +12,7 @@ import com.gapache.security.model.UserDTO;
 import com.gapache.security.model.UserInfoDTO;
 import com.gapache.security.model.UserLoginDTO;
 import com.gapache.security.model.impl.CertificationImpl;
-import com.gapache.security.properties.SignatureProperties;
+import com.gapache.security.properties.SecurityProperties;
 import com.gapache.security.utils.JwtUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     private PrivateKey privateKey;
 
     @Resource
-    private SignatureProperties signatureProperties;
+    private SecurityProperties securityProperties;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         certification.setName(userEntity.getUsername());
 
         String content = JSON.toJSONString(certification);
-        String token = JwtUtils.generateToken(content, privateKey, signatureProperties.getTimeout());
+        String token = JwtUtils.generateToken(content, privateKey, securityProperties.getTimeout());
 
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setToken(token);

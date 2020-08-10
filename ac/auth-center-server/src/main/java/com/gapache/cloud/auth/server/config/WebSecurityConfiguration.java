@@ -83,6 +83,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/client/bindUser").permitAll()
                 .antMatchers(HttpMethod.POST, "/oauth/token").permitAll()
                 .antMatchers(HttpMethod.POST, "/oauth/check").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/resource/receiveReportData").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated();
 

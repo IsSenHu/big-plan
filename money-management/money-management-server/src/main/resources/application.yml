@@ -1,0 +1,27 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: money-management-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.24.38.46:3306/money_management?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
+    password: 521428Slyt!
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 118.24.38.46:8848
+com:
+  gapache:
+    security:
+      register-remote: true
+      update-resources: true

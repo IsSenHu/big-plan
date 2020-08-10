@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>../../ac</module>
+        <module>../../money-management</module>
     </modules>
     <parent>
         <artifactId>base</artifactId>

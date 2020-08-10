@@ -1,33 +1,23 @@
-spring:
-  cloud:
-    gateway:
-      routes:
-      - id: blog
-        uri: http://localhost:8090
-        predicates:
-        - Path=/blog/**
-      - id: auth
-        uri: http://localhost:8092
-        predicates:
-          - Path=/auth/**
-      - id: blog-admin
-        uri: http://localhost:8091
-        predicates:
-          - Path=/blog-admin/**
-      - id: health-server
-        uri: http://localhost:8093
-        predicates:
-          - Path=/health-server/**
 server:
   port: 9999
-dubbo:
+spring:
   application:
     name: gateway
-    qos-port: 22225
-  registry:
-    address: nacos://118.24.38.46:8848
-    timeout: 5000
-  provider:
-    timeout: 5000
-  consumer:
-    timeout: 5000
+  redis:
+    host: 118.24.38.46
+    port: 6379
+    password: 521428Slyt
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 118.24.38.46:8848
+    gateway:
+      routes:
+        - id: auth-center-server
+          uri: lb://auth-center-server
+          predicates:
+            - Path=/auth-center-server/**
+com:
+  gapache:
+    security:
+      public-key: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8T6qpCh+Jlm5E9qkO2IEOO/nBQP87a2rzVuIuZxt8QjpkdwXznQNWR/AJ4A31bvJ3sIkIR/xYEKfLmapmSCvGsLFyrbWmyhkzFADW5zuyxvnY0eGBLSEutKnW/7l4EAYGNHc/ClT9cvEBgKoE68mM+RMZ6Uuj4x8eh6jsLV1v2QIDAQAB"

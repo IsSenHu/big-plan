@@ -3,6 +3,7 @@ package com.gapache.mybatis.demo;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.gapache.mybatis.demo.annotation.Demo;
+import com.gapache.mybatis.demo.dao.po.GoodsEO;
 import com.gapache.mybatis.demo.lookup.BaseLookupDemo;
 import com.gapache.mybatis.demo.properties.DemoProperties;
 import com.gapache.mybatis.demo.registrar.DemoImportBeanDefinitionRegistrar;
@@ -16,6 +17,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 
 /**
  * @author HuSen
@@ -60,5 +66,25 @@ public class DemoApplication {
 
         applicationContext.getBean(BaseLookupDemo.class).process();
         applicationContext.getBean(BaseLookupDemo.class).process();
+
+//        GoodsRepository goodsRepository = applicationContext.getBean(GoodsRepository.class);
+//        Page<GoodsEO> all = goodsRepository.findAll(PageRequest.of(0, 10));
+//        System.out.println(all.getTotalElements());
+//        System.out.println(all.getTotalPages());
+//        System.out.println(all.getContent());
+//        System.out.println(all.getNumber());
+
+        ElasticsearchOperations operations = applicationContext.getBean(ElasticsearchOperations.class);
+
+        GoodsEO goodsEO = new GoodsEO();
+        goodsEO.setGoodsBarcode("123");
+        goodsEO.setGoodsName("123");
+        goodsEO.setGoodsPrice(10.f);
+        goodsEO.setId(1L);
+        goodsEO.setQuery("");
+        goodsEO.setSql("");
+
+        GoodsEO save = operations.save(goodsEO);
+        System.out.println(save);
     }
 }

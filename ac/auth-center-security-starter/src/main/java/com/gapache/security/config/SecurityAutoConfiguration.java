@@ -4,8 +4,8 @@ import com.gapache.commons.security.RSAUtils;
 import com.gapache.security.checker.SecurityChecker;
 import com.gapache.security.checker.impl.LocalSecurityChecker;
 import com.gapache.security.interfaces.AuthorizeInfoManager;
-import com.gapache.security.oauth2.RedisAuthorizeInfoManager;
-import com.gapache.security.properties.SignatureProperties;
+import com.gapache.security.core.RedisAuthorizeInfoManager;
+import com.gapache.security.properties.SecurityProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,27 +24,27 @@ import java.security.spec.InvalidKeySpecException;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(SignatureProperties.class)
+@EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityAutoConfiguration {
 
-    private final SignatureProperties signatureProperties;
+    private final SecurityProperties securityProperties;
 
-    public SecurityAutoConfiguration(SignatureProperties signatureProperties) {
-        this.signatureProperties = signatureProperties;
+    public SecurityAutoConfiguration(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
     }
 
     @ConditionalOnProperty("com.gapache.security.public-key")
     @Bean("localSecurityChecker")
     public SecurityChecker localSecurityChecker(AuthorizeInfoManager authorizeInfoManager) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         log.info("启用公钥解密############");
-        return new LocalSecurityChecker(RSAUtils.getPublicKey(signatureProperties.getPublicKey().trim().replaceAll(" ", "")), authorizeInfoManager);
+        return new LocalSecurityChecker(RSAUtils.getPublicKey(securityProperties.getPublicKey().trim().replaceAll(" ", "")), authorizeInfoManager);
     }
 
     @Bean
     @ConditionalOnProperty("com.gapache.security.private-key")
     public PrivateKey privateKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         log.info("启用私钥进行签名############");
-        return RSAUtils.getPrivateKey(signatureProperties.getPrivateKey().trim().replaceAll(" ", ""));
+        return RSAUtils.getPrivateKey(securityProperties.getPrivateKey().trim().replaceAll(" ", ""));
     }
 
     @Bean

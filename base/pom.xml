@@ -16,7 +16,6 @@
         <module>support-mybatis</module>
         <module>../cloud</module>
         <module>rocketmq</module>
-        <module>../wx-login</module>
         <module>cloud-base</module>
     </modules>
 
@@ -83,6 +82,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okHttp3.version}</version>
         </dependency>
 
         <dependency>

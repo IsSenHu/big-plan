@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: auth-center-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 118.24.38.46:8848
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://118.24.38.46:3306/auth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
@@ -47,4 +51,12 @@ com:
       public-key: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8T6qpCh+Jlm5E9qkO2IEOO/nBQP87a2rzVuIu
         Zxt8QjpkdwXznQNWR/AJ4A31bvJ3sIkIR/xYEKfLmapmSCvGsLFyrbWmyhkzFADW5zuyxvnY0eGB
         LSEutKnW/7l4EAYGNHc/ClT9cvEBgKoE68mM+RMZ6Uuj4x8eh6jsLV1v2QIDAQAB"
+      register-remote: false
+      update-resources: true
 
+#  设置ribbon客户端超时时间（OpenFeign默认支持ribbon）
+ribbon:
+#  指的是建立连接后从服务器读取到可用资源所用的时间 默认1秒
+  ReadTimeout: 10000
+#  指的是建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用的时间
+  ConnectTimeout: 5000
