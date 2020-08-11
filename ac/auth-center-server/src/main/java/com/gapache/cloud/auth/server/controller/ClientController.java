@@ -31,13 +31,13 @@ public class ClientController {
     }
 
     @PostMapping
-    @AuthResource(scope = "create", name = "创建客户端")
+//    @AuthResource(scope = "create", name = "创建客户端")
     public JsonResult<Boolean> create(@RequestBody ClientDTO clientDTO) {
         return JsonResult.of(clientService.create(clientDTO));
     }
 
     @PostMapping("/bindUser")
-    @AuthResource(scope = "bindUser", name = "绑定用户到客户端")
+//    @AuthResource(scope = "bindUser", name = "绑定用户到客户端")
     public JsonResult<Boolean> bindUser(@RequestBody UserClientRelationDTO userClientRelationDTO) {
         return JsonResult.of(userClientRelationService.create(userClientRelationDTO));
     }

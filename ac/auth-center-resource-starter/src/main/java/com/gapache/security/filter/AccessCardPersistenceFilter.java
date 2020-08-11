@@ -6,13 +6,13 @@ import com.gapache.security.model.AccessCard;
 import com.gapache.security.model.AuthConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Base64Utils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author HuSen
@@ -44,7 +44,8 @@ public class AccessCardPersistenceFilter implements Filter {
         }
 
         try {
-            AccessCard accessCard = ProtocstuffUtils.byte2Bean(encoded.getBytes(StandardCharsets.UTF_8), AccessCard.class);
+            byte[] bytes = Base64Utils.decodeFromString(encoded);
+            AccessCard accessCard = ProtocstuffUtils.byte2Bean(bytes, AccessCard.class);
             log.info("get access card from header:{}", accessCard);
             AccessCardHolder.setContext(accessCard);
             chain.doFilter(request, response);

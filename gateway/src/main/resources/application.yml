@@ -12,11 +12,9 @@ spring:
       discovery:
         server-addr: 118.24.38.46:8848
     gateway:
-      routes:
-        - id: auth-center-server
-          uri: lb://auth-center-server
-          predicates:
-            - Path=/auth-center-server/**
+      discovery:
+        locator:
+          enabled: true
 com:
   gapache:
     security:

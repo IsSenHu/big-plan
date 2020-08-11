@@ -72,6 +72,7 @@ public class AuthResourceServerAutoConfiguration implements InitializingBean {
         Object firstFind = enableAuthResourceServerMap.values().iterator().next();
         EnableAuthResourceServer enableAuthResourceServer = AnnotationUtils.findAnnotation(firstFind.getClass(), EnableAuthResourceServer.class);
         Assert.notNull(enableAuthResourceServer, "not found @Annotation EnableAuthResourceServer");
+        String resourceServerName = enableAuthResourceServer.value();
 
         Map<String, Object> needAuthMap = readyEvent.getApplicationContext().getBeansWithAnnotation(NeedAuth.class);
         if (MapUtils.isEmpty(needAuthMap)) {
@@ -85,19 +86,22 @@ public class AuthResourceServerAutoConfiguration implements InitializingBean {
             Assert.notNull(needAuth, "not found @Annotation NeedAuth");
             String category = needAuth.value();
             log.info("find need auth component:{}, {}, {}", category, beanName, bean);
-
-            Method[] declaredMethods = bean.getClass().getDeclaredMethods();
-            Method.setAccessible(declaredMethods, true);
-            for (Method method : declaredMethods) {
-                AuthResource authResource = AnnotationUtils.getAnnotation(method, AuthResource.class);
-                if (authResource == null) {
-                    continue;
+            Class<?> aClass = bean.getClass();
+            while (aClass != Object.class) {
+                Method[] declaredMethods = aClass.getDeclaredMethods();
+                Method.setAccessible(declaredMethods, true);
+                for (Method method : declaredMethods) {
+                    AuthResource authResource = AnnotationUtils.getAnnotation(method, AuthResource.class);
+                    if (authResource == null) {
+                        continue;
+                    }
+                    if (repeatChecker.contains(category + authResource.scope())) {
+                        throw new RuntimeException("duplicate scope:" + authResource.scope());
+                    }
+                    AuthResourceCache.put(resourceServerName, category, authResource);
+                    repeatChecker.add(category + authResource.scope());
                 }
-                if (repeatChecker.contains(category + authResource.scope())) {
-                    throw new RuntimeException("duplicate scope:" + authResource.scope());
-                }
-                AuthResourceCache.put(category, authResource);
-                repeatChecker.add(category + authResource.scope());
+                aClass = aClass.getSuperclass();
             }
         });
 
@@ -119,7 +123,7 @@ public class AuthResourceServerAutoConfiguration implements InitializingBean {
         }
 
         ResourceReportDTO resourceReportDTO = new ResourceReportDTO();
-        resourceReportDTO.setResourceServerName(enableAuthResourceServer.value());
+        resourceReportDTO.setResourceServerName(resourceServerName);
         resourceReportDTO.setAuthResources(reportData);
         boolean reportingResult = reporter.reporting(resourceReportDTO);
         log.info("reporting resource finish, result:{}, cost time:{}", reportingResult, stopWatch.getTotalTimeMillis() + "ms");

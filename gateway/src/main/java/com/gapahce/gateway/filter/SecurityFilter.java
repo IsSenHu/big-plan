@@ -10,6 +10,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -47,7 +48,10 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         if (accessCard != null) {
             byte[] message = ProtocstuffUtils.bean2Byte(accessCard, AccessCard.class);
             if (message != null) {
-                exchange.getRequest().getHeaders().set(AuthConstants.ACCESS_CARD_HEADER, new String(message, StandardCharsets.UTF_8));
+                String value = Base64Utils.encodeToString(message);
+                log.info("{} :{}", AuthConstants.ACCESS_CARD_HEADER, value);
+                exchange.getRequest().mutate()
+                        .headers(httpHeaders -> httpHeaders.add(AuthConstants.ACCESS_CARD_HEADER, value));
             }
         }
         return chain.filter(exchange);

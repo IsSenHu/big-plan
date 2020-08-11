@@ -59,8 +59,7 @@ public class UserServiceImpl implements UserService {
         userDetails.setUsername(userEntity.getUsername());
         userDetails.setPassword(userEntity.getPassword());
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("get_resource"));
-        authorities.add(new SimpleGrantedAuthority("update_resource"));
+        authorities.add(new SimpleGrantedAuthority("MoneyManagement:Test:checkAccessCard"));
         userDetails.setAuthorities(authorities);
         return userDetails;
     }
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService {
             userDetails.setId(userEntity.getId());
             userDetails.setUsername(userEntity.getUsername());
             userDetails.setPassword(userEntity.getPassword());
-            userDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("get_resource")));
+            userDetails.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("MoneyManagement:Test:checkAccessCard")));
             return userDetails;
         }).orElse(null);
     }
