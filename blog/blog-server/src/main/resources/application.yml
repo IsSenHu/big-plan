@@ -30,3 +30,8 @@ spring:
 feign:
   hystrix:
     enabled: false
+gapache:
+  oss:
+    endpoint: oss-cn-chengdu.aliyuncs.com
+    access-key-id: LTAI4FwKoMqrMCTzsBARyiaK
+    access-key-secret: A6pCD5Jz5vhxilpWOLJnCXv59Cmt0K
