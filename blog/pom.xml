@@ -3,12 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>blog-server</module>
-        <module>blog-admin</module>
-        <module>blog-sdk</module>
-        <module>blog-common</module>
-    </modules>
     <parent>
         <artifactId>cloud-base</artifactId>
         <groupId>com.gapache</groupId>
@@ -16,7 +10,7 @@
     </parent>
     <artifactId>blog</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.0.1-RELEASE</version>
 
     <dependencies>
 
@@ -25,4 +19,17 @@
     <build>
         <finalName>blog</finalName>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://118.24.38.46:18081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot</name>
+            <url>http://118.24.38.46:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
