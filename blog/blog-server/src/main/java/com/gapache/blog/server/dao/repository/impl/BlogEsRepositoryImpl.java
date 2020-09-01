@@ -1,9 +1,11 @@
 package com.gapache.blog.server.dao.repository.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.gapache.blog.common.model.dto.BlogQueryDTO;
+import com.gapache.blog.common.model.dto.BlogSummaryDTO;
 import com.gapache.blog.server.dao.document.Blog;
 import com.gapache.blog.server.dao.repository.BlogEsRepository;
-import com.gapache.blog.server.model.vo.BlogSummaryVO;
+import com.gapache.commons.model.IPageRequest;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +22,6 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.core.CountRequest;
-import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -30,6 +30,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
             if (log.isDebugEnabled()) {
                 log.debug("index:{}", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("index error.", e);
         }
     }
@@ -86,7 +87,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
         try {
             request.source(sourceBuilder);
             return client.search(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("archly error.", e);
             return null;
         }
@@ -100,7 +101,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
 
         try {
             client.delete(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("delete error.", e);
         }
     }
@@ -119,7 +120,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
             if (log.isDebugEnabled()) {
                 log.debug("update:{}", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("update error.", e);
         }
     }
@@ -135,7 +136,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
             request.indicesOptions(IndicesOptions.lenientExpandOpen());
             client.indices().delete(request, RequestOptions.DEFAULT);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("delete all error.", e);
             return false;
         }
@@ -143,16 +144,31 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
 
     @Override
     public List<Blog> findAllByCategory(String category) {
-        return findAll(QueryBuilders.matchQuery("category", category));
+        return findAll(QueryBuilders.matchQuery("category", category), 0, 10);
     }
 
     @Override
     public List<Blog> findAllByTag(String tag) {
-        return findAll(QueryBuilders.matchQuery("tags", tag));
+        return findAll(QueryBuilders.matchQuery("tags", tag), 0, 10);
     }
 
     @Override
-    public List<BlogSummaryVO> search(String queryString) {
+    public List<Blog> find(IPageRequest<BlogQueryDTO> iPageRequest) {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        BlogQueryDTO customParams = iPageRequest.getCustomParams();
+        String tag = customParams.getTag();
+        String category = customParams.getCategory();
+        if (StringUtils.isNotBlank(tag)) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("tags", tag));
+        }
+        if (StringUtils.isNotBlank(category)) {
+            boolQueryBuilder.must(QueryBuilders.termQuery("category", category));
+        }
+        return findAll(boolQueryBuilder, iPageRequest.getPage(), iPageRequest.getNumber());
+    }
+
+    @Override
+    public List<BlogSummaryDTO> search(String queryString) {
         try {
             String[] includeFields = new String[]{"id", "title", "content", "introduction"};
             String[] excludeFields = new String[]{"publishTime", "category", "tags"};
@@ -175,16 +191,16 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
                     .source(searchSourceBuilder);
             SearchResponse search = client.search(request, RequestOptions.DEFAULT);
 
-            List<BlogSummaryVO> result = new ArrayList<>();
+            List<BlogSummaryDTO> result = new ArrayList<>();
             for (SearchHit hit : search.getHits()) {
                 Blog blog = JSON.parseObject(hit.getSourceAsString(), Blog.class);
-                BlogSummaryVO summary = new BlogSummaryVO();
+                BlogSummaryDTO summary = new BlogSummaryDTO();
                 summary.setId(hit.getId());
                 summary.setSummary(blog.getTitle());
                 result.add(summary);
             }
             return result;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("search error.", e);
             return Lists.newArrayList();
         }
@@ -198,24 +214,28 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
                     .id(id);
             GetResponse response = client.get(request, RequestOptions.DEFAULT);
             return JSON.parseObject(response.getSourceAsString(), Blog.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("get error.", e);
             return null;
         }
     }
 
-    private List<Blog> findAll(QueryBuilder queryBuilder) {
-        try {
-            CountRequest countRequest = new CountRequest(INDEX);
-            countRequest.query(queryBuilder);
-            CountResponse countResponse = client.count(countRequest, RequestOptions.DEFAULT);
-            long count = countResponse.getCount();
+    @Override
+    public List<Blog> getNewest(Integer number) {
+        return findAll(null, 0, number);
+    }
 
+    private List<Blog> findAll(QueryBuilder queryBuilder, Integer from, Integer number) {
+        try {
             SearchRequest searchRequest = new SearchRequest(INDEX);
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-            searchSourceBuilder.query(queryBuilder)
-                    .from(0)
-                    .size((int) count);
+            if (queryBuilder != null) {
+                searchSourceBuilder.query(queryBuilder);
+            }
+            searchSourceBuilder
+                    .sort("publishTime", SortOrder.DESC)
+                    .from(from)
+                    .size(number);
             String[] includeFields = new String[]{"id", "title", "publishTime", "introduction"};
             String[] excludeFields = new String[]{"content", "category", "tags"};
             searchSourceBuilder.fetchSource(includeFields, excludeFields);
@@ -229,7 +249,7 @@ public class BlogEsRepositoryImpl implements BlogEsRepository {
                         return blog;
                     })
                     .collect(Collectors.toList());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("find all by category error.", e);
             return Lists.newArrayList();
         }

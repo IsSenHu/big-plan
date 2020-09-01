@@ -1,5 +1,7 @@
 package com.gapache.blog.server.controller;
 
+import com.gapache.blog.common.model.dto.CategoryDTO;
+import com.gapache.blog.server.api.CategoryApiService;
 import com.gapache.blog.server.dao.data.Category;
 import com.gapache.blog.server.service.CategoryService;
 import com.gapache.commons.model.JsonResult;
@@ -18,9 +20,16 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryApiService categoryApiService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, CategoryApiService categoryApiService) {
         this.categoryService = categoryService;
+        this.categoryApiService = categoryApiService;
+    }
+
+    @GetMapping("/findAll")
+    public JsonResult<List<CategoryDTO>> findAll() {
+        return JsonResult.of(categoryApiService.findAll());
     }
 
     @GetMapping

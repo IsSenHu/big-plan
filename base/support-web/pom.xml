@@ -6,12 +6,12 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>support-web</artifactId>
     <name>support-web</name>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>0.0.1-RELEASE</version>
     <description>
         MVC支持组件
     </description>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
     </dependencies>
 

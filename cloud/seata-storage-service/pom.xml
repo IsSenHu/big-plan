@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>

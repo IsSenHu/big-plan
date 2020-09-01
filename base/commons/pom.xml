@@ -6,12 +6,12 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>commons</artifactId>
     <name>commons</name>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>0.0.1-RELEASE</version>
     <description>
         基础和通用的工具等
     </description>

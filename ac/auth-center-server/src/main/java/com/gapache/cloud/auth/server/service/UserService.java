@@ -6,6 +6,8 @@ import com.gapache.security.model.UserLoginDTO;
 import com.gapache.security.model.UserInfoDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author HuSen
  * @since 2020/7/31 10:19 上午
@@ -23,4 +25,6 @@ public interface UserService extends UserDetailsService {
     Boolean create(UserDTO userDTO);
 
     UserDetailsImpl findById(Long id);
+
+    Boolean logout(HttpServletRequest request);
 }

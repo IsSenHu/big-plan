@@ -29,8 +29,7 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
-        <relativePath>../base/pom.xml</relativePath>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>cloud</artifactId>
     <name>cloud</name>

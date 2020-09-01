@@ -6,12 +6,12 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>uid-generator</artifactId>
     <name>uid-generator</name>
     <packaging>jar</packaging>
-    <version>0.0.1</version>
+    <version>0.0.1-RELEASE</version>
     <description>
         基于Snowflake算法的唯一ID生成器
     </description>

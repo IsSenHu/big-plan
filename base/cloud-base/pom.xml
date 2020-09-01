@@ -3,17 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>../../ac</module>
-        <module>../../money-management</module>
-    </modules>
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>cloud-base</artifactId>
     <name>cloud-base</name>
+    <version>0.0.1-RELEASE</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -26,7 +23,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
     </dependencies>
 

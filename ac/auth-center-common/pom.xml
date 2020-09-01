@@ -6,10 +6,11 @@
     <parent>
         <artifactId>ac</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>auth-center-common</artifactId>
     <name>auth-center-common</name>
+    <version>0.0.1-RELEASE</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -21,7 +22,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-protobuf</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>

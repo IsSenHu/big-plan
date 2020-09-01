@@ -6,10 +6,11 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>support-jpa</artifactId>
     <name>support-jpa</name>
+    <version>0.0.1-RELEASE</version>
     <packaging>jar</packaging>
     <description>
         jpa支持
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>

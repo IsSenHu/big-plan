@@ -7,23 +7,19 @@
         <module>blog-server</module>
         <module>blog-admin</module>
         <module>blog-sdk</module>
+        <module>blog-common</module>
     </modules>
     <parent>
+        <artifactId>cloud-base</artifactId>
         <groupId>com.gapache</groupId>
-        <artifactId>base</artifactId>
-        <version>0.0.1</version>
-        <relativePath/>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>blog</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
 
     <dependencies>
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>commons</artifactId>
-            <version>0.0.1</version>
-        </dependency>
+
     </dependencies>
 
     <build>

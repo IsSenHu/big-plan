@@ -16,6 +16,12 @@
     </description>
 
     <dependencies>
+        <!-- nacos 注册中心 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-web</artifactId>

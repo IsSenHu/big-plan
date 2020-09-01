@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HashUtils {
 
-    private static final String MD5 = "MD5";
+    public static final String MD5 = "MD5";
     private static final String SHA_1 = "SHA-1";
     private static final String SHA_256 = "SHA-256";
     private static final String SHA_384 = "SHA-384";
@@ -21,13 +21,17 @@ public class HashUtils {
      * @param raw       消息
      * @param algorithm 算法
      * @return 摘要
-     * @throws NoSuchAlgorithmException 没有这个加密算法
      */
-    public static String encrypt(byte[] raw, String algorithm) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance(algorithm);
-        md.update(raw);
-        byte[] bytes = md.digest();
-        return HexUtil.byteArrayToHexString(bytes);
+    public static String encrypt(byte[] raw, String algorithm) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(algorithm);
+            md.update(raw);
+            byte[] bytes = md.digest();
+            return HexUtil.byteArrayToHexString(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

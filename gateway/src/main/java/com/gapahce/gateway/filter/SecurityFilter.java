@@ -15,7 +15,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
+import static com.gapache.security.model.AuthConstants.TOKEN_HEADER;
 
 /**
  * @author HuSen
@@ -25,8 +25,6 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class SecurityFilter implements GlobalFilter, Ordered {
 
-    private static final String TOKEN = "token";
-
     private final SecurityChecker securityChecker;
 
     public SecurityFilter(SecurityChecker securityChecker) {
@@ -35,7 +33,7 @@ public class SecurityFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String token = exchange.getRequest().getHeaders().getFirst(TOKEN);
+        String token = exchange.getRequest().getHeaders().getFirst(TOKEN_HEADER);
         if (StringUtils.isBlank(token)) {
             return chain.filter(exchange);
         }

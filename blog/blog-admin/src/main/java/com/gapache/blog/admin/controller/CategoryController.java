@@ -1,11 +1,11 @@
 package com.gapache.blog.admin.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.gapache.blog.sdk.dubbo.category.CategoryApiService;
-import com.gapache.blog.sdk.dubbo.category.CategoryVO;
+import com.gapache.blog.common.model.dto.CategoryDTO;
+import com.gapache.blog.sdk.feign.BlogServerFeign;
 import com.gapache.commons.model.JsonResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,11 +16,11 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Reference(check = false, version = "1.0.0")
-    private CategoryApiService categoryApiService;
+    @Resource
+    private BlogServerFeign blogServerFeign;
 
     @GetMapping("/findAll")
-    public JsonResult<List<CategoryVO>> findAll() {
-        return JsonResult.of(categoryApiService.findAll());
+    public JsonResult<List<CategoryDTO>> findAll() {
+        return blogServerFeign.findAllCategory();
     }
 }

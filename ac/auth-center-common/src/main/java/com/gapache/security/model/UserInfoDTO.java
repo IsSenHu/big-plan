@@ -3,6 +3,7 @@ package com.gapache.security.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author HuSen
@@ -12,7 +13,9 @@ import java.io.Serializable;
 public class UserInfoDTO implements Serializable {
     private static final long serialVersionUID = 3442985661989482222L;
 
-    private String nickname;
+    private String name;
+    private String introduction;
+    private List<String> roles;
     private String avatar;
     private String token;
 }

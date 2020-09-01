@@ -1,10 +1,9 @@
 package com.gapache.blog.admin.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.gapache.blog.admin.model.BlogError;
-import com.gapache.blog.admin.utils.IOUtils;
-import com.gapache.blog.sdk.dubbo.about.AboutApiService;
-import com.gapache.blog.sdk.dubbo.about.AboutVO;
+import com.gapache.blog.common.util.IoUtils;
+import com.gapache.blog.common.model.dto.AboutDTO;
+import com.gapache.blog.sdk.feign.BlogServerFeign;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.ThrowUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -23,21 +24,19 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/about")
 public class AboutController {
 
-    @Reference(check = false, version = "1.0.0")
-    private AboutApiService aboutApiService;
+    @Resource
+    private BlogServerFeign blogServerFeign;
 
     @PutMapping
-    public JsonResult<Object> save(MultipartFile file) {
+    public JsonResult<Boolean> save(MultipartFile file) throws IOException {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
-        byte[] content = IOUtils.getContent(file);
+        byte[] content = IoUtils.getContent(file.getInputStream());
         ThrowUtils.throwIfTrue(content == null, BlogError.CREATE_ERROR);
 
-        AboutVO vo = new AboutVO();
-        vo.setContent(content);
-        vo.setLastOpTime(LocalDateTime.now());
-        aboutApiService.save(vo);
-
-        return JsonResult.success();
+        AboutDTO dto = new AboutDTO();
+        dto.setContent(content);
+        dto.setLastOpTime(LocalDateTime.now());
+        return blogServerFeign.saveAbout(dto);
     }
 }

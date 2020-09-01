@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>money-management-server</module>
+        <module>money-management-common</module>
     </modules>
     <parent>
         <artifactId>cloud-base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
-        <relativePath>../base/cloud-base/pom.xml</relativePath>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>money-management</artifactId>
     <name>money-management</name>

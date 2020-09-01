@@ -6,7 +6,7 @@
     <parent>
         <artifactId>base</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>support-protobuf</artifactId>
     <name>support-protobuf</name>

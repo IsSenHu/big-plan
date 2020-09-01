@@ -6,7 +6,7 @@
     <parent>
         <artifactId>ac</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>auth-center-server</artifactId>
     <name>auth-center-server</name>
@@ -14,7 +14,7 @@
 
     <properties>
         <security.oauth2.version>2.5.0.RELEASE</security.oauth2.version>
-        <support.jpa.version>0.0.1</support.jpa.version>
+        <support.jpa.version>0.0.1-RELEASE</support.jpa.version>
     </properties>
 
     <dependencies>
@@ -53,13 +53,13 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>auth-center-security-starter</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>auth-center-resource-starter</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>

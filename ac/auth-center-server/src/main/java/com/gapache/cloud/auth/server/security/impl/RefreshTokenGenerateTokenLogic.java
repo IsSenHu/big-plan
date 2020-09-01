@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static com.gapache.cloud.auth.server.model.RedisConstant.REFRESH_TOKEN_PREFIX;
+import static com.gapache.cloud.auth.server.constant.RedisConstants.REFRESH_TOKEN_PREFIX;
 
 /**
  * @author HuSen

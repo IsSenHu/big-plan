@@ -1,10 +1,7 @@
 package com.gapache.blog.server.service;
 
-import com.gapache.blog.server.model.vo.ArchiveVO;
-import com.gapache.blog.server.model.vo.BlogSummaryVO;
-import com.gapache.blog.server.model.vo.BlogVO;
-import com.gapache.blog.server.model.vo.RankVO;
-import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
+import com.gapache.blog.common.model.dto.*;
+import com.gapache.commons.model.IPageRequest;
 import com.gapache.commons.model.JsonResult;
 
 import java.util.Collection;
@@ -22,7 +19,7 @@ public interface BlogService {
      *
      * @return 归档结果
      */
-    JsonResult<ArchiveVO> archive();
+    JsonResult<ArchiveDTO> archive();
 
     /**
      * 查询博客
@@ -30,7 +27,7 @@ public interface BlogService {
      * @param id ID
      * @return 博客
      */
-    JsonResult<BlogVO> get(String id);
+    JsonResult<FullBlogDTO> get(String id);
 
     /**
      * 增加阅读数
@@ -43,10 +40,19 @@ public interface BlogService {
     /**
      * 获取指定前 {number} 的博客排行
      *
+     * @param from   {from}
      * @param number {number}
-     * @return 指定前 {number} 的博客排行
+     * @return 指定从 {from} 开始的前 {number} 的博客排行
      */
-    JsonResult<List<RankVO<SimpleBlogVO>>> top(Integer number);
+    JsonResult<List<RankDTO<SimpleBlogDTO>>> top(Integer from, Integer number);
+
+    /**
+     * 类似于分类查询博客
+     *
+     * @param iPageRequest 分页参数
+     * @return 查询结果
+     */
+    JsonResult<List<RankDTO<SimpleBlogDTO>>> find(IPageRequest<BlogQueryDTO> iPageRequest);
 
     /**
      * 根据id查询博客
@@ -55,7 +61,7 @@ public interface BlogService {
      * @param viewsMap 阅读数map
      * @return 博客集合
      */
-    List<SimpleBlogVO> findAllByIds(Collection<String> ids, Map<String, Integer> viewsMap);
+    List<SimpleBlogDTO> findAllByIds(Collection<String> ids, Map<String, Integer> viewsMap);
 
     /**
      * 根据分类查询博客
@@ -63,7 +69,7 @@ public interface BlogService {
      * @param category 分类
      * @return 查询结果
      */
-    JsonResult<List<SimpleBlogVO>> findAllByCategory(String category);
+    JsonResult<List<SimpleBlogDTO>> findAllByCategory(String category);
 
     /**
      * 根据标签查询博客
@@ -71,7 +77,7 @@ public interface BlogService {
      * @param tag 标签
      * @return 查询结果
      */
-    JsonResult<List<SimpleBlogVO>> findAllByTags(String tag);
+    JsonResult<List<SimpleBlogDTO>> findAllByTags(String tag);
 
     /**
      * 搜索博客
@@ -79,5 +85,13 @@ public interface BlogService {
      * @param queryString 查询字符串
      * @return 博客摘要
      */
-    JsonResult<List<BlogSummaryVO>> search(String queryString);
+    JsonResult<List<BlogSummaryDTO>> search(String queryString);
+
+    /**
+     * 获取最新的指定数量的博客
+     *
+     * @param number 指定的数量
+     * @return 最新的博客
+     */
+    JsonResult<List<SimpleBlogDTO>> getNewest(Integer number);
 }

@@ -1,18 +1,17 @@
 package com.gapache.blog.admin.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.gapache.blog.admin.model.BlogError;
-import com.gapache.blog.admin.model.vo.BlogCreateVO;
-import com.gapache.blog.admin.model.vo.BlogUpdateVO;
-import com.gapache.blog.sdk.dubbo.blog.BlogApiService;
-import com.gapache.blog.sdk.dubbo.blog.BlogQueryVO;
-import com.gapache.blog.sdk.dubbo.blog.BlogVO;
-import com.gapache.blog.sdk.dubbo.blog.SimpleBlogVO;
+import com.gapache.blog.admin.model.dto.BlogCreateDTO;
+import com.gapache.blog.admin.model.dto.BlogUpdateDTO;
+import com.gapache.blog.common.util.IoUtils;
+import com.gapache.blog.common.model.dto.BlogDTO;
+import com.gapache.blog.common.model.dto.BlogQueryDTO;
+import com.gapache.blog.common.model.dto.SimpleBlogDTO;
+import com.gapache.blog.sdk.feign.BlogServerFeign;
 import com.gapache.commons.model.IPageRequest;
 import com.gapache.commons.model.JsonResult;
 import com.gapache.commons.model.PageResult;
 import com.gapache.commons.model.ThrowUtils;
-import com.gapache.blog.admin.utils.IOUtils;
 import com.gapache.commons.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +19,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -32,62 +33,55 @@ import java.util.UUID;
 @RequestMapping("/api/blog")
 public class BlogController {
 
-    @Reference(check = false, version = "1.0.0")
-    private BlogApiService blogApiService;
+    @Resource
+    private BlogServerFeign blogServerFeign;
 
     @PutMapping
-    public JsonResult<Boolean> create(BlogCreateVO vo, MultipartFile file) {
+    public JsonResult<Boolean> create(BlogCreateDTO blogCreateDTO, MultipartFile file) throws IOException {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
-
-        byte[] content = IOUtils.getContent(file);
+        byte[] content = IoUtils.getContent(file.getInputStream());
         ThrowUtils.throwIfTrue(content == null, BlogError.CREATE_ERROR);
-
-        BlogVO blogVO = new BlogVO();
-        blogVO.setId(UUID.randomUUID().toString());
-        BeanUtils.copyProperties(vo, blogVO, "id", "content", "tags");
-        blogVO.setTags(vo.getTags().split(","));
-        blogVO.setContent(content);
-        blogVO.setPublishTime(LocalDateTime.now());
-
-        return JsonResult.of(blogApiService.create(blogVO));
+        BlogDTO dto = new BlogDTO();
+        dto.setId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(blogCreateDTO, dto, "id", "content", "tags");
+        dto.setTags(blogCreateDTO.getTags().split(","));
+        dto.setContent(content);
+        dto.setPublishTime(LocalDateTime.now());
+        return blogServerFeign.create(dto);
     }
 
     @GetMapping("/get/{id}")
-    public JsonResult<SimpleBlogVO> get(@PathVariable String id) {
-        SimpleBlogVO vo = blogApiService.get(id);
-        ThrowUtils.throwIfTrue(vo == null, BlogError.NOT_FOUNT);
-        return JsonResult.of(vo);
+    public JsonResult<SimpleBlogDTO> get(@PathVariable String id) {
+        return blogServerFeign.getSimple(id);
     }
 
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> delete(@PathVariable String id) {
-        return JsonResult.of(blogApiService.delete(id));
+        return blogServerFeign.delete(id);
     }
 
     @PostMapping
-    public JsonResult<Boolean> update(BlogUpdateVO vo, MultipartFile file) {
+    public JsonResult<Boolean> update(BlogUpdateDTO blogUpdateDTO, MultipartFile file) throws IOException {
         ThrowUtils.throwIfTrue(file == null || StringUtils.isBlank(file.getOriginalFilename()), BlogError.FILE_IS_NULL);
 
-        byte[] content = IOUtils.getContent(file);
+        byte[] content = IoUtils.getContent(file.getInputStream());
         ThrowUtils.throwIfTrue(content == null, BlogError.UPDATE_ERROR);
 
-        BlogVO blogVO = new BlogVO();
-        BeanUtils.copyProperties(vo, blogVO, "content", "publishTime");
-        blogVO.setTags(vo.getTags().split(","));
-        blogVO.setContent(content);
-        blogVO.setPublishTime(TimeUtils.parse(TimeUtils.Format._2, vo.getPublishTime()));
-
-        return JsonResult.of(blogApiService.update(blogVO));
+        BlogDTO dto = new BlogDTO();
+        BeanUtils.copyProperties(blogUpdateDTO, dto, "content", "publishTime");
+        dto.setTags(blogUpdateDTO.getTags().split(","));
+        dto.setContent(content);
+        dto.setPublishTime(TimeUtils.parse(TimeUtils.Format._2, blogUpdateDTO.getPublishTime()));
+        return blogServerFeign.update(dto);
     }
 
     @PostMapping("/page")
-    public JsonResult<PageResult<SimpleBlogVO>> page(@RequestBody IPageRequest<BlogQueryVO> iPageRequest) {
-        return JsonResult.of(blogApiService.findAll(iPageRequest));
+    public JsonResult<PageResult<SimpleBlogDTO>> page(@RequestBody IPageRequest<BlogQueryDTO> iPageRequest) {
+        return blogServerFeign.findAll(iPageRequest);
     }
 
     @GetMapping("/sync")
-    public JsonResult<Object> sync(@RequestParam(required = false) String id) {
-        blogApiService.sync(id);
-        return JsonResult.success();
+    public JsonResult<Boolean> sync(@RequestParam(required = false) String id) {
+        return blogServerFeign.sync(id);
     }
 }

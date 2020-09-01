@@ -1,5 +1,7 @@
 package com.gapache.blog.server.controller;
 
+import com.gapache.blog.common.model.dto.TagDTO;
+import com.gapache.blog.server.api.TagApiService;
 import com.gapache.blog.server.dao.data.Tag;
 import com.gapache.blog.server.service.TagService;
 import com.gapache.commons.model.JsonResult;
@@ -18,9 +20,16 @@ import java.util.List;
 public class TagController {
 
     private final TagService tagService;
+    private final TagApiService tagApiService;
 
-    public TagController(TagService tagService) {
+    public TagController(TagService tagService, TagApiService tagApiService) {
         this.tagService = tagService;
+        this.tagApiService = tagApiService;
+    }
+
+    @GetMapping("/findAll")
+    public JsonResult<List<TagDTO>> findAll() {
+        return JsonResult.of(tagApiService.findAll());
     }
 
     @GetMapping

@@ -16,10 +16,28 @@
     </description>
 
     <dependencies>
+        <!-- nacos 注册中心 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-web</artifactId>
             <version>0.0.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.gapache</groupId>
+            <artifactId>support-jpa</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
@@ -42,8 +60,14 @@
 
         <dependency>
             <groupId>com.gapache</groupId>
-            <artifactId>support-protobuf</artifactId>
-            <version>0.0.1</version>
+            <artifactId>support-oss</artifactId>
+            <version>0.0.1-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.2.3</version>
         </dependency>
     </dependencies>
 

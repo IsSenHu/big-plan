@@ -7,4 +7,5 @@ package com.gapache.security.model;
 public class AuthConstants {
 
     public static final String ACCESS_CARD_HEADER = "_access_card";
+    public static final String TOKEN_HEADER = "_token";
 }

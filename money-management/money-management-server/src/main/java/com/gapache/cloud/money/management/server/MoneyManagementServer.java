@@ -13,7 +13,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableAuthResourceServer("MoneyManagement")
 @SpringBootApplication
 public class MoneyManagementServer {
-
     public static void main(String[] args) {
         SpringApplication.run(MoneyManagementServer.class, args);
     }

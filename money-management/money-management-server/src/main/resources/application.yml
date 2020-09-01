@@ -24,4 +24,4 @@ com:
   gapache:
     security:
       register-remote: true
-      update-resources: true
+      update-resources: false

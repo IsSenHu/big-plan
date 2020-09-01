@@ -1,7 +1,9 @@
 package com.gapache.blog.server.dao.repository;
 
+import com.gapache.blog.common.model.dto.BlogQueryDTO;
 import com.gapache.blog.server.dao.document.Blog;
-import com.gapache.blog.server.model.vo.BlogSummaryVO;
+import com.gapache.blog.common.model.dto.BlogSummaryDTO;
+import com.gapache.commons.model.IPageRequest;
 import org.elasticsearch.action.search.SearchResponse;
 
 import java.util.List;
@@ -55,6 +57,14 @@ public interface BlogEsRepository {
     List<Blog> findAllByCategory(String category);
 
     /**
+     * 类似于分类查询博客
+     *
+     * @param iPageRequest 分页参数
+     * @return 查询结果
+     */
+    List<Blog> find(IPageRequest<BlogQueryDTO> iPageRequest);
+
+    /**
      * 根据标签查询博客
      *
      * @param tag 标签
@@ -68,7 +78,7 @@ public interface BlogEsRepository {
      * @param queryString 查询字符串
      * @return 博客摘要
      */
-    List<BlogSummaryVO> search(String queryString);
+    List<BlogSummaryDTO> search(String queryString);
 
     /**
      * 根据ID查询博客
@@ -77,4 +87,12 @@ public interface BlogEsRepository {
      * @return 博客
      */
     Blog get(String id);
+
+    /**
+     * 获取最新的指定数量的博客
+     *
+     * @param number 指定的数量
+     * @return 最新的博客
+     */
+    List<Blog> getNewest(Integer number);
 }

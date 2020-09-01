@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.gapache.cloud.auth.server.model.RedisConstant.SCOPE_CACHE_PREFIX;
+import static com.gapache.cloud.auth.server.constant.RedisConstants.SCOPE_CACHE_PREFIX;
 
 /**
  * @author HuSen

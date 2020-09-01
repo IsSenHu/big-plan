@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.gapache.cloud.auth.server.model.RedisConstant.CODE_CACHE_PREFIX;
+import static com.gapache.cloud.auth.server.constant.RedisConstants.CODE_CACHE_PREFIX;
 
 /**
  * @author HuSen

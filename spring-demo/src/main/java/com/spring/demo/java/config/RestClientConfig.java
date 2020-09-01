@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
 import org.springframework.lang.NonNull;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 /**
  * @author HuSen
@@ -27,7 +27,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
     @Bean
     public RestClientBuilder elasticsearchRestClientBuilder() {
-        HttpHost[] hosts = Stream.of("dev.51ishare.com:9200").map(HttpHost::create).toArray(HttpHost[]::new);
+        String[] nodes = "192.168.57.128,192.168.57.129,192.168.57.130".split(",");
+        HttpHost[] hosts = Arrays.stream(nodes).map(node -> new HttpHost(node, 9200, "http")).toArray(HttpHost[]::new);
         RestClientBuilder builder = RestClient.builder(hosts);
         builder.setRequestConfigCallback((requestConfigBuilder) -> {
             requestConfigBuilder.setConnectTimeout(30);

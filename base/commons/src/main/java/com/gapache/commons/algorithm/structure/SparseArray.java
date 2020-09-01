@@ -9,6 +9,7 @@ import com.gapache.commons.algorithm.Utils;
  * @since 2020/5/27 5:12 下午
  */
 public class SparseArray {
+    public static final String C = "s";
 
     public static void main(String[] args) {
         int[][] ints = new int[10][10];

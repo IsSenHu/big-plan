@@ -16,7 +16,7 @@ public enum BlogLuaScript implements LuaScript {
         this.path = path;
     }
 
-    private String path;
+    private final String path;
 
     public static final String OK = "0";
 

@@ -5,8 +5,7 @@
     <parent>
         <groupId>com.gapache</groupId>
         <artifactId>base</artifactId>
-        <version>0.0.1</version>
-        <relativePath/>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <groupId>com.gapahce</groupId>
     <artifactId>gateway</artifactId>
@@ -33,7 +32,7 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>
