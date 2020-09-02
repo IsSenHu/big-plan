@@ -11,7 +11,7 @@ spring:
     rest:
       uris: http://localhost:9200
   redis:
-    host: 118.24.38.46
+    host: 127.0.0.1
     database: 3
     password: 521428Slyt
   datasource:
