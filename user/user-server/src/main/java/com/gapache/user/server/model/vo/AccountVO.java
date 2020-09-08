@@ -1,4 +1,4 @@
-package com.gapache.user.service.model.vo;
+package com.gapache.user.server.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

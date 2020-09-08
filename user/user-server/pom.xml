@@ -6,7 +6,7 @@
     <parent>
         <artifactId>user</artifactId>
         <groupId>com.gapache</groupId>
-        <version>0.0.1</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
     <artifactId>user-server</artifactId>
     <name>user-server</name>
@@ -25,36 +25,18 @@
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-web</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>uid-generator</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>com.gapache</groupId>
             <artifactId>support-jpa</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gapache</groupId>
-            <artifactId>support-redis</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.4.6</version>
         </dependency>
     </dependencies>
 

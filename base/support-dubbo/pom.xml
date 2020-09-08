@@ -13,6 +13,15 @@
     <packaging>jar</packaging>
     <version>0.0.1-RELEASE</version>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-spring-boot-starter -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>support-dubbo</finalName>
     </build>

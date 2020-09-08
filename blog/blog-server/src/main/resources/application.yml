@@ -9,7 +9,9 @@ spring:
         server-addr: 118.24.38.46:8848
   elasticsearch:
     rest:
-      uris: http://localhost:9200
+      uris: http://dev.51ishare.com:9200
+      username: elastic
+      password: Pfg85191558
   redis:
     host: 127.0.0.1
     database: 3

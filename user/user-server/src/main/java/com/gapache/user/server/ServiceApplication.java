@@ -1,7 +1,5 @@
-package com.gapache.user.service;
+package com.gapache.user.server;
 
-import com.gapache.redis.EnableRedis;
-import com.gapache.uid.annotation.EnableUidGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author HuSen
  * create on 2020/1/8 18:01
  */
-@EnableRedis(enableTransactionSupport = true)
-@EnableUidGenerator
 @SpringBootApplication
 public class ServiceApplication {
 

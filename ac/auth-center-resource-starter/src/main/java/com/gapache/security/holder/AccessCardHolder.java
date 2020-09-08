@@ -9,21 +9,25 @@ import com.gapache.security.model.AccessCard;
  */
 public class AccessCardHolder {
 
-    private static AccessCardHolderStrategy strategy = new InheritableThreadLocalAccessCardHolderStrategy();
+    private static final AccessCardHolderStrategy STRATEGY = new InheritableThreadLocalAccessCardHolderStrategy();
 
     public static void clearContext() {
-        strategy.clearContext();
+        STRATEGY.clearContext();
     }
 
     public static AccessCard getContext() {
-        return strategy.getContext();
+        AccessCard context = STRATEGY.getContext();
+        if (context == null) {
+            context = createEmptyContext();
+        }
+        return context;
     }
 
     public static void setContext(AccessCard context) {
-        strategy.setContext(context);
+        STRATEGY.setContext(context);
     }
 
     public static AccessCard createEmptyContext() {
-        return strategy.createEmptyContext();
+        return STRATEGY.createEmptyContext();
     }
 }

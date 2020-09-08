@@ -1,4 +1,4 @@
-package com.gapache.user.service.model;
+package com.gapache.user.server.model;
 
 import lombok.Data;
 
