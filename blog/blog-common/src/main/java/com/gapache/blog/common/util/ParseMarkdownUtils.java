@@ -18,7 +18,7 @@ import java.util.List;
 public class ParseMarkdownUtils {
 
     public static void main(String[] args) throws Exception {
-        FileInputStream inputStream = new FileInputStream("/Users/husen/test.md");
+        FileInputStream inputStream = new FileInputStream("/Users/husen/develop/codes/mine/be_richer/java/java知识总结之Type.md");
         byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
         String s = IStringUtils.newString(bytes);
         List<MarkdownItemDTO> parse = parse(s);
@@ -54,6 +54,7 @@ public class ParseMarkdownUtils {
                     markdownItemDTO.setContent(quote.toString());
                     break;
                 }
+                case CODE_BLACK2:
                 case CODE_BLACK: {
                     StringBuilder code = new StringBuilder();
                     while (true) {
