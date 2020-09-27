@@ -25,7 +25,7 @@ public enum MarkdownItemType {
     TITLE5("##### ", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("##### ")),
     TITLE6("###### ", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("###### ")),
     CODE_LINE("`", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("`")),
-    CODE_BLACK("~~~", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("~~~") || text.trim().startsWith("```")),
+    CODE_BLACK("~~~", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("~~~")),
     CODE_BLACK2("```", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("```")),
     FORMULA("$$", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("$$")),
     TABLE("|", text -> StringUtils.isNotBlank(text) && text.trim().startsWith("|") && text.trim().endsWith("|")),
