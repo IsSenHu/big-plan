@@ -10,7 +10,7 @@
     </parent>
     <artifactId>blog-common</artifactId>
     <name>blog-common</name>
-    <version>0.0.1-RELEASE</version>
+    <version>0.0.2-RELEASE</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -24,4 +24,16 @@
     <build>
         <finalName>blog-common</finalName>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://118.24.38.46:18081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot</name>
+            <url>http://118.24.38.46:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
