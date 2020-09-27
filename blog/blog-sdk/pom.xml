@@ -10,7 +10,7 @@
     </parent>
     <artifactId>blog-sdk</artifactId>
     <name>blog-sdk</name>
-    <version>0.0.1-RELEASE</version>
+    <version>0.0.2-RELEASE</version>
     <packaging>jar</packaging>
     <description>
         博客SDK
