@@ -23,6 +23,7 @@ docker rm $SERVER_NAME
 docker run --name $SERVER_NAME --net host -v $LOG_PATH:$LOG_PATH -d -p 10003:10003 $SERVER_NAME
 
 running=$(docker inspect --format '{{.State.Running}}' $SERVER_NAME)
+echo "$SERVER_NAME state $Running"
 while [ -"$running" -eq 0 ]; do
     echo -e ".\c"
     sleep 1
