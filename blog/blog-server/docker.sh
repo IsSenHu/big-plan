@@ -19,4 +19,5 @@ docker build -t $SERVER_NAME .
 echo "所有的镜像"
 docker images
 echo "运行docker容器"
+docker rm $SERVER_NAME
 docker run --name $SERVER_NAME -v $LOG_PATH:$LOG_PATH -d -p 10003:10003 $SERVER_NAME
