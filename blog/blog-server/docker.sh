@@ -1,11 +1,11 @@
 pwd
 LOG_PATH=/export/logs/blog-server
-SERVER_NAME=husen/blog-server
+SERVER_NAME=blog-server
 cd blog/blog-server || exit
 # 容器ID
 CID=$(docker ps | grep "$SERVER_NAME" | awk '{print $1}')
 if [ -n "$CID" ]; then
-    echo "存在镜像在运行中，停止郑州运行的镜像$CID"
+    echo "存在镜像在运行中，停止正在运行的镜像$CID"
     docker stop "$CID"
 fi
 IID=$(docker images | grep "$SERVER_NAME" | awk '{print $3}')
@@ -20,8 +20,3 @@ echo "所有的镜像"
 docker images
 echo "运行docker容器"
 docker run --name $SERVER_NAME -v $LOG_PATH:$LOG_PATH -d -p 10003:10003 $SERVER_NAME
-
-
-
-
-
