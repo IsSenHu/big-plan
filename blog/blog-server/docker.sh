@@ -21,3 +21,14 @@ docker images
 echo "运行docker容器"
 docker rm $SERVER_NAME
 docker run --name $SERVER_NAME --net host -v $LOG_PATH:$LOG_PATH -d -p 10003:10003 $SERVER_NAME
+
+running=$(docker inspect --format '{{.State.Running}}' $SERVER_NAME)
+while [ -"$running" -eq 0 ]; do
+    echo -e ".\c"
+    sleep 1
+    running=$(docker inspect --format '{{.State.Running}}' $SERVER_NAME)
+done
+
+echo "OK!"
+CID=$(docker ps | grep "$SERVER_NAME" | awk '{print $1}')
+echo "CID: $CID"
