@@ -24,12 +24,12 @@ docker run --name $SERVER_NAME --net host -v $LOG_PATH:$LOG_PATH -d -p 10003:100
 
 running=$(docker inspect --format '{{.State.Running}}' $SERVER_NAME)
 echo "$SERVER_NAME state $Running"
-while [ -"$running" -eq 0 ]; do
+while [ "$running" == 'false' ]; do
     echo -e ".\c"
     sleep 1
     running=$(docker inspect --format '{{.State.Running}}' $SERVER_NAME)
 done
 
-echo "OK!"
+echo "容器已启动!"
 CID=$(docker ps | grep "$SERVER_NAME" | awk '{print $1}')
-echo "CID: $CID"
+echo "容器ID: $CID"

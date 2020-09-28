@@ -60,3 +60,8 @@ ribbon:
   ReadTimeout: 10000
 #  指的是建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用的时间
   ConnectTimeout: 5000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
