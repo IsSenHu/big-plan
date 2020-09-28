@@ -101,7 +101,10 @@ public class BlogApiServiceImpl implements BlogApiService {
     }
 
     private boolean saveOrUpdate(BlogDTO blog, boolean update) {
-        List<MarkdownItemDTO> items = ParseMarkdownUtils.parse(IStringUtils.newString(blog.getContent()));
+        String md = IStringUtils.newString(blog.getContent());
+        log.info("要解析的md为:{}", md);
+        List<MarkdownItemDTO> items = ParseMarkdownUtils.parse(md);
+        log.info("md解析结果:{}", JSON.toJSONString(items));
         MarkdownDTO markdownDTO = new MarkdownDTO();
         markdownDTO.setItems(items);
         byte[] bytes = ProtocstuffUtils.bean2Byte(markdownDTO, MarkdownDTO.class);
