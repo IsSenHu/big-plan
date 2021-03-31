@@ -31,7 +31,7 @@
         <!--spring-cloud-alibaba 版本-->
         <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
         <!-- guava 版本 -->
-        <guava.version>28.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <!-- lang3 版本 -->
         <lang3.version>3.9</lang3.version>
         <!-- collections4 版本 -->
