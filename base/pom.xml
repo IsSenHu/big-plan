@@ -37,7 +37,7 @@
         <!-- collections4 版本 -->
         <collections4.version>4.4</collections4.version>
         <!-- fastjson 版本 -->
-        <fastjson.version>1.2.62</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <!-- com.dyuproject.protostuff 版本 -->
         <com.dyuproject.protostuff.version>1.1.5</com.dyuproject.protostuff.version>
         <!-- protobuf-java-format 版本 -->
